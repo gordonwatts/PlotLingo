@@ -40,5 +40,14 @@ namespace PlotLingoLibTest
             Assert.IsInstanceOfType(r[0], typeof(PlotLingoLib.Grammar.AssignmentStatement));
             var a = (PlotLingoLib.Grammar.AssignmentStatement)r[0];
         }
+
+        [TestMethod]
+        public void TestExpressionStatement()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("\"hi\"");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(PlotLingoLib.Grammar.ExpressionStatement));
+        }
     }
 }

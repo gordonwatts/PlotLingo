@@ -154,11 +154,45 @@ namespace PlotLingoLib
             ).Named("Assignment Statement");
 
         /// <summary>
+        /// An expression statement
+        /// </summary>
+        internal class ExpressionStatement : IStatement
+        {
+            /// <summary>
+            /// Expression this statement represents
+            /// </summary>
+            private IExpression _expr;
+
+            public ExpressionStatement(IExpression expr)
+            {
+                this._expr = expr;
+            }
+
+            /// <summary>
+            /// We just evaluate the expression.
+            /// </summary>
+            /// <param name="c"></param>
+            public void Evaluate(Context c)
+            {
+                _expr.Evaluate(c);
+            }
+        }
+
+        /// <summary>
+        /// Parse an expression statement
+        /// </summary>
+        private static readonly Parser<IStatement> ExpressionStatementParser =
+            (
+                from expr in ExpressionParser
+                select new ExpressionStatement(expr)
+            ).Named("Expression Statement");
+
+        /// <summary>
         /// Parse a statement
         /// </summary>
         private static readonly Parser<IStatement> StatementParser =
             (
-                from r in AssignmentStatementParser
+                from r in AssignmentStatementParser.Or(ExpressionStatementParser)
                 select r
             ).Named("Statement List");
 
