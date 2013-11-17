@@ -57,7 +57,7 @@ namespace PlotLingoLib
                         return;
                     }
                 }
-                catch (IOException e)
+                catch (IOException)
                 {
                     i--;
                     Thread.Sleep(10);
