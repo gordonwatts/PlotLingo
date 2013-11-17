@@ -65,6 +65,36 @@ namespace PlotLingoLib
             );
 
         /// <summary>
+        /// A method call made to some object.
+        /// </summary>
+        internal class MethodCallExpression : IExpression
+        {
+            private string obj;
+            private IExpression func;
+
+            public MethodCallExpression(string obj, IExpression func)
+            {
+                // TODO: Complete member initialization
+                this.obj = obj;
+                this.func = func;
+            }
+
+            public object Evaluate(Context c)
+            {
+                throw new System.NotImplementedException();
+            }
+        }
+
+
+        private static readonly Parser<IExpression> MethodExpressionParser =
+            (
+            from obj in VariableNameParser
+            from dot in Parse.Char('.')
+            from func in FunctionExpressionParser
+            select new MethodCallExpression(obj, func)
+            ).Named("Method Call");
+
+        /// <summary>
         /// Represents a string value.
         /// </summary>
         private class StringValue : IExpression
@@ -138,7 +168,7 @@ namespace PlotLingoLib
         /// </summary>
         private static readonly Parser<IExpression> ExpressionParser =
             (
-            from e in FunctionExpressionParser.Or(ValueExpressionParser)
+            from e in FunctionExpressionParser.Or(MethodExpressionParser).Or(ValueExpressionParser)
             select e
             );
 
