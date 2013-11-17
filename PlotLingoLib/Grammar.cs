@@ -11,10 +11,19 @@ namespace PlotLingoLib
     /// </summary>
     static class Grammar
     {
+        /// <summary>
+        /// Our basic identifier, standard.
+        /// </summary>
         private static readonly Parser<string> IdentifierParser = (Parse.LetterOrDigit.Or(Parse.Char('_')).Or(Parse.Char('-'))).AtLeastOnce().Text().Token().Named("Identifier");
 
+        /// <summary>
+        /// A variable name can be any identifier.
+        /// </summary>
         private static readonly Parser<string> VariableNameParser = IdentifierParser;
 
+        /// <summary>
+        /// Assignment. This will create or replace a current item.
+        /// </summary>
         private class AssignmentStatement : IStatement
         {
             private string nv;
@@ -34,6 +43,9 @@ namespace PlotLingoLib
             }
         }
 
+        /// <summary>
+        /// Parse a string
+        /// </summary>
         private static readonly Parser<IExpression> StringValueParser =
             (
                 from openp in Parse.Char('"')
@@ -42,12 +54,18 @@ namespace PlotLingoLib
                 select new StringValue(content)
             );
 
+        /// <summary>
+        /// Parse a value (like a number or a string).
+        /// </summary>
         private static readonly Parser<IExpression> ValueExpressionParser =
             (
             from v in StringValueParser
             select v
             );
 
+        /// <summary>
+        /// Represents a string value.
+        /// </summary>
         private class StringValue : IExpression
         {
             private string content;
@@ -65,6 +83,9 @@ namespace PlotLingoLib
             }
         }
 
+        /// <summary>
+        /// A function expression.
+        /// </summary>
         class FunctionExpression : IExpression
         {
             private string fname;
@@ -88,6 +109,9 @@ namespace PlotLingoLib
             }
         }
 
+        /// <summary>
+        /// Parser that returns a function.
+        /// </summary>
         private static readonly Parser<IExpression> FunctionExpressionParser =
             (
             from fname in IdentifierParser
@@ -96,6 +120,9 @@ namespace PlotLingoLib
             );
 
 
+        /// <summary>
+        /// Parse an argument list that goes to a function or similar.
+        /// </summary>
         private static readonly Parser<IExpression[]> ArgumentListParser =
             (
             from openp in Parse.Char('(')
@@ -105,12 +132,18 @@ namespace PlotLingoLib
             select new IExpression[] { arg1 }.Concat(rest).ToArray()
             );
 
+        /// <summary>
+        /// Parse an expression. Could be a function, or... etc.
+        /// </summary>
         private static readonly Parser<IExpression> ExpressionParser =
             (
             from e in FunctionExpressionParser.Or(ValueExpressionParser)
             select e
             );
 
+        /// <summary>
+        /// Parse an assignment statement.
+        /// </summary>
         private static readonly Parser<IStatement> AssignmentStatementParser =
             (
                 from nv in VariableNameParser
@@ -119,18 +152,23 @@ namespace PlotLingoLib
                 select new AssignmentStatement(nv, expr)
             ).Named("Assignment Statement");
 
+        /// <summary>
+        /// Parse a statement
+        /// </summary>
         private static readonly Parser<IStatement> StatementParser =
             (
                 from r in AssignmentStatementParser
                 select r
             ).Named("Statement List");
 
+        /// <summary>
+        /// Parse the whole module (a single file, basically).
+        /// </summary>
         public static readonly Parser<IStatement[]> ModuleParser =
         (
             from statements in StatementParser.Many()
             from ws in Parse.WhiteSpace.Many()
             select statements.ToArray()
         ).Named("Module");
-
     }
 }
