@@ -9,7 +9,7 @@ namespace PlotLingoLib
     /// <summary>
     /// The grammer for the input text language
     /// </summary>
-    static class Grammar
+    internal static class Grammar
     {
         /// <summary>
         /// Our basic identifier, standard.
@@ -24,7 +24,7 @@ namespace PlotLingoLib
         /// <summary>
         /// Assignment. This will create or replace a current item.
         /// </summary>
-        private class AssignmentStatement : IStatement
+        internal class AssignmentStatement : IStatement
         {
             private string nv;
             private IExpression expr;
@@ -86,7 +86,7 @@ namespace PlotLingoLib
         /// <summary>
         /// A function expression.
         /// </summary>
-        class FunctionExpression : IExpression
+        internal class FunctionExpression : IExpression
         {
             private string fname;
             private IExpression[] args;
