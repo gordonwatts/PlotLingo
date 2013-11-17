@@ -48,6 +48,7 @@ namespace PlotLingoLib
         /// </summary>
         private static readonly Parser<IExpression> StringValueParser =
             (
+                from ws in Parse.WhiteSpace.Many()
                 from openp in Parse.Char('"')
                 from content in Parse.CharExcept('"').Many().Text()
                 from closep in Parse.Char('"')
