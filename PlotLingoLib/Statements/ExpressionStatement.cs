@@ -15,11 +15,11 @@ namespace PlotLingoLib.Statements
         /// <summary>
         /// Expression this statement represents
         /// </summary>
-        private IExpression _expr;
+        public IExpression Expression {get;set;}
 
         public ExpressionStatement(IExpression expr)
         {
-            this._expr = expr;
+            Expression = expr;
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace PlotLingoLib.Statements
         /// <param name="c"></param>
         public void Evaluate(Context c)
         {
-            _expr.Evaluate(c);
+            Expression.Evaluate(c);
         }
     }
 

@@ -2,6 +2,7 @@
 using Sprache;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PlotLingoLib.Statements;
+using PlotLingoLib.Expressions;
 
 namespace PlotLingoLibTest
 {
@@ -57,7 +58,11 @@ namespace PlotLingoLibTest
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p.plot(\"hi\")");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
-            Assert.Inconclusive();
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(MethodCallExpression), "Expression method");
+            var mc = exprS.Expression as MethodCallExpression;
+            Assert.AreEqual("p", mc.Object);
         }
     }
 }

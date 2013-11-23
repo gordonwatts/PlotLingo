@@ -14,7 +14,7 @@ namespace PlotLingoLib.Expressions
         /// <summary>
         /// The target object
         /// </summary>
-        private string _object;
+        public string Object { get; set; }
 
         /// <summary>
         /// The name of the method we are to call along with its arguments.
@@ -30,7 +30,7 @@ namespace PlotLingoLib.Expressions
         /// <param name="func"></param>
         public MethodCallExpression(string obj, IExpression func)
         {
-            this._object = obj;
+            Object = obj;
             this.func = func;
         }
 
