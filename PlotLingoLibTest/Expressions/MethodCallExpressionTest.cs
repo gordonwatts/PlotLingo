@@ -51,8 +51,24 @@ namespace PlotLingoLibTest.Expressions
         [TestMethod]
         public void TestArgumentsEvaluatedOnlyOnce()
         {
-            Assert.Inconclusive();
+            var ctx = new Context();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new MyStringExpression();
+            var mc = new MethodCallExpression("p", new FunctionExpression("CallOneStringArg", new IExpression[] { s }));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual(1, s._evalCount, "# of times evaluated");
         }
+
+        private class MyStringExpression : IExpression
+        {
+            public int _evalCount = 0;
+            public object Evaluate(Context c)
+            {
+                _evalCount++;
+                return "Length";
+            }
+        }
+
 
         /// <summary>
         /// Test class to help with... testing.
