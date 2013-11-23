@@ -34,6 +34,15 @@ namespace PlotLingoLib
                 select new StringValue(content)
             );
 
+        public static readonly Parser<ArrayValue> ArrayValueParser =
+            (
+            from openp in Parse.Char('(')
+            from e1 in ExpressionParser
+            from eRest in Parse.Char(',').Then(_ => ExpressionParser).Many()
+            from closep in Parse.Char(')')
+            select new ArrayValue(new IExpression[]{e1}.Concat(eRest).ToArray())
+            );
+
         /// <summary>
         /// Parse a value (like a number or a string).
         /// </summary>
@@ -78,7 +87,7 @@ namespace PlotLingoLib
         /// </summary>
         private static readonly Parser<IExpression> ExpressionParser =
             (
-            from e in FunctionExpressionParser.Or(MethodExpressionParser).Or(ValueExpressionParser)
+            from e in FunctionExpressionParser.Or(MethodExpressionParser).Or(ValueExpressionParser).Or(ArrayValueParser)
             select e
             );
 

@@ -3,6 +3,7 @@ using Sprache;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PlotLingoLib.Statements;
 using PlotLingoLib.Expressions;
+using PlotLingoLib.Expressions.Values;
 
 namespace PlotLingoLibTest
 {
@@ -63,6 +64,19 @@ namespace PlotLingoLibTest
             Assert.IsInstanceOfType(exprS.Expression, typeof(MethodCallExpression), "Expression method");
             var mc = exprS.Expression as MethodCallExpression;
             Assert.AreEqual("p", mc.Object);
+        }
+
+        [TestMethod]
+        public void TestArrayExpressionParse()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("(\"hi\", \"there\")");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(ArrayValue), "array method");
+            var mc = exprS.Expression as ArrayValue;
+            Assert.AreEqual(2, mc.Length, "# of values in the array");
         }
     }
 }
