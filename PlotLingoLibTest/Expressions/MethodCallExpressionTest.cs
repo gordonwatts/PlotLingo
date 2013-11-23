@@ -58,7 +58,11 @@ namespace PlotLingoLibTest.Expressions
             var r = mc.Evaluate(ctx);
             Assert.AreEqual(1, s._evalCount, "# of times evaluated");
         }
-
+        
+        /// <summary>
+        /// Small expression class that will hold onto a string and count the number of times
+        /// it is evaluated.
+        /// </summary>
         private class MyStringExpression : IExpression
         {
             public int _evalCount = 0;
