@@ -89,6 +89,7 @@
     <Compile Include="Expressions\MethodCallExpression.cs" />
     <Compile Include="Expressions\Values\ArrayValue.cs" />
     <Compile Include="Expressions\Values\StringValue.cs" />
+    <Compile Include="Expressions\Values\VariableValue.cs" />
     <Compile Include="MethodEvaluators\DotNetMethodCall.cs" />
     <Compile Include="MethodEvaluators\IMethodEvaluator.cs" />
     <Compile Include="RunPlot.cs" />

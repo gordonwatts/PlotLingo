@@ -35,6 +35,15 @@ namespace PlotLingoLib
             );
 
         /// <summary>
+        /// Parse an identifier that is a variable name.
+        /// </summary>
+        private static readonly Parser<VariableValue> VariableValueParser =
+            (
+                from name in VariableNameParser
+                select new VariableValue(name)
+            );
+
+        /// <summary>
         /// Parse an array of expressions
         /// </summary>
         public static readonly Parser<ArrayValue> ArrayValueParser =
@@ -90,7 +99,11 @@ namespace PlotLingoLib
         /// </summary>
         private static readonly Parser<IExpression> ExpressionParser =
             (
-            from e in FunctionExpressionParser.Or(MethodExpressionParser).Or(ValueExpressionParser).Or(ArrayValueParser)
+            from e in FunctionExpressionParser
+                .Or(MethodExpressionParser)
+                .Or(ValueExpressionParser)
+                .Or(ArrayValueParser)
+                .Or(VariableValueParser)
             select e
             );
 

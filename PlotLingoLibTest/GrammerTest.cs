@@ -78,5 +78,31 @@ namespace PlotLingoLibTest
             var mc = exprS.Expression as ArrayValue;
             Assert.AreEqual(2, mc.Length, "# of values in the array");
         }
+
+        [TestMethod]
+        public void TestArrayMethodCall()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("(\"hi\", \"there\").plot()");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(MethodCallExpression), "Expression method");
+            var mc = exprS.Expression as MethodCallExpression;
+            Assert.AreEqual("p", mc.Object);
+        }
+
+        [TestMethod]
+        public void TestValueAsExpression()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(VariableValue), "Expression method");
+            var vv = exprS.Expression as VariableValue;
+            Assert.AreEqual("p", vv.VariableName, "var name");
+        }
     }
 }
