@@ -33,7 +33,6 @@ namespace PlotLingoLib.MethodEvaluators
                 return new Tuple<bool, object>(false, null);
 
             // And invoke the method and see what we can get back.
-
             var r = method.Invoke(obj, args);
             return new Tuple<bool, object>(true, r);
         }
