@@ -83,11 +83,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context.cs" />
+    <Compile Include="Expressions\FunctionExpression.cs" />
     <Compile Include="Expressions\Functions\File.cs" />
     <Compile Include="Expressions\IExpression.cs" />
+    <Compile Include="Expressions\MethodCallExpression.cs" />
+    <Compile Include="Expressions\Values\StringValue.cs" />
     <Compile Include="RunPlot.cs" />
     <Compile Include="Grammar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Statements\AssignmentStatement.cs" />
+    <Compile Include="Statements\ExpressionStatement.cs" />
     <Compile Include="Statements\IStatement.cs" />
   </ItemGroup>
   <ItemGroup>

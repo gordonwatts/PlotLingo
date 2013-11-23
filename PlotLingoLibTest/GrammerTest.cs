@@ -1,6 +1,7 @@
 ﻿using System;
 using Sprache;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PlotLingoLib.Statements;
 
 namespace PlotLingoLibTest
 {
@@ -13,8 +14,8 @@ namespace PlotLingoLibTest
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a = file(\"hi\")");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
-            Assert.IsInstanceOfType(r[0], typeof(PlotLingoLib.Grammar.AssignmentStatement));
-            var a = (PlotLingoLib.Grammar.AssignmentStatement)r[0];
+            Assert.IsInstanceOfType(r[0], typeof(AssignmentStatement));
+            var a = (AssignmentStatement)r[0];
         }
 
         [TestMethod]
@@ -23,8 +24,8 @@ namespace PlotLingoLibTest
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a =\"hi\"");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
-            Assert.IsInstanceOfType(r[0], typeof(PlotLingoLib.Grammar.AssignmentStatement));
-            var a = (PlotLingoLib.Grammar.AssignmentStatement)r[0];
+            Assert.IsInstanceOfType(r[0], typeof(AssignmentStatement));
+            var a = (AssignmentStatement)r[0];
         }
 
         /// <summary>
@@ -37,8 +38,8 @@ namespace PlotLingoLibTest
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a = \"hi\"");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
-            Assert.IsInstanceOfType(r[0], typeof(PlotLingoLib.Grammar.AssignmentStatement));
-            var a = (PlotLingoLib.Grammar.AssignmentStatement)r[0];
+            Assert.IsInstanceOfType(r[0], typeof(AssignmentStatement));
+            var a = (AssignmentStatement)r[0];
         }
 
         [TestMethod]
@@ -47,7 +48,7 @@ namespace PlotLingoLibTest
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("\"hi\"");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
-            Assert.IsInstanceOfType(r[0], typeof(PlotLingoLib.Grammar.ExpressionStatement));
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement));
         }
 
         [TestMethod]
