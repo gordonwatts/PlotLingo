@@ -21,7 +21,7 @@ namespace PlotLingoLib.Expressions
         /// <summary>
         /// A list of arguments
         /// </summary>
-        private IExpression[] _args;
+        public IExpression[] Arguments { get; set; }
 
         /// <summary>
         /// Initialize a function expression.
@@ -31,7 +31,7 @@ namespace PlotLingoLib.Expressions
         public FunctionExpression(string fname, IExpression[] args)
         {
             FunctionName = fname;
-            this._args = args;
+            Arguments = args;
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace PlotLingoLib.Expressions
         {
             if (FunctionName == "file")
             {
-                return File.Execute(_args.Select(e => e.Evaluate(c)).ToArray());
+                return File.Execute(Arguments.Select(e => e.Evaluate(c)).ToArray());
             }
             throw new System.NotImplementedException(string.Format("Unknown function '{0}' referenced!", FunctionName));
         }

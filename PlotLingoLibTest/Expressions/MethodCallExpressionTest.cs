@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PlotLingoLib;
 using PlotLingoLib.Expressions;
+using PlotLingoLib.Expressions.Values;
 
 namespace PlotLingoLibTest.Expressions
 {
@@ -33,6 +34,17 @@ namespace PlotLingoLibTest.Expressions
             Assert.AreEqual(5, r);
         }
 
+        [TestMethod]
+        public void TestCallOneArg()
+        {
+            var ctx = new Context();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new StringValue("length");
+            var mc = new MethodCallExpression("p", new FunctionExpression("CallOneStringArg", new IExpression[] { s }));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual(6, r);
+        }
+
         /// <summary>
         /// Make sure that arguments to an expression are evaluated only once.
         /// </summary>
@@ -50,6 +62,11 @@ namespace PlotLingoLibTest.Expressions
             public int CallNoArgs()
             {
                 return 5;
+            }
+
+            public int CallOneStringArg (string hi)
+            {
+                return hi.Length;
             }
         }
     }
