@@ -16,7 +16,7 @@ namespace PlotLingoLib.Expressions
         /// <summary>
         /// The function name
         /// </summary>
-        private string _funcName;
+        public string FunctionName {get; set;}
 
         /// <summary>
         /// A list of arguments
@@ -30,7 +30,7 @@ namespace PlotLingoLib.Expressions
         /// <param name="args"></param>
         public FunctionExpression(string fname, IExpression[] args)
         {
-            this._funcName = fname;
+            FunctionName = fname;
             this._args = args;
         }
 
@@ -41,11 +41,11 @@ namespace PlotLingoLib.Expressions
         /// <returns></returns>
         public object Evaluate(Context c)
         {
-            if (_funcName == "file")
+            if (FunctionName == "file")
             {
                 return File.Execute(_args.Select(e => e.Evaluate(c)).ToArray());
             }
-            throw new System.NotImplementedException(string.Format("Unknown function '{0}' referenced!", _funcName));
+            throw new System.NotImplementedException(string.Format("Unknown function '{0}' referenced!", FunctionName));
         }
     }
 }

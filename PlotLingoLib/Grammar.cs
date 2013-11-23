@@ -54,7 +54,7 @@ namespace PlotLingoLib
         /// <summary>
         /// Parser that returns a function.
         /// </summary>
-        private static readonly Parser<IExpression> FunctionExpressionParser =
+        private static readonly Parser<FunctionExpression> FunctionExpressionParser =
             (
             from fname in IdentifierParser
             from args in ArgumentListParser
