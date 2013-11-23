@@ -34,6 +34,9 @@ namespace PlotLingoLib
                 select new StringValue(content)
             );
 
+        /// <summary>
+        /// Parse an array of expressions
+        /// </summary>
         public static readonly Parser<ArrayValue> ArrayValueParser =
             (
             from openp in Parse.Char('(')
