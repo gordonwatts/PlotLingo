@@ -16,12 +16,20 @@ namespace PlotLingoLib.Expressions.Values
         /// </summary>
         private string _content;
 
+        /// <summary>
+        /// Initalize a string value.
+        /// </summary>
+        /// <param name="content"></param>
         public StringValue(string content)
         {
             this._content = content;
         }
 
-
+        /// <summary>
+        /// Evaluate a string value.
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
         public object Evaluate(Context c)
         {
             return _content;
