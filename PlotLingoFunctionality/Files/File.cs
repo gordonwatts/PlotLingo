@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace PlotLingoLib.Expressions.Functions
+namespace PlotLingoFunctionality.Files
 {
     /// <summary>
     /// Return an open file

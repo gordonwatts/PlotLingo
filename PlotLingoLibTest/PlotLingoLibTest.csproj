@@ -62,9 +62,9 @@
     <Compile Include="ContextTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PlotLingoLib\PlotLingoLib.csproj">
+    <ProjectReference Include="..\PlotLingoLib\PlotLingoCoreLib.csproj">
       <Project>{507d5285-91fe-4e30-9989-b6a84b5c17cf}</Project>
-      <Name>PlotLingoLib</Name>
+      <Name>PlotLingoCoreLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

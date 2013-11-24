@@ -1,5 +1,4 @@
-﻿using PlotLingoLib.Expressions.Functions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,10 +40,12 @@ namespace PlotLingoLib.Expressions
         /// <returns></returns>
         public object Evaluate(Context c)
         {
+#if false
             if (FunctionName == "file")
             {
                 return File.Execute(Arguments.Select(e => e.Evaluate(c)).ToArray());
             }
+#endif
             throw new System.NotImplementedException(string.Format("Unknown function '{0}' referenced!", FunctionName));
         }
 
