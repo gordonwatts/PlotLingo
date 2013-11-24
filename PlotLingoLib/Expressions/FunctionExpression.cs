@@ -47,5 +47,25 @@ namespace PlotLingoLib.Expressions
             }
             throw new System.NotImplementedException(string.Format("Unknown function '{0}' referenced!", FunctionName));
         }
+
+        /// <summary>
+        /// Pretty print for debugging and testing.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.AppendFormat("{0}(", FunctionName);
+            bool first = true;
+            foreach (var v in Arguments)
+            {
+                if (!first)
+                    sb.Append(",");
+                first = false;
+                sb.Append(v.ToString());
+            }
+            sb.Append(")");
+            return sb.ToString();
+        }
     }
 }

@@ -188,7 +188,7 @@ namespace PlotLingoLibTest
             Assert.IsInstanceOfType(exprS.Expression, typeof(FunctionExpression), "add operator");
             var vv = exprS.Expression as FunctionExpression;
             Assert.AreEqual("+", vv.FunctionName, "operator name");
-            Assert.Inconclusive();
+            Assert.AreEqual("+(+(a,b),c)", vv.ToString(), "Result of the expression");
         }
 
         [TestMethod]

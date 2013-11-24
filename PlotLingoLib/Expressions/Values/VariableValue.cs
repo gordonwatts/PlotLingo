@@ -34,5 +34,14 @@ namespace PlotLingoLib.Expressions.Values
         /// The name of the variable
         /// </summary>
         public string VariableName { get; private set; }
+
+        /// <summary>
+        /// For easy debugging
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return VariableName;
+        }
     }
 }
