@@ -16,13 +16,11 @@ namespace PlotLingoLib
         /// Parse an array of expressions
         /// </summary>
         public static readonly Parser<ArrayValue> ArrayValueParser =
-            (
-            from openp in Parse.Char('(')
-            from e1 in Parse.Ref(() => ExpressionParser)
-            from eRest in Parse.Char(',').Then(_ => ExpressionParser).Many()
-            from closep in Parse.Char(')')
-            select new ArrayValue(new IExpression[] { e1 }.Concat(eRest).ToArray())
-            );
+            from values in Parse
+                .Ref(() => ExpressionParser)
+                .DelimitedBy(Parse.Char(','))
+                .Contained(Parse.Char('('), Parse.Char(')'))
+            select new ArrayValue(values.ToArray());
 
         /// <summary>
         /// Our basic identifier, standard.
