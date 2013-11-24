@@ -119,7 +119,9 @@ namespace PlotLingoLibTest
             var exprS = r[0] as ExpressionStatement;
             Assert.IsInstanceOfType(exprS.Expression, typeof(MethodCallExpression), "Expression method");
             var mc = exprS.Expression as MethodCallExpression;
-            Assert.Inconclusive();
+            var expr = mc.ObjectExpression as ArrayValue;
+            Assert.IsNotNull(expr, "array expression");
+            Assert.AreEqual(2, expr.Length, "#of values in array");
         }
 
         [TestMethod]
