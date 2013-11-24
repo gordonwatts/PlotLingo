@@ -19,7 +19,7 @@ namespace PlotLingoLib
             from values in Parse
                 .Ref(() => ExpressionParser)
                 .DelimitedBy(Parse.Char(','))
-                .Contained(Parse.Char('('), Parse.Char(')'))
+                .Contained(Parse.Char('['), Parse.Char(']'))
             select new ArrayValue(values.ToArray());
 
         /// <summary>

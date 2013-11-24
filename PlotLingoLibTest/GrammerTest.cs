@@ -71,7 +71,7 @@ namespace PlotLingoLibTest
         [TestMethod]
         public void TestArrayExpressionParse()
         {
-            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("(\"hi\", \"there\");");
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("[\"hi\", \"there\"];");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
@@ -84,7 +84,7 @@ namespace PlotLingoLibTest
         [TestMethod]
         public void TestArrayMethodCall()
         {
-            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("(\"hi\", \"there\").plot();");
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("[\"hi\", \"there\"].plot();");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
