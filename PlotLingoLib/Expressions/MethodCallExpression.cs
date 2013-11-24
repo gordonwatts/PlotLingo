@@ -15,7 +15,7 @@ namespace PlotLingoLib.Expressions
         /// <summary>
         /// The target object
         /// </summary>
-        public string Object { get; set; }
+        public IExpression ObjectExpression { get; set; }
 
         /// <summary>
         /// The name of the method we are to call along with its arguments.
@@ -29,9 +29,9 @@ namespace PlotLingoLib.Expressions
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="func"></param>
-        public MethodCallExpression(string obj, FunctionExpression func)
+        public MethodCallExpression(IExpression obj, FunctionExpression func)
         {
-            Object = obj;
+            ObjectExpression = obj;
             FunctionCall = func;
         }
 
@@ -53,7 +53,7 @@ namespace PlotLingoLib.Expressions
             var goodEval = _evaluators.Select(e => e.Evaluate(c, this)).Where(r => r.Item1).FirstOrDefault();
             if (goodEval != null)
                 return goodEval.Item2;
-            throw new InvalidOperationException(string.Format("Don't know how to call the function {0} on the object {1}.", FunctionCall.ToString(), Object));
+            throw new InvalidOperationException(string.Format("Don't know how to call the function {0} on the object {1}.", FunctionCall.ToString(), ObjectExpression.ToString()));
         }
     }
 }

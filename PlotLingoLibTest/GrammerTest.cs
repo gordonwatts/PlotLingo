@@ -13,7 +13,7 @@ namespace PlotLingoLibTest
         [TestMethod]
         public void TestFunctionCall()
         {
-            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a = file(\"hi\")");
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a = file(\"hi\");");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(AssignmentStatement));
@@ -23,7 +23,7 @@ namespace PlotLingoLibTest
         [TestMethod]
         public void TestAssignmentByStringNoWS()
         {
-            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a =\"hi\"");
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a =\"hi\";");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(AssignmentStatement));
@@ -37,7 +37,7 @@ namespace PlotLingoLibTest
         [TestMethod]
         public void TestAssignmentByStringWS()
         {
-            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a = \"hi\"");
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a = \"hi\";");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(AssignmentStatement));
@@ -47,7 +47,7 @@ namespace PlotLingoLibTest
         [TestMethod]
         public void TestExpressionStatement()
         {
-            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("\"hi\"");
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("\"hi\";");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement));
@@ -56,20 +56,22 @@ namespace PlotLingoLibTest
         [TestMethod]
         public void TestMethodStatement()
         {
-            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p.plot(\"hi\")");
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p.plot(\"hi\");");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
             var exprS = r[0] as ExpressionStatement;
             Assert.IsInstanceOfType(exprS.Expression, typeof(MethodCallExpression), "Expression method");
             var mc = exprS.Expression as MethodCallExpression;
-            Assert.AreEqual("p", mc.Object);
+            Assert.IsInstanceOfType(mc.ObjectExpression, typeof(VariableValue), "object name");
+            var ve = mc.ObjectExpression as VariableValue;
+            Assert.AreEqual("p", ve.VariableName, "object name");
         }
 
         [TestMethod]
         public void TestArrayExpressionParse()
         {
-            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("(\"hi\", \"there\")");
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("(\"hi\", \"there\");");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
@@ -82,20 +84,20 @@ namespace PlotLingoLibTest
         [TestMethod]
         public void TestArrayMethodCall()
         {
-            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("(\"hi\", \"there\").plot()");
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("(\"hi\", \"there\").plot();");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
             var exprS = r[0] as ExpressionStatement;
             Assert.IsInstanceOfType(exprS.Expression, typeof(MethodCallExpression), "Expression method");
             var mc = exprS.Expression as MethodCallExpression;
-            Assert.AreEqual("p", mc.Object);
+            Assert.Inconclusive();
         }
 
         [TestMethod]
         public void TestValueAsExpression()
         {
-            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p");
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p;");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");

@@ -21,7 +21,7 @@ namespace PlotLingoLib.MethodEvaluators
         public Tuple<bool, object> Evaluate(Context c, MethodCallExpression expr)
         {
             // Make sure we can get the object.
-            var obj = c.GetVariableValue(expr.Object);
+            var obj = expr.ObjectExpression.Evaluate(c);
             var t = obj.GetType();
             
             // For a function call, all arguments are evaluated ahead of time.

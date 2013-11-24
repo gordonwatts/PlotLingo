@@ -13,6 +13,18 @@ namespace PlotLingoLib
     internal static class Grammar
     {
         /// <summary>
+        /// Parse an array of expressions
+        /// </summary>
+        public static readonly Parser<ArrayValue> ArrayValueParser =
+            (
+            from openp in Parse.Char('(')
+            from e1 in ExpressionParser
+            from eRest in Parse.Char(',').Then(_ => ExpressionParser).Many()
+            from closep in Parse.Char(')')
+            select new ArrayValue(new IExpression[] { e1 }.Concat(eRest).ToArray())
+            );
+
+        /// <summary>
         /// Our basic identifier, standard.
         /// </summary>
         private static readonly Parser<string> IdentifierParser = (Parse.LetterOrDigit.Or(Parse.Char('_')).Or(Parse.Char('-'))).AtLeastOnce().Text().Token().Named("Identifier");
@@ -44,33 +56,9 @@ namespace PlotLingoLib
             );
 
         /// <summary>
-        /// Parse an array of expressions
-        /// </summary>
-        public static readonly Parser<ArrayValue> ArrayValueParser =
-            (
-            from openp in Parse.Char('(')
-            from e1 in ExpressionParser
-            from eRest in Parse.Char(',').Then(_ => ExpressionParser).Many()
-            from closep in Parse.Char(')')
-            select new ArrayValue(new IExpression[]{e1}.Concat(eRest).ToArray())
-            );
-
-        /// <summary>
         /// Parse a value (like a number or a string).
         /// </summary>
-        private static readonly Parser<IExpression> ValueExpressionParser =
-            (
-            from v in StringValueParser
-            select v
-            );
-
-        private static readonly Parser<IExpression> MethodExpressionParser =
-            (
-            from obj in VariableNameParser
-            from dot in Parse.Char('.')
-            from func in FunctionExpressionParser
-            select new MethodCallExpression(obj, func)
-            ).Named("Method Call");
+        private static readonly Parser<IExpression> ValueExpressionParser = StringValueParser;
 
         /// <summary>
         /// Parser that returns a function.
@@ -92,6 +80,28 @@ namespace PlotLingoLib
             from rest in Parse.Char(',').Then(_ => ExpressionParser).Many()
             from closep in Parse.Char(')')
             select new IExpression[] { arg1 }.Concat(rest).ToArray()
+            ).Named("Argument List");
+
+        /// <summary>
+        /// Parse a method call.
+        /// </summary>
+        private static readonly Parser<IExpression> MethodExpressionParser =
+            (
+            from obj in Parse.Ref(() => ExpressionParser)
+            from dot in Parse.Char('.')
+            from func in FunctionExpressionParser
+            select new MethodCallExpression(obj, func)
+            ).Named("Method Call");
+
+        /// <summary>
+        /// Parse a simple term expression.
+        /// </summary>
+        private static readonly Parser<IExpression> TermParser =
+            (
+                from e in VariableValueParser
+                .Or(ValueExpressionParser)
+                .Or(FunctionExpressionParser)
+                select e
             );
 
         /// <summary>
@@ -100,8 +110,8 @@ namespace PlotLingoLib
         private static readonly Parser<IExpression> ExpressionParser =
             (
             from e in FunctionExpressionParser
-                .Or(MethodExpressionParser)
                 .Or(ValueExpressionParser)
+                //.Or(MethodExpressionParser)
                 .Or(ArrayValueParser)
                 .Or(VariableValueParser)
             select e
@@ -132,7 +142,9 @@ namespace PlotLingoLib
         /// </summary>
         private static readonly Parser<IStatement> StatementParser =
             (
-                from r in AssignmentStatementParser.Or(ExpressionStatementParser)
+                from r in AssignmentStatementParser
+                    .Or(ExpressionStatementParser)
+                from sc in Parse.Char(';')
                 select r
             ).Named("Statement List");
 

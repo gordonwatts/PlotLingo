@@ -16,7 +16,7 @@ namespace PlotLingoLibTest.Expressions
         {
             var ctx = new Context();
             ctx.SetVariableValue("p", new testClass());
-            var mc = new MethodCallExpression("p", new FunctionExpression("CallNoArgsBogus", new IExpression[] { }));
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallNoArgsBogus", new IExpression[] { }));
             var r = mc.Evaluate(ctx);
             Assert.AreEqual(5, r);
         }
@@ -29,7 +29,7 @@ namespace PlotLingoLibTest.Expressions
         {
             var ctx = new Context();
             ctx.SetVariableValue("p", new testClass());
-            var mc = new MethodCallExpression("p", new FunctionExpression("CallNoArgs", new IExpression[] { }));
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallNoArgs", new IExpression[] { }));
             var r = mc.Evaluate(ctx);
             Assert.AreEqual(5, r);
         }
@@ -40,7 +40,7 @@ namespace PlotLingoLibTest.Expressions
             var ctx = new Context();
             ctx.SetVariableValue("p", new testClass());
             var s = new StringValue("length");
-            var mc = new MethodCallExpression("p", new FunctionExpression("CallOneStringArg", new IExpression[] { s }));
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallOneStringArg", new IExpression[] { s }));
             var r = mc.Evaluate(ctx);
             Assert.AreEqual(6, r);
         }
@@ -54,7 +54,7 @@ namespace PlotLingoLibTest.Expressions
             var ctx = new Context();
             ctx.SetVariableValue("p", new testClass());
             var s = new MyStringExpression();
-            var mc = new MethodCallExpression("p", new FunctionExpression("CallOneStringArg", new IExpression[] { s }));
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallOneStringArg", new IExpression[] { s }));
             var r = mc.Evaluate(ctx);
             Assert.AreEqual(1, s._evalCount, "# of times evaluated");
         }
