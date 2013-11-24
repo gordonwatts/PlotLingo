@@ -15,8 +15,12 @@ namespace PlotLingoLib.Statements
         /// <summary>
         /// Expression this statement represents
         /// </summary>
-        public IExpression Expression {get;set;}
+        public IExpression Expression {get; private set;}
 
+        /// <summary>
+        /// Initialize an expression statement.
+        /// </summary>
+        /// <param name="expr"></param>
         public ExpressionStatement(IExpression expr)
         {
             Expression = expr;
@@ -29,6 +33,15 @@ namespace PlotLingoLib.Statements
         public void Evaluate(Context c)
         {
             Expression.Evaluate(c);
+        }
+
+        /// <summary>
+        /// Pretty print for debugging and testing
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return string.Format("{0};", Expression.ToString());
         }
     }
 

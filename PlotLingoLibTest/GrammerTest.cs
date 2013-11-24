@@ -163,7 +163,6 @@ namespace PlotLingoLibTest
             Assert.AreEqual("+", vv.FunctionName, "operator name");
         }
 
-
         [TestMethod]
         public void TestSubtractOperator()
         {
@@ -176,7 +175,27 @@ namespace PlotLingoLibTest
             var vv = exprS.Expression as FunctionExpression;
             Assert.AreEqual("-", vv.FunctionName, "operator name");
         }
-        
+
+        [TestMethod]
+        public void TestMultOperator()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a*b;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("*(a,b);", r[0].ToString(), "actual expression");
+        }
+
+        [TestMethod]
+        public void TestDivideOperator()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a/b;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("/(a,b);", r[0].ToString(), "actual expression");
+        }
+
         [TestMethod]
         public void TestAdd2Operator()
         {
@@ -184,17 +203,37 @@ namespace PlotLingoLibTest
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
-            var exprS = r[0] as ExpressionStatement;
-            Assert.IsInstanceOfType(exprS.Expression, typeof(FunctionExpression), "add operator");
-            var vv = exprS.Expression as FunctionExpression;
-            Assert.AreEqual("+", vv.FunctionName, "operator name");
-            Assert.AreEqual("+(+(a,b),c)", vv.ToString(), "Result of the expression");
+            Assert.AreEqual("+(+(a,b),c);", r[0].ToString(), "Result of the expression");
         }
 
         [TestMethod]
-        public void TestAddMultPrecedence()
+        public void TestAddMultPrecedence1()
         {
-            Assert.Inconclusive();
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a+b*c;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("+(a,*(b,c));", r[0].ToString(), "Result of the expression");
+        }
+
+        [TestMethod]
+        public void TestAddMultPrecedence2()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a*b+c;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("+(*(a,b),c);", r[0].ToString(), "Result of the expression");
+        }
+
+        [TestMethod]
+        public void TestAddMultPrecedence3()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a+b*c*d;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("+(a,*(*(b,c),d));", r[0].ToString(), "Result of the expression");
         }
     }
 }

@@ -4,6 +4,7 @@ using PlotLingoLib.Expressions.Values;
 using PlotLingoLib.Statements;
 using Sprache;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace PlotLingoLib
@@ -70,15 +71,6 @@ namespace PlotLingoLib
             );
 
         /// <summary>
-        /// Do the add and subtract expressions
-        /// </summary>
-        public static readonly Parser<IExpression> OperatorExpressionParser =
-            from e1 in Parse.Ref(() => ExpressionParser)
-            from o in Parse.Char('+').Or(Parse.Char('-'))
-            from e2 in Parse.Ref(() => ExpressionParser)
-            select new FunctionExpression(o.ToString(), new IExpression[] { e1, e2 });
-
-        /// <summary>
         /// Parse an argument list that goes to a function or similar.
         /// </summary>
         private static readonly Parser<IExpression[]> ArgumentListParser =
@@ -123,7 +115,7 @@ namespace PlotLingoLib
         /// Find an operator/term pairing
         /// </summary>
         private static readonly Parser<Tuple<string, IExpression>> OperatorTermParser =
-            from op in Parse.Char('+').Or(Parse.Char('-'))
+            from op in Parse.Char('+').Or(Parse.Char('-')).Or(Parse.Char('*')).Or(Parse.Char('/'))
             from t in TermParser
             select Tuple.Create(op.ToString(), t);
 
@@ -135,6 +127,10 @@ namespace PlotLingoLib
             from rest in OperatorTermParser.Many()
             select BuildExpressionTree(t, rest);
 
+        /// <summary>
+        /// Parse the full expression at the top level. So we deal with things
+        /// like method invokation.
+        /// </summary>
         private static readonly Parser<IExpression> ExpressionParser =
             from e1 in ExpressionSubParser
             from alist in Parse.Char('.').Then(_ => FunctionExpressionParser).Optional()
@@ -155,20 +151,47 @@ namespace PlotLingoLib
         }
 
         /// <summary>
-        /// Build an expression from operators.
+        /// Build an expression from operators. * and / take precedence over +,-.
         /// </summary>
         /// <param name="t"></param>
         /// <param name="rest"></param>
         /// <returns></returns>
-        private static IExpression BuildExpressionTree(IExpression t, System.Collections.Generic.IEnumerable<Tuple<string, IExpression>> rest)
+        private static IExpression BuildExpressionTree(IExpression t, IEnumerable<Tuple<string, IExpression>> rest)
         {
-            var lastExpr = t;
-            foreach (var r in rest)
+            // Take care of the simple case.
+            List<Tuple<string, IExpression>> lst = new List<Tuple<string, IExpression>>() { Tuple.Create("", t) };
+            lst.AddRange(rest);
+            if (lst.Count == 1)
+                return t;
+
+            // Scan the list, looking for the high precedence operators and replacing them with a new expression
+            int index = 0;
+            while (index < lst.Count)
             {
-                var f = new FunctionExpression(r.Item1, new IExpression[] { lastExpr, r.Item2 });
-                lastExpr = f;
+                var item = lst[index];
+                if (item.Item1 == "/" || item.Item1 == "*")
+                {
+                    var itemLast = lst[index - 1];
+                    var op = new FunctionExpression(item.Item1.ToString(), new IExpression[] { itemLast.Item2, item.Item2 });
+                    lst[index - 1] = new Tuple<string, IExpression>(itemLast.Item1, op);
+                    lst.Remove(item);
+                    index = index - 1;
+                }
+                else
+                {
+                    index = index + 1;
+                }
             }
-            return lastExpr;
+
+            // Next, just combine them all
+
+            var lastexpr = lst[0].Item2;
+            foreach (var item in lst.Skip(1))
+            {
+                lastexpr = new FunctionExpression(item.Item1, new IExpression[] { lastexpr, item.Item2 });
+            }
+
+            return lastexpr;
         }
 
         
