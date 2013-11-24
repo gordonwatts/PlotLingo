@@ -18,7 +18,7 @@ namespace PlotLingoLib
         public static readonly Parser<ArrayValue> ArrayValueParser =
             (
             from openp in Parse.Char('(')
-            from e1 in ExpressionParser
+            from e1 in Parse.Ref(() => ExpressionParser)
             from eRest in Parse.Char(',').Then(_ => ExpressionParser).Many()
             from closep in Parse.Char(')')
             select new ArrayValue(new IExpression[] { e1 }.Concat(eRest).ToArray())
@@ -76,7 +76,7 @@ namespace PlotLingoLib
         private static readonly Parser<IExpression[]> ArgumentListParser =
             (
             from openp in Parse.Char('(')
-            from arg1 in ExpressionParser
+            from arg1 in Parse.Ref(() => ExpressionParser)
             from rest in Parse.Char(',').Then(_ => ExpressionParser).Many()
             from closep in Parse.Char(')')
             select new IExpression[] { arg1 }.Concat(rest).ToArray()
@@ -124,7 +124,7 @@ namespace PlotLingoLib
             (
                 from nv in VariableNameParser
                 from eq in Parse.Char('=')
-                from expr in ExpressionParser
+                from expr in Parse.Ref(() => ExpressionParser)
                 select new AssignmentStatement(nv, expr)
             ).Named("Assignment Statement");
 
@@ -133,7 +133,7 @@ namespace PlotLingoLib
         /// </summary>
         private static readonly Parser<IStatement> ExpressionStatementParser =
             (
-                from expr in ExpressionParser
+                from expr in Parse.Ref(() => ExpressionParser)
                 select new ExpressionStatement(expr)
             ).Named("Expression Statement");
 
