@@ -3,6 +3,7 @@ using PlotLingoLib.Expressions.Functions;
 using PlotLingoLib.Expressions.Values;
 using PlotLingoLib.Statements;
 using Sprache;
+using System;
 using System.Linq;
 
 namespace PlotLingoLib
@@ -18,14 +19,14 @@ namespace PlotLingoLib
         public static readonly Parser<ArrayValue> ArrayValueParser =
             from values in Parse
                 .Ref(() => ExpressionParser)
-                .DelimitedBy(Parse.Char(','))
+                .DelimitedBy(Parse.Char(',')).Optional()
                 .Contained(Parse.Char('['), Parse.Char(']'))
-            select new ArrayValue(values.ToArray());
+            select new ArrayValue(values.IsEmpty ? new IExpression[]{} : values.Get().ToArray());
 
         /// <summary>
         /// Our basic identifier, standard.
         /// </summary>
-        private static readonly Parser<string> IdentifierParser = (Parse.LetterOrDigit.Or(Parse.Char('_')).Or(Parse.Char('-'))).AtLeastOnce().Text().Token().Named("Identifier");
+        private static readonly Parser<string> IdentifierParser = (Parse.LetterOrDigit.Or(Parse.Char('_'))).AtLeastOnce().Text().Token().Named("Identifier");
 
         /// <summary>
         /// A variable name can be any identifier.
@@ -69,16 +70,23 @@ namespace PlotLingoLib
             );
 
         /// <summary>
+        /// Do the add and subtract expressions
+        /// </summary>
+        public static readonly Parser<IExpression> OperatorExpressionParser =
+            from e1 in Parse.Ref(() => ExpressionParser)
+            from o in Parse.Char('+').Or(Parse.Char('-'))
+            from e2 in Parse.Ref(() => ExpressionParser)
+            select new FunctionExpression(o.ToString(), new IExpression[] { e1, e2 });
+
+        /// <summary>
         /// Parse an argument list that goes to a function or similar.
         /// </summary>
         private static readonly Parser<IExpression[]> ArgumentListParser =
-            (
-            from openp in Parse.Char('(')
-            from arg1 in Parse.Ref(() => ExpressionParser)
-            from rest in Parse.Char(',').Then(_ => ExpressionParser).Many()
-            from closep in Parse.Char(')')
-            select new IExpression[] { arg1 }.Concat(rest).ToArray()
-            ).Named("Argument List");
+            from values in Parse
+                .Ref(() => ExpressionParser)
+                .DelimitedBy(Parse.Char(',')).Optional()
+                .Contained(Parse.Char('('), Parse.Char(')'))
+            select values.IsEmpty ? new IExpression[] {} : values.Get().ToArray();
 
         /// <summary>
         /// Parse a method call.
@@ -92,17 +100,6 @@ namespace PlotLingoLib
             ).Named("Method Call");
 
         /// <summary>
-        /// Parse a simple term expression.
-        /// </summary>
-        private static readonly Parser<IExpression> TermParser =
-            (
-                from e in VariableValueParser
-                .Or(ValueExpressionParser)
-                .Or(FunctionExpressionParser)
-                select e
-            );
-
-        /// <summary>
         /// Parse an expression surrounded by a "(".
         /// </summary>
         private static readonly Parser<IExpression> GroupedExpressionParser =
@@ -111,6 +108,7 @@ namespace PlotLingoLib
                 .Contained(Parse.Char('('), Parse.Char(')'))
             select e;
 
+#if false
         /// <summary>
         /// Parse an expression. Could be a function, or... etc.
         /// </summary>
@@ -118,13 +116,78 @@ namespace PlotLingoLib
             (
             from e in FunctionExpressionParser
                 .Or(ValueExpressionParser)
-                //.Or(MethodExpressionParser)
+                .Or(MethodExpressionParser)
                 .Or(ArrayValueParser)
                 .Or(VariableValueParser)
                 .Or(GroupedExpressionParser)
+                .Or(OperatorExpressionParser)
             select e
             );
+#endif
+        /// <summary>
+        /// Parse the term for an expression
+        /// </summary>
+        private static readonly Parser<IExpression> TermParser =
+            from t in FunctionExpressionParser
+                .Or(ValueExpressionParser)
+                .Or(ArrayValueParser)
+                .Or(VariableValueParser)
+                .Or(GroupedExpressionParser)
+            select t;
 
+        /// <summary>
+        /// Find an operator/term pairing
+        /// </summary>
+        private static readonly Parser<Tuple<string, IExpression>> OperatorTermParser =
+            from op in Parse.Char('+').Or(Parse.Char('-'))
+            from t in TermParser
+            select Tuple.Create(op.ToString(), t);
+
+        /// <summary>
+        /// Top level expression parser
+        /// </summary>
+        private static readonly Parser<IExpression> ExpressionSubParser =
+            from t in TermParser
+            from rest in OperatorTermParser.Many()
+            select BuildExpressionTree(t, rest);
+
+        private static readonly Parser<IExpression> ExpressionParser =
+            from e1 in ExpressionSubParser
+            from alist in Parse.Char('.').Then(_ => FunctionExpressionParser).Optional()
+            select BuildMethodOrExpression(e1, alist);
+
+        /// <summary>
+        /// Build a method expression or regular expression.
+        /// </summary>
+        /// <param name="e1"></param>
+        /// <param name="alist"></param>
+        /// <returns></returns>
+        private static IExpression BuildMethodOrExpression(IExpression e1, IOption<FunctionExpression> alist)
+        {
+            if (alist.IsEmpty)
+                return e1;
+
+            return new MethodCallExpression(e1, alist.Get());
+        }
+
+        /// <summary>
+        /// Build an expression from operators.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="rest"></param>
+        /// <returns></returns>
+        private static IExpression BuildExpressionTree(IExpression t, System.Collections.Generic.IEnumerable<Tuple<string, IExpression>> rest)
+        {
+            var lastExpr = t;
+            foreach (var r in rest)
+            {
+                var f = new FunctionExpression(r.Item1, new IExpression[] { lastExpr, r.Item2 });
+                lastExpr = f;
+            }
+            return lastExpr;
+        }
+
+        
         /// <summary>
         /// Parse an assignment statement.
         /// </summary>

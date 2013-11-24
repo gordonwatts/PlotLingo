@@ -69,6 +69,21 @@ namespace PlotLingoLibTest
         }
 
         [TestMethod]
+        public void TestMethodNoArgStatement()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p.plot();");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(MethodCallExpression), "Expression method");
+            var mc = exprS.Expression as MethodCallExpression;
+            Assert.IsInstanceOfType(mc.ObjectExpression, typeof(VariableValue), "object name");
+            var ve = mc.ObjectExpression as VariableValue;
+            Assert.AreEqual("p", ve.VariableName, "object name");
+        }
+
+        [TestMethod]
         public void TestArrayExpressionParse()
         {
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("[\"hi\", \"there\"];");
@@ -79,6 +94,19 @@ namespace PlotLingoLibTest
             Assert.IsInstanceOfType(exprS.Expression, typeof(ArrayValue), "array method");
             var mc = exprS.Expression as ArrayValue;
             Assert.AreEqual(2, mc.Length, "# of values in the array");
+        }
+
+        [TestMethod]
+        public void TestEmptyArrayExpressionParse()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("[];");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(ArrayValue), "array method");
+            var mc = exprS.Expression as ArrayValue;
+            Assert.AreEqual(0, mc.Length, "# of values in the array");
         }
 
         [TestMethod]
@@ -118,6 +146,53 @@ namespace PlotLingoLibTest
             Assert.IsInstanceOfType(exprS.Expression, typeof(VariableValue), "Expression method");
             var vv = exprS.Expression as VariableValue;
             Assert.AreEqual("p", vv.VariableName, "var name");
+        }
+
+        [TestMethod]
+        public void TestAddOperator()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a+b;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(FunctionExpression), "add operator");
+            var vv = exprS.Expression as FunctionExpression;
+            Assert.AreEqual("+", vv.FunctionName, "operator name");
+        }
+
+
+        [TestMethod]
+        public void TestSubtractOperator()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a-b;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(FunctionExpression), "add operator");
+            var vv = exprS.Expression as FunctionExpression;
+            Assert.AreEqual("-", vv.FunctionName, "operator name");
+        }
+        
+        [TestMethod]
+        public void TestAdd2Operator()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a+b+c;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(FunctionExpression), "add operator");
+            var vv = exprS.Expression as FunctionExpression;
+            Assert.AreEqual("+", vv.FunctionName, "operator name");
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void TestAddMultPrecedence()
+        {
+            Assert.Inconclusive();
         }
     }
 }
