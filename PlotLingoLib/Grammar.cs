@@ -108,22 +108,6 @@ namespace PlotLingoLib
                 .Contained(Parse.Char('('), Parse.Char(')'))
             select e;
 
-#if false
-        /// <summary>
-        /// Parse an expression. Could be a function, or... etc.
-        /// </summary>
-        private static readonly Parser<IExpression> ExpressionParser =
-            (
-            from e in FunctionExpressionParser
-                .Or(ValueExpressionParser)
-                .Or(MethodExpressionParser)
-                .Or(ArrayValueParser)
-                .Or(VariableValueParser)
-                .Or(GroupedExpressionParser)
-                .Or(OperatorExpressionParser)
-            select e
-            );
-#endif
         /// <summary>
         /// Parse the term for an expression
         /// </summary>
