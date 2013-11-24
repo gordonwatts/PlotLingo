@@ -106,5 +106,18 @@ namespace PlotLingoLibTest
             var vv = exprS.Expression as VariableValue;
             Assert.AreEqual("p", vv.VariableName, "var name");
         }
+
+        [TestMethod]
+        public void TestGrouping()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("(p);");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(VariableValue), "Expression method");
+            var vv = exprS.Expression as VariableValue;
+            Assert.AreEqual("p", vv.VariableName, "var name");
+        }
     }
 }

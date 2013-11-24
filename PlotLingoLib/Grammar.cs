@@ -103,6 +103,15 @@ namespace PlotLingoLib
             );
 
         /// <summary>
+        /// Parse an expression surrounded by a "(".
+        /// </summary>
+        private static readonly Parser<IExpression> GroupedExpressionParser =
+            from e in Parse
+                .Ref(() => ExpressionParser)
+                .Contained(Parse.Char('('), Parse.Char(')'))
+            select e;
+
+        /// <summary>
         /// Parse an expression. Could be a function, or... etc.
         /// </summary>
         private static readonly Parser<IExpression> ExpressionParser =
@@ -112,6 +121,7 @@ namespace PlotLingoLib
                 //.Or(MethodExpressionParser)
                 .Or(ArrayValueParser)
                 .Or(VariableValueParser)
+                .Or(GroupedExpressionParser)
             select e
             );
 
