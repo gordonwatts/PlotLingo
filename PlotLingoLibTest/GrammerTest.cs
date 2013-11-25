@@ -124,6 +124,21 @@ namespace PlotLingoLibTest
             Assert.AreEqual(2, expr.Length, "#of values in array");
         }
 
+        [TestMethod]
+        public void TestExpressionWithPreceedingWhitespace()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("  [\"hi\", \"there\"].plot();");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(MethodCallExpression), "Expression method");
+            var mc = exprS.Expression as MethodCallExpression;
+            var expr = mc.ObjectExpression as ArrayValue;
+            Assert.IsNotNull(expr, "array expression");
+            Assert.AreEqual(2, expr.Length, "#of values in array");
+        }
+        
         /// <summary>
         /// Seen in the wild - variable names seem to cause problems..
         /// </summary>

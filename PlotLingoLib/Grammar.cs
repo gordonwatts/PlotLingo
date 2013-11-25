@@ -219,10 +219,10 @@ namespace PlotLingoLib
         /// </summary>
         private static readonly Parser<IStatement> StatementParser =
             (
+                from ws in Parse.WhiteSpace.Many()
                 from r in AssignmentStatementParser
                     .Or(ExpressionStatementParser)
                 from sc in Parse.Char(';')
-                from ws in Parse.WhiteSpace.Many()
                 select r
             ).Named("Statement List");
 
