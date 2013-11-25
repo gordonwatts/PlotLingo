@@ -14,16 +14,6 @@ namespace PlotLingoLib
     internal static class Grammar
     {
         /// <summary>
-        /// Parse an array of expressions
-        /// </summary>
-        public static readonly Parser<ArrayValue> ArrayValueParser =
-            from values in Parse
-                .Ref(() => ExpressionParser)
-                .DelimitedBy(Parse.Char(',')).Optional()
-                .Contained(Parse.Char('['), Parse.Char(']'))
-            select new ArrayValue(values.IsEmpty ? new IExpression[]{} : values.Get().ToArray());
-
-        /// <summary>
         /// Our basic identifier, standard.
         /// </summary>
         private static readonly Parser<string> IdentifierParser = (Parse.LetterOrDigit.Or(Parse.Char('_'))).AtLeastOnce().Text().Token().Named("Identifier");
@@ -32,6 +22,23 @@ namespace PlotLingoLib
         /// A variable name can be any identifier.
         /// </summary>
         private static readonly Parser<string> VariableNameParser = IdentifierParser;
+
+        /// <summary>
+        /// Take a string token, and parse it with all WS that is around.
+        /// </summary>
+        /// <param name="op"></param>
+        /// <returns></returns>
+        private static Parser<string> StringToken(string op)
+        {
+            return Parse.String(op).Token().Text();
+        }
+
+        /// <summary>
+        /// Single tokens
+        /// </summary>
+        private static readonly Parser<string> Equal = StringToken("=");
+        private static readonly Parser<string> Dot = StringToken(".");
+        private static readonly Parser<string> SemiColon = StringToken(";");
 
         /// <summary>
         /// Parse a string
@@ -58,6 +65,16 @@ namespace PlotLingoLib
         /// Parse a value (like a number or a string).
         /// </summary>
         private static readonly Parser<IExpression> ValueExpressionParser = StringValueParser;
+
+        /// <summary>
+        /// Parse an array of expressions
+        /// </summary>
+        public static readonly Parser<ArrayValue> ArrayValueParser =
+            from values in Parse
+                .Ref(() => ExpressionParser)
+                .DelimitedBy(Parse.Char(',')).Optional()
+                .Contained(Parse.Char('['), Parse.Char(']'))
+            select new ArrayValue(values.IsEmpty ? new IExpression[] { } : values.Get().ToArray());
 
         /// <summary>
         /// Parser that returns a function.
@@ -132,7 +149,7 @@ namespace PlotLingoLib
         /// </summary>
         private static readonly Parser<IExpression> ExpressionParser =
             from e1 in ExpressionSubParser
-            from alist in Parse.Char('.').Then(_ => FunctionExpressionParser).Optional()
+            from alist in Dot.Then(_ => FunctionExpressionParser).Optional()
             select BuildMethodOrExpression(e1, alist);
 
         /// <summary>
@@ -200,9 +217,7 @@ namespace PlotLingoLib
         private static readonly Parser<IStatement> AssignmentStatementParser =
             (
                 from nv in VariableNameParser
-                from ws1 in Parse.WhiteSpace.Many()
-                from eq in Parse.Char('=')
-                from ws2 in Parse.WhiteSpace.Many()
+                from eq in Equal
                 from expr in Parse.Ref(() => ExpressionParser)
                 select new AssignmentStatement(nv, expr)
             ).Named("Assignment Statement");
@@ -221,10 +236,9 @@ namespace PlotLingoLib
         /// </summary>
         private static readonly Parser<IStatement> StatementParser =
             (
-                from ws in Parse.WhiteSpace.Many()
                 from r in AssignmentStatementParser
                     .Or(ExpressionStatementParser)
-                from sc in Parse.Char(';')
+                from sc in SemiColon
                 select r
             ).Named("Statement List");
 
@@ -233,8 +247,8 @@ namespace PlotLingoLib
         /// </summary>
         public static readonly Parser<IStatement[]> ModuleParser =
         (
-            from statements in StatementParser.Many()
             from ws in Parse.WhiteSpace.Many()
+            from statements in StatementParser.Many()
             select statements.ToArray()
         ).Named("Module");
     }

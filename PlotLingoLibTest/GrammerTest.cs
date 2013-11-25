@@ -84,6 +84,15 @@ namespace PlotLingoLibTest
         }
 
         [TestMethod]
+        public void Test2ExpressionStatement()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("\"hi\";  p ;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(2, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement));
+        }
+
+        [TestMethod]
         public void TestMethodStatement()
         {
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p.plot(\"hi\");");
@@ -117,6 +126,21 @@ namespace PlotLingoLibTest
         public void TestMethodNoArgStatement()
         {
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p.plot();");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(MethodCallExpression), "Expression method");
+            var mc = exprS.Expression as MethodCallExpression;
+            Assert.IsInstanceOfType(mc.ObjectExpression, typeof(VariableValue), "object name");
+            var ve = mc.ObjectExpression as VariableValue;
+            Assert.AreEqual("p", ve.VariableName, "object name");
+        }
+
+        [TestMethod]
+        public void TestMethodDotWSStatement()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p . plot();");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
