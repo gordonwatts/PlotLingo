@@ -89,11 +89,9 @@ namespace PlotLingoLib
         /// Parser that returns a function.
         /// </summary>
         private static readonly Parser<FunctionExpression> FunctionExpressionParser =
-            (
             from fname in IdentifierParser
             from args in ArgumentListParser
-            select new FunctionExpression(fname, args)
-            );
+            select new FunctionExpression(fname, args);
 
         /// <summary>
         /// Parse an argument list that goes to a function or similar.
