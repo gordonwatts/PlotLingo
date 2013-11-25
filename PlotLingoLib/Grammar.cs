@@ -97,7 +97,7 @@ namespace PlotLingoLib
                 .Ref(() => ExpressionParser)
                 .DelimitedBy(Parse.Char(',')).Optional()
                 .Contained(Parse.Char('('), Parse.Char(')'))
-            select values.IsEmpty ? new IExpression[] {} : values.Get().ToArray();
+            select values.IsEmpty ? new IExpression[] { } : values.Get().ToArray();
 
         /// <summary>
         /// Parse a method call.
@@ -139,40 +139,37 @@ namespace PlotLingoLib
             select Tuple.Create(op.ToString(), t);
 
         /// <summary>
-        /// Top level expression parser
+        /// Parse the operator and the second term in a binary expression.
         /// </summary>
-        private static readonly Parser<IExpression> ExpressionSubParser =
-            from t in TermParser
-            from rest in OperatorTermParser.Many()
-            select BuildExpressionTree(t, rest);
-
-        /// <summary>
-        /// Parse the full expression at the top level. So we deal with things
-        /// like method invokation.
-        /// </summary>
-        private static readonly Parser<IExpression> ExpressionParser =
-            from e1 in ExpressionSubParser
-            from alist in Dot.Then(_ => FunctionExpressionParser).Many().Optional()
-            select BuildMethodOrExpression(e1, alist);
-
-        /// <summary>
-        /// Build a method expression or regular expression.
-        /// </summary>
-        /// <param name="e1"></param>
-        /// <param name="alist"></param>
+        /// <param name="firstTerm"></param>
         /// <returns></returns>
-        private static IExpression BuildMethodOrExpression(IExpression e1, IOption<IEnumerable<FunctionExpression>> alist)
-        {
-            if (alist.IsEmpty)
-                return e1;
+        private static Parser<Tuple<string, IExpression>> ParseBinaryOperator =
+            from op in BinaryOperators
+            from secondTerm in TermParser
+            select Tuple.Create(op, secondTerm);
 
-            var expr = e1;
-            foreach (var mcall in alist.Get())
-            {
-                expr = new MethodCallExpression(expr, mcall);
-            }
-            return expr;
-        }
+        /// <summary>
+        /// Parse the "." for a method invokation and the function-call look-alike for the method call.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        private static Parser<Tuple<string, IExpression>> ParseMethodInvoke =
+            from funcargs in Dot
+            from funcCall in FunctionExpressionParser
+            select Tuple.Create(funcargs, funcCall as IExpression);
+
+        /// <summary>
+        /// Parse the basic expressions, and their operators, one at a go.
+        /// </summary>
+        /// <remarks>
+        /// This parser is written like this because there is no left recursion implemented in Sprache.
+        /// So, we know we have some sort of expression, and then an operator. It could be "+" or it could be ".".
+        /// We have to alter how we do the parsing depending on which one it is.
+        /// </remarks>
+        private static readonly Parser<IExpression> ExpressionParser =
+            from t in TermParser
+            from alist in (ParseBinaryOperator.Or(ParseMethodInvoke)).Many().Optional()
+            select BuildExpressionTree(t, alist);
 
         /// <summary>
         /// Build an expression from operators. * and / take precedence over +,-.
@@ -180,23 +177,45 @@ namespace PlotLingoLib
         /// <param name="t"></param>
         /// <param name="rest"></param>
         /// <returns></returns>
-        private static IExpression BuildExpressionTree(IExpression t, IEnumerable<Tuple<string, IExpression>> rest)
+        private static IExpression BuildExpressionTree(IExpression t, IOption<IEnumerable<Tuple<string, IExpression>>> rest)
         {
-            // Take care of the simple case.
-            List<Tuple<string, IExpression>> lst = new List<Tuple<string, IExpression>>() { Tuple.Create("", t) };
-            lst.AddRange(rest);
-            if (lst.Count == 1)
+            // Put everything into a single list for later processing. And take care of the simplest case.
+            if (rest.IsEmpty)
                 return t;
+            List<Tuple<string, IExpression>> lst = new List<Tuple<string, IExpression>>() { Tuple.Create("", t) };
+            lst.AddRange(rest.Get());
 
-            // Scan the list, looking for the high precedence operators and replacing them with a new expression
+            // Look for each set of operators in turn.
+            CombineForOperators(lst, new string[] { "." }, (obj, opName, funcCall) => new MethodCallExpression(obj, funcCall as FunctionExpression));
+            CombineForOperators(lst, new string[] { "*", "/" }, (left, opName, right) => new FunctionExpression(opName, new IExpression[] { left, right }));
+
+            // Next, just combine the left overs. We could use Combine, but then we'd have to add funny logic to it.
+
+            var lastexpr = lst[0].Item2;
+            foreach (var item in lst.Skip(1))
+            {
+                lastexpr = new FunctionExpression(item.Item1, new IExpression[] { lastexpr, item.Item2 });
+            }
+
+            return lastexpr;
+        }
+
+        /// <summary>
+        /// Scan the list for the given operator list. Combine those in the proper way.
+        /// </summary>
+        /// <param name="lst">The list of operations, one at a time. string is the operator with the previous item.</param>
+        /// <param name="combineFunc">Function that takes left and right operands and an operator and returns a new expression</param>
+        /// <param name="operators">The list of operators we are going to run the combine on.</param>
+        private static void CombineForOperators(List<Tuple<string, IExpression>> lst, string[] operators, Func<IExpression, string, IExpression, IExpression> combineFunc)
+        {
             int index = 0;
             while (index < lst.Count)
             {
                 var item = lst[index];
-                if (item.Item1 == "/" || item.Item1 == "*")
+                if (operators.Contains(item.Item1))
                 {
                     var itemLast = lst[index - 1];
-                    var op = new FunctionExpression(item.Item1.ToString(), new IExpression[] { itemLast.Item2, item.Item2 });
+                    var op = combineFunc(itemLast.Item2, item.Item1, item.Item2);
                     lst[index - 1] = new Tuple<string, IExpression>(itemLast.Item1, op);
                     lst.Remove(item);
                     index = index - 1;
@@ -206,16 +225,6 @@ namespace PlotLingoLib
                     index = index + 1;
                 }
             }
-
-            // Next, just combine them all
-
-            var lastexpr = lst[0].Item2;
-            foreach (var item in lst.Skip(1))
-            {
-                lastexpr = new FunctionExpression(item.Item1, new IExpression[] { lastexpr, item.Item2 });
-            }
-
-            return lastexpr;
         }
 
         /// <summary>
