@@ -99,6 +99,21 @@ namespace PlotLingoLibTest
         }
 
         [TestMethod]
+        public void TestMethodChainStatement()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p.plot(\"hi\").Title();");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(MethodCallExpression), "Expression method");
+            var mc = exprS.Expression as MethodCallExpression;
+            Assert.IsInstanceOfType(mc.ObjectExpression, typeof(VariableValue), "object name");
+            var ve = mc.ObjectExpression as VariableValue;
+            Assert.AreEqual("p", ve.VariableName, "object name");
+        }
+
+        [TestMethod]
         public void TestMethodNoArgStatement()
         {
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p.plot();");
