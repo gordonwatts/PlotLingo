@@ -51,7 +51,13 @@ namespace PlotLingoLib.Expressions
         /// <returns></returns>
         public object Evaluate(Context c)
         {
-            var goodEval = _evaluators.Select(e => e.Evaluate(c, this)).Where(r => r.Item1).FirstOrDefault();
+            // All functions and the source object must evaluate correctly. Further, since we want to do the
+            // evaluate only once, we do it here, at the top.
+            var obj = ObjectExpression.Evaluate(c);
+            var args = FunctionCall.Arguments.Select(a => a.Evaluate(c)).ToArray();
+
+            // Find the first evaluator that can figure out what this is.
+            var goodEval = _evaluators.Select(e => e.Evaluate(c, obj, FunctionCall.FunctionName, args)).Where(r => r.Item1).FirstOrDefault();
             if (goodEval != null)
                 return goodEval.Item2;
             throw new InvalidOperationException(string.Format("Don't know how to call the function {0} on the object {1}.", FunctionCall.ToString(), ObjectExpression.ToString()));

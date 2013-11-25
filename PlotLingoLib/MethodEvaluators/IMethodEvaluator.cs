@@ -16,8 +16,11 @@ namespace PlotLingoLib.MethodEvaluators
         /// Evaluate the expression. Return true if we successfully did
         /// the evaluation.
         /// </summary>
-        /// <param name="expr"></param>
-        /// <returns></returns>
-        Tuple<bool, object> Evaluate(Context c, MethodCallExpression expr);
+        /// <param name="args">Evaluated arguments to the method</param>
+        /// <param name="c">Context for evaluation</param>
+        /// <param name="methodName">Name of the method</param>
+        /// <param name="obj">The object against which to call</param>
+        /// <returns>Value with true if the call succeeded, and then also the result</returns>
+        Tuple<bool, object> Evaluate(Context c, object obj, string methodName, object[] args);
     }
 }

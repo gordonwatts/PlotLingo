@@ -15,21 +15,15 @@ namespace PlotLingoLib.MethodEvaluators
         /// <summary>
         /// Attempt to evaluate the expression.
         /// </summary>
-        /// <param name="c"></param>
-        /// <param name="expr"></param>
         /// <returns></returns>
-        public Tuple<bool, object> Evaluate(Context c, Expressions.MethodCallExpression expr)
+        public Tuple<bool, object> Evaluate(Context c, object obj, string methodName, object[] arguments)
         {
-            // Make sure we can get the object.
-            var obj = expr.ObjectExpression.Evaluate(c);
-
-            // For a function call, all arguments are evaluated ahead of time.
-            var args = new object[] {obj}.Concat(expr.FunctionCall.Arguments.Select(a => a.Evaluate(c))).ToArray();
+            var args = new object[] { obj }.Concat(arguments).ToArray();
 
             // All functions that look like they might be right. Fail if we find too many, but if we can't find one, then
             // that means we should let some other method binder attempt.
             var funcs = (from fo in ExtensibilityControl.Get().FunctionObjects
-                         let m = fo.GetType().GetMethod(expr.FunctionCall.FunctionName, args.Select(v => v.GetType()).ToArray())
+                         let m = fo.GetType().GetMethod(methodName, args.Select(v => v.GetType()).ToArray())
                          where m != null
                          where m.IsStatic
                          select m).ToArray();
@@ -44,7 +38,7 @@ namespace PlotLingoLib.MethodEvaluators
                 {
                     bld.AppendFormat("{0}.{1}", item.DeclaringType.Name, item.Name);
                 }
-                throw new System.NotImplementedException(string.Format("Method '{0}' referenced - but has more than one possible resolution in types {1}", expr.FunctionCall.FunctionName, bld.ToString()));
+                throw new System.NotImplementedException(string.Format("Method '{0}' referenced - but has more than one possible resolution in types {1}", methodName, bld.ToString()));
             }
 
             // Now call the method.
