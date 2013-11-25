@@ -215,7 +215,6 @@ namespace PlotLingoLib
             return lastexpr;
         }
 
-        
         /// <summary>
         /// Parse an assignment statement.
         /// </summary>

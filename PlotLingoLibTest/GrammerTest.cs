@@ -118,6 +118,16 @@ namespace PlotLingoLibTest
         }
 
         [TestMethod]
+        public void TestMethodAddStatement()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p.plot() + p.plot();");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("+(p.plot(),p.plot());", r[0].ToString(), "Parsed item");
+        }
+
+        [TestMethod]
         public void TestMethodNoArgStatement()
         {
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p.plot();");
