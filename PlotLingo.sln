@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlotLingoConsole", "PlotLin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlotLingoCoreLib", "PlotLingoLib\PlotLingoCoreLib.csproj", "{507D5285-91FE-4E30-9989-B6A84B5C17CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlotLingoLibTest", "PlotLingoLibTest\PlotLingoLibTest.csproj", "{7D82FD16-A0B1-4A10-87D4-BC63FE52243F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlotLingoCoreLibTest", "PlotLingoLibTest\PlotLingoCoreLibTest.csproj", "{7D82FD16-A0B1-4A10-87D4-BC63FE52243F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlotLingoFunctionality", "PlotLingoFunctionality\PlotLingoFunctionality.csproj", "{65B6AB20-9B2B-4256-9646-10C6C84133A7}"
 EndProject
