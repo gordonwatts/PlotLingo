@@ -99,7 +99,7 @@ namespace PlotLingoLibTest.Expressions
         /// <summary>
         /// Test class to help with... testing.
         /// </summary>
-        public class testClass
+        private class testClass
         {
             public int CallNoArgs()
             {
@@ -119,7 +119,7 @@ namespace PlotLingoLibTest.Expressions
         }
 
         [Export(typeof(IFunctionObject))]
-        public class testClassOverrides : IFunctionObject
+        private class testClassOverrides : IFunctionObject
         {
             public static int CallOneStringToOverride(testClass a, string hi)
             {
