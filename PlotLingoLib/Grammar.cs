@@ -149,7 +149,7 @@ namespace PlotLingoLib
         /// </summary>
         private static readonly Parser<IExpression> ExpressionParser =
             from e1 in ExpressionSubParser
-            from alist in Dot.Then(_ => FunctionExpressionParser).Optional()
+            from alist in Dot.Then(_ => FunctionExpressionParser).Many().Optional()
             select BuildMethodOrExpression(e1, alist);
 
         /// <summary>
@@ -158,12 +158,17 @@ namespace PlotLingoLib
         /// <param name="e1"></param>
         /// <param name="alist"></param>
         /// <returns></returns>
-        private static IExpression BuildMethodOrExpression(IExpression e1, IOption<FunctionExpression> alist)
+        private static IExpression BuildMethodOrExpression(IExpression e1, IOption<IEnumerable<FunctionExpression>> alist)
         {
             if (alist.IsEmpty)
                 return e1;
 
-            return new MethodCallExpression(e1, alist.Get());
+            var expr = e1;
+            foreach (var mcall in alist.Get())
+            {
+                expr = new MethodCallExpression(expr, mcall);
+            }
+            return expr;
         }
 
         /// <summary>

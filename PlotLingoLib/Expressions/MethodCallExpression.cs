@@ -62,5 +62,14 @@ namespace PlotLingoLib.Expressions
                 return goodEval.Item2;
             throw new InvalidOperationException(string.Format("Don't know how to call the function {0} on the object {1}.", FunctionCall.ToString(), ObjectExpression.ToString()));
         }
+
+        /// <summary>
+        /// Pretty-print to help with debugging and testing.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return string.Format("{0}.{1}", ObjectExpression.ToString(), FunctionCall.ToString());
+        }
     }
 }

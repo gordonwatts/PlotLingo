@@ -34,5 +34,14 @@ namespace PlotLingoLib.Expressions.Values
         {
             return _content;
         }
+
+        /// <summary>
+        /// Pretty print for debugging and testing.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return string.Format("\"{0}\"",_content);
+        }
     }
 }
