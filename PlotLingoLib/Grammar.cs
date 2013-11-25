@@ -39,6 +39,15 @@ namespace PlotLingoLib
         private static readonly Parser<string> Equal = StringToken("=");
         private static readonly Parser<string> Dot = StringToken(".");
         private static readonly Parser<string> SemiColon = StringToken(";");
+        private static readonly Parser<string> Plus = StringToken("+");
+        private static readonly Parser<string> Minus = StringToken("-");
+        private static readonly Parser<string> Times = StringToken("*");
+        private static readonly Parser<string> Divide = StringToken("/");
+
+        /// <summary>
+        /// Binary operators supported by this simple language.
+        /// </summary>
+        private static readonly Parser<string> BinaryOperators = Plus.Or(Minus).Or(Times).Or(Divide);
 
         /// <summary>
         /// Parse a string
@@ -131,7 +140,7 @@ namespace PlotLingoLib
         /// Find an operator/term pairing
         /// </summary>
         private static readonly Parser<Tuple<string, IExpression>> OperatorTermParser =
-            from op in Parse.Char('+').Or(Parse.Char('-')).Or(Parse.Char('*')).Or(Parse.Char('/'))
+            from op in BinaryOperators
             from t in TermParser
             select Tuple.Create(op.ToString(), t);
 
