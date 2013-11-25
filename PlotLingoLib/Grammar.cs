@@ -69,7 +69,7 @@ namespace PlotLingoLib
         /// <summary>
         /// Parse an array of expressions
         /// </summary>
-        public static readonly Parser<ArrayValue> ArrayValueParser =
+        private static readonly Parser<ArrayValue> ArrayValueParser =
             from values in Parse
                 .Ref(() => ExpressionParser)
                 .DelimitedBy(Parse.Char(',')).Optional()
