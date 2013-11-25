@@ -71,6 +71,7 @@
       <HintPath>..\packages\Sprache.1.10.0.35\lib\net40\Sprache.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -89,6 +90,8 @@
     <Compile Include="Expressions\Values\ArrayValue.cs" />
     <Compile Include="Expressions\Values\StringValue.cs" />
     <Compile Include="Expressions\Values\VariableValue.cs" />
+    <Compile Include="ExtensibilityControl.cs" />
+    <Compile Include="IFunctionObject.cs" />
     <Compile Include="MethodEvaluators\DotNetMethodCall.cs" />
     <Compile Include="MethodEvaluators\IMethodEvaluator.cs" />
     <Compile Include="RunPlot.cs" />

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PlotLingoLib;
+using System;
+using System.ComponentModel.Composition;
 using System.IO;
 
 namespace PlotLingoFunctionality.Files
@@ -6,7 +8,8 @@ namespace PlotLingoFunctionality.Files
     /// <summary>
     /// Return an open file
     /// </summary>
-    class File
+    [Export(typeof(IFunctionObject))]
+    class File : IFunctionObject
     {
         public static object Execute(object[] arguments)
         {

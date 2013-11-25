@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,17 +37,37 @@ namespace PlotLingoLib.Expressions
         /// <summary>
         /// Evaluate a function.
         /// </summary>
-        /// <param name="c"></param>
-        /// <returns></returns>
+        /// <param name="c">Context to use while doing the execution</param>
+        /// <returns>Whatever the function returns</returns>
+        /// <remarks>Use the IFunctionObject to decorate any function you want to add</remarks>
         public object Evaluate(Context c)
         {
-#if false
-            if (FunctionName == "file")
+            // Force evaluation of all arguments.
+            var args = Arguments.Select(a => a.Evaluate(c)).ToArray();
+
+            // All functions that look like they might be right. Fail if we don't find them or find too many.
+            var funcs = (from fo in ExtensibilityControl.Get().FunctionObjects
+                        let m = fo.GetType().GetMethod(FunctionName, args.Select(v => v.GetType()).ToArray())
+                        where m != null
+                        where m.IsStatic
+                        select m).ToArray();
+
+            if (funcs.Length == 0)
+                throw new System.NotImplementedException(string.Format("Unknown function '{0}' referenced!", FunctionName));
+
+            if (funcs.Length > 1)
             {
-                return File.Execute(Arguments.Select(e => e.Evaluate(c)).ToArray());
-            }
-#endif
-            throw new System.NotImplementedException(string.Format("Unknown function '{0}' referenced!", FunctionName));
+                StringBuilder bld = new StringBuilder();
+                foreach (var item in funcs)
+                {
+                    bld.AppendFormat("{0}.{1}", item.DeclaringType.Name, item.Name);
+                }
+                throw new System.NotImplementedException(string.Format("Function '{0}' referenced - but has more than one possible resolution in types {1}", FunctionName, bld.ToString()));
+            } 
+
+            // Now call the method.
+            var r = funcs[0].Invoke(null, args);
+            return r;
         }
 
         /// <summary>
