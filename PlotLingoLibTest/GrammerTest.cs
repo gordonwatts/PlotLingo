@@ -124,6 +124,60 @@ namespace PlotLingoLibTest
             Assert.AreEqual(2, expr.Length, "#of values in array");
         }
 
+        /// <summary>
+        /// Seen in the wild - variable names seem to cause problems..
+        /// </summary>
+        [TestMethod]
+        public void TestArrayMethodCallWithVars()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("[p1,p2].plot();");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(MethodCallExpression), "Expression method");
+            var mc = exprS.Expression as MethodCallExpression;
+            var expr = mc.ObjectExpression as ArrayValue;
+            Assert.IsNotNull(expr, "array expression");
+            Assert.AreEqual(2, expr.Length, "#of values in array");
+        }
+
+        /// <summary>
+        /// Seen in the wild - array after somethign else seems to cause problems..
+        /// </summary>
+        [TestMethod]
+        public void TestArrayMethodCallAfterStatementWhitespace()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p1 = \"hi\"; [p1,p2].plot();");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(2, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[1], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[1] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(MethodCallExpression), "Expression method");
+            var mc = exprS.Expression as MethodCallExpression;
+            var expr = mc.ObjectExpression as ArrayValue;
+            Assert.IsNotNull(expr, "array expression");
+            Assert.AreEqual(2, expr.Length, "#of values in array");
+        }
+
+        /// <summary>
+        /// Seen in the wild - array after somethign else seems to cause problems..
+        /// </summary>
+        [TestMethod]
+        public void TestArrayMethodCallAfterStatementNoWhitespace()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p1 = \"hi\";[p1,p2].plot();");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(2, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[1], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[1] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(MethodCallExpression), "Expression method");
+            var mc = exprS.Expression as MethodCallExpression;
+            var expr = mc.ObjectExpression as ArrayValue;
+            Assert.IsNotNull(expr, "array expression");
+            Assert.AreEqual(2, expr.Length, "#of values in array");
+        }
+
         [TestMethod]
         public void TestValueAsExpression()
         {

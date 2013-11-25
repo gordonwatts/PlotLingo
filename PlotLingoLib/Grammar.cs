@@ -222,6 +222,7 @@ namespace PlotLingoLib
                 from r in AssignmentStatementParser
                     .Or(ExpressionStatementParser)
                 from sc in Parse.Char(';')
+                from ws in Parse.WhiteSpace.Many()
                 select r
             ).Named("Statement List");
 
