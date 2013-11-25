@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlotLingoConsole", "PlotLingoConsole\PlotLingoConsole.csproj", "{433C41E9-5B3D-4EEB-8E3B-3F3E014C2814}"
+	ProjectSection(ProjectDependencies) = postProject
+		{65B6AB20-9B2B-4256-9646-10C6C84133A7} = {65B6AB20-9B2B-4256-9646-10C6C84133A7}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlotLingoCoreLib", "PlotLingoLib\PlotLingoCoreLib.csproj", "{507D5285-91FE-4E30-9989-B6A84B5C17CF}"
 EndProject

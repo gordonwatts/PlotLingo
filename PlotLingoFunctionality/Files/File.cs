@@ -11,15 +11,9 @@ namespace PlotLingoFunctionality.Files
     [Export(typeof(IFunctionObject))]
     class File : IFunctionObject
     {
-        public static object Execute(object[] arguments)
+        public static object file(string fname)
         {
-            if (arguments.Length != 1)
-                throw new ArgumentException("arguments are only file path");
-
-            if (!(arguments[0] is string))
-                throw new ArgumentException("1st argument must be a string");
-
-            var fi = new FileInfo(arguments[0] as string);
+            var fi = new FileInfo(fname);
             if (!fi.Exists)
             {
                 throw new ArgumentException(string.Format("Unable to locate file {0}.", fi.FullName));

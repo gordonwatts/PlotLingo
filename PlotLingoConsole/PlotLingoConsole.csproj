@@ -69,6 +69,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PlotLingoFunctionality\PlotLingoFunctionality.csproj">
+      <Project>{65b6ab20-9b2b-4256-9646-10c6c84133a7}</Project>
+      <Name>PlotLingoFunctionality</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PlotLingoLib\PlotLingoCoreLib.csproj">
       <Project>{507d5285-91fe-4e30-9989-b6a84b5c17cf}</Project>
       <Name>PlotLingoCoreLib</Name>
