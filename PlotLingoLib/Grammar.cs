@@ -200,7 +200,9 @@ namespace PlotLingoLib
         private static readonly Parser<IStatement> AssignmentStatementParser =
             (
                 from nv in VariableNameParser
+                from ws1 in Parse.WhiteSpace.Many()
                 from eq in Parse.Char('=')
+                from ws2 in Parse.WhiteSpace.Many()
                 from expr in Parse.Ref(() => ExpressionParser)
                 select new AssignmentStatement(nv, expr)
             ).Named("Assignment Statement");

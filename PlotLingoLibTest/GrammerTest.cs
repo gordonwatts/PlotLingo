@@ -45,6 +45,36 @@ namespace PlotLingoLibTest
         }
 
         [TestMethod]
+        public void TestAssignmentWS1()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a = p1;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(AssignmentStatement));
+            var a = (AssignmentStatement)r[0];
+        }
+
+        [TestMethod]
+        public void TestAssignmentWS2()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a = [p1];");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(AssignmentStatement));
+            var a = (AssignmentStatement)r[0];
+        }
+
+        [TestMethod]
+        public void TestAssignmentNoWS2()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a=[p1];");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(AssignmentStatement));
+            var a = (AssignmentStatement)r[0];
+        }
+
+        [TestMethod]
         public void TestExpressionStatement()
         {
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("\"hi\";");
