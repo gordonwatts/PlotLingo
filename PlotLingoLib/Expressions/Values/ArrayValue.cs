@@ -9,7 +9,7 @@ namespace PlotLingoLib.Expressions.Values
     /// <summary>
     /// Represents an array of objects of some sort.
     /// </summary>
-    internal class ArrayValue : IExpression
+    internal class ArrayValue : IExpression, IArray
     {
         /// <summary>
         /// Contains a list of array values
@@ -27,7 +27,7 @@ namespace PlotLingoLib.Expressions.Values
         /// <returns></returns>
         public object Evaluate(Context c)
         {
-            throw new NotImplementedException();
+            return Values.Select(v => v.Evaluate(c)).ToArray();
         }
 
         /// <summary>

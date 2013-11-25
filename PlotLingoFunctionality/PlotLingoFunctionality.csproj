@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Files\File.cs" />
+    <Compile Include="Plots\PlotContext.cs" />
     <Compile Include="Plots\PlotMaker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
