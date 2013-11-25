@@ -53,22 +53,18 @@ namespace PlotLingoLib
         /// Parse a string
         /// </summary>
         private static readonly Parser<IExpression> StringValueParser =
-            (
-                from ws in Parse.WhiteSpace.Many()
-                from openp in Parse.Char('"')
-                from content in Parse.CharExcept('"').Many().Text()
-                from closep in Parse.Char('"')
-                select new StringValue(content)
-            );
+            from ws in Parse.WhiteSpace.Many()
+            from openp in Parse.Char('"')
+            from content in Parse.CharExcept('"').Many().Text()
+            from closep in Parse.Char('"')
+            select new StringValue(content);
 
         /// <summary>
         /// Parse an identifier that is a variable name.
         /// </summary>
         private static readonly Parser<VariableValue> VariableValueParser =
-            (
-                from name in VariableNameParser
-                select new VariableValue(name)
-            );
+            from name in VariableNameParser
+            select new VariableValue(name);
 
         /// <summary>
         /// Parse a value (like a number or a string).
