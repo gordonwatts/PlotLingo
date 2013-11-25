@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PlotLingoLib;
 using PlotLingoLib.Expressions;
 using PlotLingoLib.Expressions.Values;
+using System.ComponentModel.Composition;
 
 namespace PlotLingoLibTest.Expressions
 {
@@ -58,7 +59,29 @@ namespace PlotLingoLibTest.Expressions
             var r = mc.Evaluate(ctx);
             Assert.AreEqual(1, s._evalCount, "# of times evaluated");
         }
-        
+
+        [TestMethod]
+        public void TestExtensionMethod()
+        {
+            var ctx = new Context();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new StringValue("hi");
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallOneStringArgExt", new IExpression[] { s }));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual(4, r, "2*length of string");
+        }
+
+        [TestMethod]
+        public void TestExtensionMethodOverridesSameObjectGuy()
+        {
+            var ctx = new Context();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new StringValue("hi");
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallOneStringToOverride", new IExpression[] { s }));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual(4, r, "2*length of string");
+        }
+
         /// <summary>
         /// Small expression class that will hold onto a string and count the number of times
         /// it is evaluated.
@@ -73,11 +96,10 @@ namespace PlotLingoLibTest.Expressions
             }
         }
 
-
         /// <summary>
         /// Test class to help with... testing.
         /// </summary>
-        private class testClass
+        public class testClass
         {
             public int CallNoArgs()
             {
@@ -87,6 +109,26 @@ namespace PlotLingoLibTest.Expressions
             public int CallOneStringArg (string hi)
             {
                 return hi.Length;
+            }
+
+            // Will be overridden by below
+            public int CallOneStringToOverride(string hi)
+            {
+                return hi.Length;
+            }
+        }
+
+        [Export(typeof(IFunctionObject))]
+        public class testClassOverrides : IFunctionObject
+        {
+            public static int CallOneStringToOverride(testClass a, string hi)
+            {
+                return 2*hi.Length;
+            }
+
+            public static int CallOneStringArgExt (testClass a, string hi)
+            {
+                return 2*hi.Length;
             }
         }
     }

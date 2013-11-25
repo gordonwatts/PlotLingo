@@ -40,6 +40,7 @@ namespace PlotLingoLib.Expressions
         /// </summary>
         private List<IMethodEvaluator> _evaluators = new List<IMethodEvaluator>()
         {
+            new DotNetExtensionFunctionCaller(),
             new DotNetMethodCall()
         };
 
