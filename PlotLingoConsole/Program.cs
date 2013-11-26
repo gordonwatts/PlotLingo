@@ -18,14 +18,21 @@ namespace PlotLingoConsole
             }
 
             // Watch that file for modifications.
+            // Also keep track of last write time because we have to deal with "bounce" - many programs
+            // will trigger multiple events in the file system when they save the text (e.g. notepad, notpad++).
 
             var watcher = new FileSystemWatcher(fi.DirectoryName, string.Format("*{0}", fi.Extension));
             watcher.NotifyFilter = NotifyFilters.LastWrite;
+            var lastWriteTime = fi.LastWriteTime;
             watcher.Changed += (o, e) =>
             {
-                if (e.FullPath == fi.FullName)
+                if (e.FullPath == fi.FullName && lastWriteTime != File.GetLastWriteTime(fi.FullName))
                 {
+                    Console.WriteLine("Just got called");
                     Parse(fi);
+
+                    fi.Refresh();
+                    lastWriteTime = fi.LastWriteTime;
                 }
             };
             watcher.EnableRaisingEvents = true;
