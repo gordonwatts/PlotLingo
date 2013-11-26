@@ -21,10 +21,24 @@ namespace PlotLingoFunctionality.Plots
         }
 
         /// <summary>
+        /// Get the list of plots
+        /// </summary>
+        public ROOTNET.NTH1[] Plots { get { return _plots; } }
+
+        /// <summary>
         /// Contains the list of actions to be executed before an actual plot is made.
         /// These are run just before things are dumped out.
         /// </summary>
         private List<Action<PlotContext>> _prePlotHook = new List<Action<PlotContext>>();
+
+        /// <summary>
+        /// Add a pre-plot hook
+        /// </summary>
+        /// <param name="act"></param>
+        public void AddPreplotHook (Action<PlotContext> act)
+        {
+            _prePlotHook.Add(act);
+        }
 
         /// <summary>
         /// Keep track of our title.

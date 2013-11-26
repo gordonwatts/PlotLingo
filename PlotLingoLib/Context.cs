@@ -6,7 +6,7 @@ namespace PlotLingoLib
     /// <summary>
     /// Keep track of the execution context
     /// </summary>
-    class Context
+    public class Context
     {
         private Dictionary<string, object> _variables = new Dictionary<string, object>();
 
@@ -69,7 +69,7 @@ namespace PlotLingoLib
         /// </summary>
         /// <param name="functionName">Function to call. First argument is the object this was called against (or null if a function) and the second is the return value from the function or method. And returns the new value of the result object (which may be the same as the old one).</param>
         /// <param name="callback">Name of the method or function that should trigger this callback</param>
-        internal void AddPostCallHook (string functionName, Func<object, object, object> callback)
+        public void AddPostCallHook (string functionName, Func<object, object, object> callback)
         {
             if (!_postCallHooks.ContainsKey(functionName))
                 _postCallHooks[functionName] = new List<Func<object, object, object>>();

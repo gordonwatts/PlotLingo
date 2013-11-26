@@ -33,5 +33,31 @@ namespace PlotLingoFunctionality.Plots
         {
             return new PlotContext(new ROOTNET.NTH1[] { plot });
         }
+
+        /// <summary>
+        /// Add a context to turn off stat boxes
+        /// </summary>
+        public static void TurnOffStatBoxes(Context c)
+        {
+            c.AddPostCallHook("plot", (obj, result) =>
+            {
+                var pc = result as PlotContext;
+                if (pc == null)
+                    return result;
+
+                pc.AddPreplotHook(plotContex =>
+                {
+                    if (plotContex.Plots.Length > 1)
+                    {
+                        foreach (var p in plotContex.Plots)
+                        {
+                            p.Stats = false;
+                        }
+                    }
+                });
+
+                return result;
+            });
+        }
     }
 }
