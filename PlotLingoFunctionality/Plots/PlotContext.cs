@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace PlotLingoFunctionality.Plots
 {
-    public class PlotContext
+    public class PlotContext : IPlotScriptResult
     {
         /// <summary>
         /// The list of plots we are most insterested in. This, basically, preresents a gPad...
@@ -23,13 +20,74 @@ namespace PlotLingoFunctionality.Plots
         }
 
         /// <summary>
+        /// Keep track of our title.
+        /// </summary>
+        private string _title = null;
+
+        /// <summary>
+        /// Init the title if it hasn't been already.
+        /// </summary>
+        private void InitTitle()
+        {
+            if (_title == null)
+            {
+                if (this._plots == null || _plots.Length == 0)
+                {
+                    _title = "Plot";
+                }
+                else
+                {
+                    _title = _plots[0].Title;
+                }
+            }
+        }
+
+        /// <summary>
         /// Alter the title of the canvas.
         /// </summary>
         /// <param name="title"></param>
         /// <returns></returns>
-        public PlotContext Title (string title)
+        public PlotContext title(string title)
         {
+            _title = title;
             return this;
+        }
+
+        /// <summary>
+        /// Return the name of this script.
+        /// </summary>
+        public string Name
+        {
+            get { InitTitle(); return _title; }
+        }
+
+        /// <summary>
+        /// Save the plot to output. This is where we do the heavy lifting of generating a plot.
+        /// </summary>
+        /// <param name="filenameStub"></param>
+        /// <returns></returns>
+        public IEnumerable<FileInfo> Save(string filenameStub)
+        {
+            InitTitle();
+
+            // Initialize the canvas
+            var c = new ROOTNET.NTCanvas();
+            c.Title = _title;
+            if (_plots.Length > 0)
+                _plots[0].Title = _title;
+
+            // Plot everything.
+            var optS = "";
+            foreach (var p in _plots)
+            {
+                p.Draw(optS);
+                optS = "SAME";
+            }
+
+            // Save it
+            var fout = new FileInfo(string.Format("{0}.png", filenameStub));
+            c.SaveAs(fout.FullName);
+            return new FileInfo[] { fout };
         }
     }
 }

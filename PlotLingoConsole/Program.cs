@@ -1,4 +1,5 @@
-﻿using PlotLingoLib;
+﻿using PlotLingoFunctionality;
+using PlotLingoLib;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -52,7 +53,26 @@ namespace PlotLingoConsole
 
             var results = new List<object>();
             RunPlot.Eval(fi, new Action<object>[] { o => results.Add(o) });
+
+            // For each result, see if it can be reported or not.
+
             Console.WriteLine("There were {0} results.", results.Count);
+            int sequenceNumber = 0;
+            foreach (var r in results)
+            {
+                var pr = r as IPlotScriptResult;
+                if (pr != null)
+                {
+                    // Generate a filename for saving this data
+                    var outFNameStub = string.Format("{0}/{1}-{2}-{3}", fi.DirectoryName, Path.GetFileNameWithoutExtension(fi.Name), pr.Name, sequenceNumber);
+                    sequenceNumber++;
+                    var outputs = pr.Save(outFNameStub);
+                    foreach (var o in outputs)
+                    {
+                        Console.WriteLine("  Wrote {0}", o.Name);
+                    }
+                }
+            }
         }
     }
 }

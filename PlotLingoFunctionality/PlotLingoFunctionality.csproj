@@ -35,6 +35,15 @@
     <Reference Include="libCoreWrapper">
       <HintPath>..\packages\ROOTNET-Dynamic-v5.34.07.win32.vc10.2.6\lib\net40\libCoreWrapper.dll</HintPath>
     </Reference>
+    <Reference Include="libGpadWrapper">
+      <HintPath>..\packages\ROOTNET-Graphing-v5.34.07.win32.vc10.2.6\lib\net40\libGpadWrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="libGraf3dWrapper">
+      <HintPath>..\packages\ROOTNET-Graphing-v5.34.07.win32.vc10.2.6\lib\net40\libGraf3dWrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="libGrafWrapper">
+      <HintPath>..\packages\ROOTNET-Graphing-v5.34.07.win32.vc10.2.6\lib\net40\libGrafWrapper.dll</HintPath>
+    </Reference>
     <Reference Include="libHistWrapper">
       <HintPath>..\packages\ROOTNET-Core-v5.34.07.win32.vc10.2.6\lib\net40\libHistWrapper.dll</HintPath>
     </Reference>
@@ -64,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Files\File.cs" />
+    <Compile Include="IPlotScriptResult.cs" />
     <Compile Include="Plots\PlotContext.cs" />
     <Compile Include="Plots\PlotMaker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
