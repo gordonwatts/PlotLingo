@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace PlotLingoFunctionality.Plots
@@ -18,6 +19,12 @@ namespace PlotLingoFunctionality.Plots
         {
             this._plots = nTH1;
         }
+
+        /// <summary>
+        /// Contains the list of actions to be executed before an actual plot is made.
+        /// These are run just before things are dumped out.
+        /// </summary>
+        private List<Action<PlotContext>> _prePlotHook = new List<Action<PlotContext>>();
 
         /// <summary>
         /// Keep track of our title.
@@ -69,6 +76,12 @@ namespace PlotLingoFunctionality.Plots
         public IEnumerable<FileInfo> Save(string filenameStub)
         {
             InitTitle();
+
+            // Now, do the pre-plot hook
+            foreach (var act in _prePlotHook)
+            {
+                act(this);
+            }
 
             // Initialize the canvas
             var c = new ROOTNET.NTCanvas();
