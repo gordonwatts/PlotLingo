@@ -1,5 +1,6 @@
 ﻿using PlotLingoLib;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace PlotLingoConsole
@@ -40,8 +41,11 @@ namespace PlotLingoConsole
 
         private static void Parse(FileInfo fi)
         {
-            Console.WriteLine("Parsing...");
-            RunPlot.Eval(fi);
+            Console.WriteLine("Parsing & Executing...");
+
+            var results = new List<object>();
+            RunPlot.Eval(fi, new Action<object>[] { o => results.Add(o) });
+            Console.WriteLine("There were {0} results.", results.Count);
         }
     }
 }

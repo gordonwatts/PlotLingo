@@ -1,9 +1,4 @@
 ﻿using PlotLingoLib.Expressions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PlotLingoLib.Statements
 {
@@ -15,7 +10,7 @@ namespace PlotLingoLib.Statements
         /// <summary>
         /// Expression this statement represents
         /// </summary>
-        public IExpression Expression {get; private set;}
+        public IExpression Expression { get; private set; }
 
         /// <summary>
         /// Initialize an expression statement.
@@ -27,12 +22,13 @@ namespace PlotLingoLib.Statements
         }
 
         /// <summary>
-        /// We just evaluate the expression.
+        /// We just evaluate the expression. Report it to anyone that is interested.
         /// </summary>
         /// <param name="c"></param>
         public void Evaluate(Context c)
         {
-            Expression.Evaluate(c);
+            var r = Expression.Evaluate(c);
+            c.ReportExpressionStatementEvaluation(r);
         }
 
         /// <summary>

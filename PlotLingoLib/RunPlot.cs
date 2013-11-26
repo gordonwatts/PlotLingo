@@ -16,7 +16,7 @@ namespace PlotLingoLib
         /// Given a stream, read and plot as needed.
         /// </summary>
         /// <param name="reader"></param>
-        public static void Eval(StreamReader reader)
+        public static void Eval(StreamReader reader, IEnumerable<Action<object>> expressionEvaluationReporters = null)
         {
             var sb = new StringBuilder();
             foreach (var l in reader.ReadFromReader())
@@ -26,15 +26,27 @@ namespace PlotLingoLib
 
             try
             {
+                // Parse the string into an expression statement list.
                 var r = Grammar.ModuleParser.End().Parse(sb.ToString());
 
+                // For exvaluation, get the context setup correctly.
                 var c = new Context();
+                if (expressionEvaluationReporters != null)
+                {
+                    foreach (var a in expressionEvaluationReporters)
+                    {
+                        c.AddExpressionStatementEvaluationCallback(a);
+                    }
+                }
+
+                // Now evaluate each statement, one after the other.
                 foreach (var st in r)
                 {
                     st.Evaluate(c);
                 }
 
-                Console.WriteLine(r.Length);
+                // Some simple diagnostics
+                Console.WriteLine("Parsed and evaluated {0} statements.", r.Length);
             }
             catch (Exception e)
             {
@@ -46,19 +58,20 @@ namespace PlotLingoLib
         /// Evaluate the contents of a file
         /// </summary>
         /// <param name="fi"></param>
-        public static void Eval(this FileInfo fi)
+        public static void Eval(this FileInfo fi, IEnumerable<Action<object>> expressionEvaluationReporters = null)
         {
             for (int i = 0; i < 10; i++)
                 try
                 {
                     using (var reader = fi.OpenText())
                     {
-                        Eval(reader);
+                        Eval(reader, expressionEvaluationReporters);
                         return;
                     }
                 }
-                catch (IOException)
+                catch (IOException e)
                 {
+                    Console.WriteLine("Failed: {0}", e.Message);
                     i--;
                     Thread.Sleep(10);
                 }
