@@ -67,6 +67,9 @@ namespace PlotLingoLib.Expressions
 
             // Now call the method.
             var r = funcs[0].Invoke(null, args);
+
+            // Deal with post-hook call backs now
+            r = c.ExecutePostCallHook(FunctionName, null, r);
             return r;
         }
 

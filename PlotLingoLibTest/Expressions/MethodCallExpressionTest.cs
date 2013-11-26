@@ -46,6 +46,40 @@ namespace PlotLingoLibTest.Expressions
             Assert.AreEqual(6, r);
         }
 
+        [TestMethod]
+        public void TestMethodOnObjectPostHookCallback()
+        {
+            var tc = new testClass();
+            var ctx = new Context();
+            int count = 0;
+            ctx.AddPostCallHook("CallNoArgs", (obj, result) =>
+            {
+                count++;
+                Assert.AreEqual(tc, obj, "object that is passed in as central object");
+                Assert.AreEqual(5, result, "Result not passed correctly");
+                return result;
+            });
+            ctx.SetVariableValue("p", tc);
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallNoArgs", new IExpression[] { }));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual(1, count, "# of times the callback was called");
+        }
+
+        [TestMethod]
+        public void TestMethodCallbackAlterResult()
+        {
+            var tc = new testClass();
+            var ctx = new Context();
+            ctx.AddPostCallHook("CallNoArgs", (obj, result) =>
+            {
+                return 33;
+            });
+            ctx.SetVariableValue("p", tc);
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallNoArgs", new IExpression[] { }));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual(33, r, "Altered result");
+        }
+
         /// <summary>
         /// Make sure that arguments to an expression are evaluated only once.
         /// </summary>
@@ -80,6 +114,41 @@ namespace PlotLingoLibTest.Expressions
             var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallOneStringToOverride", new IExpression[] { s }));
             var r = mc.Evaluate(ctx);
             Assert.AreEqual(4, r, "2*length of string");
+        }
+
+        [TestMethod]
+        public void TestPostMethodHookCallInExtensionMethod()
+        {
+            var ctx = new Context();
+            var tc = new testClass();
+            ctx.SetVariableValue("p", tc);
+            int count = 0;
+            ctx.AddPostCallHook("CallOneStringArgExt", (obj, result) => {
+                count++;
+                Assert.AreEqual(tc, obj, "Object that is getting the callb ack");
+                Assert.AreEqual(4, result, "Result of callback");
+                return result;
+            });
+            var s = new StringValue("hi");
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallOneStringArgExt", new IExpression[] { s }));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual(1, count, "# of times the hook got called");
+        }
+
+        [TestMethod]
+        public void TestPostMethod2HookCallInExtensionMethod()
+        {
+            var ctx = new Context();
+            ctx.SetVariableValue("p", new testClass());
+            int count1 = 0;
+            int count2 = 0;
+            ctx.AddPostCallHook("CallOneStringArgExt", (o, obj) => count1++);
+            ctx.AddPostCallHook("CallOneStringArgExt", (o, obj) => count2++);
+            var s = new StringValue("hi");
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallOneStringArgExt", new IExpression[] { s }));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual(1, count1, "# of times the first hook got called");
+            Assert.AreEqual(1, count2, "# of times the second hook got called");
         }
 
         /// <summary>
