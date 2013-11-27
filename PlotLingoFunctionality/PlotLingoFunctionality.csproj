@@ -59,6 +59,9 @@
     <Reference Include="libThreadWrapper">
       <HintPath>..\packages\ROOTNET-Core-v5.34.07.win32.vc10.2.6\lib\net40\libThreadWrapper.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
@@ -73,6 +76,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Files\File.cs" />
+    <Compile Include="Files\TC\CredInfo.cs" />
+    <Compile Include="Files\TC\TCAccess.cs" />
+    <Compile Include="Files\TC\teamcityAccess.cs" />
     <Compile Include="IPlotScriptResult.cs" />
     <Compile Include="Plots\PlotContext.cs" />
     <Compile Include="Plots\PlotMaker.cs" />
