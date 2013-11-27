@@ -91,8 +91,9 @@ namespace PlotLingoFunctionality.Plots
         /// </summary>
         /// <param name="c"></param>
         /// <param name="sz"></param>
-        public static void ConfigureLineWidth(Context c, short sz)
+        public static void ConfigureLineWidth(Context c)
         {
+            short sz = 2;
             c.AddPostCallHook("plot", (obj, result) =>
             {
                 var pc = result as PlotContext;
