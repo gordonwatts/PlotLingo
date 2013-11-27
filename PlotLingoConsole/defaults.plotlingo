@@ -1,0 +1,9 @@
+﻿//
+// Default settings - this file gets loaded before other scripts.
+//
+
+// Some default plotting config
+
+NormalizePlots();
+TurnOffStatBoxes();
+ConfigureLineWidth();

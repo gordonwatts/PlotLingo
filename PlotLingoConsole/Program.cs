@@ -47,12 +47,24 @@ namespace PlotLingoConsole
             while (Console.Read() != 'q') ;
         }
 
+        /// <summary>
+        /// Run the parser over the default file and the plotting file.
+        /// </summary>
+        /// <param name="fi"></param>
         private static void Parse(FileInfo fi)
         {
+            // First, are there some default files we should be loading up?
+            var defaultFile = new FileInfo(string.Format("{0}/defaults.plotlingo", Path.GetDirectoryName(typeof(Program).Assembly.Location)));
+            List<FileInfo> files = new List<FileInfo>();
+            if (defaultFile.Exists)
+                files.Add(defaultFile);
+            files.Add(fi);
+
+            // Now, run it!
             Console.WriteLine("Parsing & Executing...");
 
             var results = new List<object>();
-            RunPlot.Eval(fi, new Action<object>[] { o => results.Add(o) });
+            RunPlot.Eval(files, new Action<object>[] { o => results.Add(o) });
 
             // For each result, see if it can be reported or not.
 

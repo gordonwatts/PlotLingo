@@ -24,10 +24,20 @@ namespace PlotLingoLib
                 sb.AppendLine(l);
             }
 
+            Eval(sb.ToString(), expressionEvaluationReporters);
+        }
+
+        /// <summary>
+        /// Run evaluation after we have read in everything.
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="expressionEvaluationReporters"></param>
+        private static void Eval(string sb, IEnumerable<Action<object>> expressionEvaluationReporters)
+        {
             try
             {
                 // Parse the string into an expression statement list.
-                var r = Grammar.ModuleParser.End().Parse(sb.ToString());
+                var r = Grammar.ModuleParser.End().Parse(sb);
 
                 // For exvaluation, get the context setup correctly.
                 var c = new Context();
@@ -52,6 +62,28 @@ namespace PlotLingoLib
             {
                 Console.WriteLine("Error parsing file: {0}", e.Message);
             }
+        }
+
+        /// <summary>
+        /// Evaulate a sequence of files.
+        /// </summary>
+        /// <param name="files"></param>
+        /// <param name="action"></param>
+        public static void Eval(this List<FileInfo> files, Action<object>[] actions = null)
+        {
+            var sb = new StringBuilder();
+            foreach (var f in files)
+            {
+                using (var r = f.OpenText())
+                {
+                    foreach (var l in r.ReadFromReader())
+                    {
+                        sb.AppendLine(l);
+                    }
+                }
+            }
+
+            Eval(sb.ToString(), actions);
         }
 
         /// <summary>
