@@ -35,6 +35,15 @@ namespace PlotLingoLibTest.Expressions
             var r = fo.Evaluate(c);
             Assert.AreEqual(1, count, "# of times the callback was called");
         }
+
+        [TestMethod]
+        public void TestFunctionCallWithContextNoArg()
+        {
+            var fo = new FunctionExpression("GetMeContext", new IExpression[] { });
+            var c = new Context();
+            var r = fo.Evaluate(c);
+            Assert.AreEqual(12, r, "function result");
+        }
     }
 
     /// <summary>
@@ -46,6 +55,13 @@ namespace PlotLingoLibTest.Expressions
         static public int GetMe (string arg)
         {
             return arg.Length;
+        }
+
+        static public int GetMeContext (Context c)
+        {
+            if (c == null)
+                return 0;
+            return 12;
         }
     }
 }

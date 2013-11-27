@@ -46,11 +46,14 @@ namespace PlotLingoLib.Expressions
             var args = Arguments.Select(a => a.Evaluate(c)).ToArray();
 
             // All functions that look like they might be right. Fail if we don't find them or find too many.
-            var funcs = (from fo in ExtensibilityControl.Get().FunctionObjects
-                        let m = fo.GetType().GetMethod(FunctionName, args.Select(v => v.GetType()).ToArray())
-                        where m != null
-                        where m.IsStatic
-                        select m).ToArray();
+            var funcs = FindFunctionToCall(args);
+
+            // If we couldn't find it, see if it is a special function - so put Context at the start.
+            if (funcs.Length == 0)
+            {
+                args = new object[] { c }.Concat(args).ToArray();
+                funcs = FindFunctionToCall(args);
+            }
 
             if (funcs.Length == 0)
                 throw new System.NotImplementedException(string.Format("Unknown function '{0}' referenced!", FunctionName));
@@ -71,6 +74,21 @@ namespace PlotLingoLib.Expressions
             // Deal with post-hook call backs now
             r = c.ExecutePostCallHook(FunctionName, null, r);
             return r;
+        }
+
+        /// <summary>
+        /// Search through all extensibility points for the function to call.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        private MethodInfo[] FindFunctionToCall(object[] args)
+        {
+            var funcs = (from fo in ExtensibilityControl.Get().FunctionObjects
+                         let m = fo.GetType().GetMethod(FunctionName, args.Select(v => v.GetType()).ToArray())
+                         where m != null
+                         where m.IsStatic
+                         select m).ToArray();
+            return funcs;
         }
 
         /// <summary>
