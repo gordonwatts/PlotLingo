@@ -97,6 +97,8 @@
     <Compile Include="Expressions\IExpression.cs" />
     <Compile Include="Expressions\MethodCallExpression.cs" />
     <Compile Include="Expressions\Values\ArrayValue.cs" />
+    <Compile Include="Expressions\Values\DoubleValue.cs" />
+    <Compile Include="Expressions\Values\IntegerValue.cs" />
     <Compile Include="Expressions\Values\StringValue.cs" />
     <Compile Include="Expressions\Values\VariableValue.cs" />
     <Compile Include="ExtensibilityControl.cs" />

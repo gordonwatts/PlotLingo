@@ -13,10 +13,15 @@ namespace PlotLingoLib
     /// </summary>
     internal static class Grammar
     {
+        private static readonly Parser<char> FirstIdentifierCharacters = Parse.Letter.Or(Parse.Char('_'));
+
         /// <summary>
         /// Our basic identifier, standard.
         /// </summary>
-        private static readonly Parser<string> IdentifierParser = (Parse.LetterOrDigit.Or(Parse.Char('_'))).AtLeastOnce().Text().Token().Named("Identifier");
+        private static readonly Parser<string> IdentifierParser =
+            (from fc in FirstIdentifierCharacters
+            from rest in (FirstIdentifierCharacters.Or(Parse.Digit)).Many().Text()
+            select fc.ToString() + rest).Token();
 
         /// <summary>
         /// A variable name can be any identifier.
@@ -60,6 +65,24 @@ namespace PlotLingoLib
             select new StringValue(content);
 
         /// <summary>
+        /// Parse an integer value
+        /// </summary>
+        private static readonly Parser<IExpression> IntegerValueParser =
+            from dg in Parse.Digit.AtLeastOnce().Text().Token()
+            select new IntegerValue(Int32.Parse(dg));
+
+        private static readonly Parser<IExpression> DoubleValueParser =
+            (from d in Dot from n in Parse.Number select new DoubleValue(double.Parse("." + n)))
+            .Or(from n1 in Parse.Number from d in Dot from n2 in Parse.Number select new DoubleValue(double.Parse(n1 + "." + n2)))
+            .Or(from n in Parse.Number from d in Dot select new DoubleValue(double.Parse(n)))
+            ;
+#if false
+            from fn in Parse.Digit.Many().Text().Token()
+            from dot in Dot
+            from sn in Parse.Digit.Many().Text().Token()
+            select new DoubleValue(double.Parse(fn + "." + sn));
+#endif
+        /// <summary>
         /// Parse an identifier that is a variable name.
         /// </summary>
         private static readonly Parser<VariableValue> VariableValueParser =
@@ -69,7 +92,10 @@ namespace PlotLingoLib
         /// <summary>
         /// Parse a value (like a number or a string).
         /// </summary>
-        private static readonly Parser<IExpression> ValueExpressionParser = StringValueParser;
+        private static readonly Parser<IExpression> ValueExpressionParser
+            = StringValueParser
+            .Or(DoubleValueParser)
+            .Or(IntegerValueParser);
 
         /// <summary>
         /// Parse an array of expressions

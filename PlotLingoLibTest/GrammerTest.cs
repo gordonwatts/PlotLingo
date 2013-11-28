@@ -158,7 +158,7 @@ namespace PlotLingoLibTest
         }
 
         [TestMethod]
-        public void TestArrayExpressionParse()
+        public void TestValueArray()
         {
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("[\"hi\", \"there\"];");
             Assert.IsNotNull(r);
@@ -171,7 +171,7 @@ namespace PlotLingoLibTest
         }
 
         [TestMethod]
-        public void TestEmptyArrayExpressionParse()
+        public void TestValueArrayEmpty()
         {
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("[];");
             Assert.IsNotNull(r);
@@ -281,6 +281,26 @@ namespace PlotLingoLibTest
         }
 
         [TestMethod]
+        public void TestValueWithUnderscoreAsExpression()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("_p;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(VariableValue), "Expression method");
+            var vv = exprS.Expression as VariableValue;
+            Assert.AreEqual("_p", vv.VariableName, "var name");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Sprache.ParseException))]
+        public void TestValueIllegalVariableName()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("5p;");
+        }
+
+        [TestMethod]
         public void TestGrouping()
         {
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("(p);");
@@ -377,6 +397,63 @@ namespace PlotLingoLibTest
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
             Assert.AreEqual("+(a,*(*(b,c),d));", r[0].ToString(), "Result of the expression");
+        }
+
+        [TestMethod]
+        public void TestValueInteger()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("5;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("5;", r[0].ToString(), "Result of the expression");
+        }
+
+        [TestMethod]
+        public void TestValueDouble()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("5.5;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("5.5;", r[0].ToString(), "Result of the expression");
+        }
+
+        [TestMethod]
+        public void TestValueDoubleNothingBehind()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("5.;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("5;", r[0].ToString(), "Result of the expression");
+        }
+
+        [TestMethod]
+        public void TestValueDoubleNothingAhead()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse(".5;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("0.5;", r[0].ToString(), "Result of the expression");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Sprache.ParseException))]
+        public void TestValueDoubleDotBad()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse(".;");
+        }
+
+        [TestMethod]
+        public void TestValueString()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("\"hi\";");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("\"hi\";", r[0].ToString(), "Result of the expression");
         }
     }
 }
