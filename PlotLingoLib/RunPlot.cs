@@ -71,19 +71,30 @@ namespace PlotLingoLib
         /// <param name="action"></param>
         public static void Eval(this List<FileInfo> files, Action<object>[] actions = null)
         {
-            var sb = new StringBuilder();
-            foreach (var f in files)
-            {
-                using (var r = f.OpenText())
+            for (int i = 0; i < 10; i++)
+                try
                 {
-                    foreach (var l in r.ReadFromReader())
+                    var sb = new StringBuilder();
+                    foreach (var f in files)
                     {
-                        sb.AppendLine(l);
+                        using (var r = f.OpenText())
+                        {
+                            foreach (var l in r.ReadFromReader())
+                            {
+                                sb.AppendLine(l);
+                            }
+                        }
                     }
-                }
-            }
 
-            Eval(sb.ToString(), actions);
+                    Eval(sb.ToString(), actions);
+                    return;
+                }
+                catch (IOException e)
+                {
+                    Console.WriteLine("Failed: {0}", e.Message);
+                    i--;
+                    Thread.Sleep(10);
+                }
         }
 
         /// <summary>
