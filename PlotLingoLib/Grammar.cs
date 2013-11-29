@@ -13,6 +13,9 @@ namespace PlotLingoLib
     /// </summary>
     internal static class Grammar
     {
+        /// <summary>
+        /// The legal characters for an identifier. Basically, everything but a digit.
+        /// </summary>
         private static readonly Parser<char> FirstIdentifierCharacters = Parse.Letter.Or(Parse.Char('_'));
 
         /// <summary>
@@ -91,12 +94,15 @@ namespace PlotLingoLib
             select new VariableValue(name);
 
         /// <summary>
-        /// Parse a single relation in a dictionary
+        /// Parse a single relation in a dictionary.
         /// </summary>
+        /// <remarks> Note that we want expressions that have no further dictionaries
+        /// deep down inside their definitions. So in this environment we use a special version of the
+        /// expression parser.</remarks>
         private static readonly Parser<Tuple<IExpression, IExpression>> DictionaryItemParser =
-            from name in Parse.Ref(() => ExpressionParser)
+            from name in Parse.Ref(() => ExpressionParserND)
             from rl in DictionaryRelation
-            from val in Parse.Ref(() => ExpressionParser)
+            from val in Parse.Ref(() => ExpressionParserND)
             select Tuple.Create(name, val);
 
         /// <summary>
@@ -107,7 +113,6 @@ namespace PlotLingoLib
             .DelimitedBy(Parse.Char(',')).Optional()
             .Contained(OpenBrace, CloseBrace)
             select values.IsEmpty ? new DictionaryValue() : new DictionaryValue(values.Get());
-
 
         /// <summary>
         /// Parse a value (like a number or a string).
@@ -190,8 +195,21 @@ namespace PlotLingoLib
         /// </summary>
         /// <param name="firstTerm"></param>
         /// <returns></returns>
+        /// <remarks>Must be kept in sync with ParseBinaryOperator</remarks>
         private static Parser<Tuple<string, IExpression>> ParseBinaryOperator =
             from op in BinaryOperators.Or(DictionaryRelation)
+            from secondTerm in TermParser
+            select Tuple.Create(op, secondTerm);
+
+        /// <summary>
+        /// Parse the operator and the second term in a binary expression. A single
+        /// dictionary item is not allowed inside.
+        /// </summary>
+        /// <param name="firstTerm"></param>
+        /// <returns></returns>
+        /// <remarks>Must be kept in sync with ParseBinaryOperatorND</remarks>
+        private static Parser<Tuple<string, IExpression>> ParseBinaryOperatorND =
+            from op in BinaryOperators
             from secondTerm in TermParser
             select Tuple.Create(op, secondTerm);
 
@@ -212,10 +230,21 @@ namespace PlotLingoLib
         /// This parser is written like this because there is no left recursion implemented in Sprache.
         /// So, we know we have some sort of expression, and then an operator. It could be "+" or it could be ".".
         /// We have to alter how we do the parsing depending on which one it is.
+        /// Must be kept in sync with ExpressionParserND
         /// </remarks>
         private static readonly Parser<IExpression> ExpressionParser =
             from t in TermParser
             from alist in (ParseBinaryOperator.Or(ParseMethodInvoke)).Many().Optional()
+            select BuildExpressionTree(t, alist);
+
+        /// <summary>
+        /// Parse the basic expression, and their operators, in on go. Do not allow for a free
+        /// standing single dictionary definitions.
+        /// </summary>
+        /// <remarks>Must be kept in sync with ExpressionParser</remarks>
+        private static readonly Parser<IExpression> ExpressionParserND =
+            from t in TermParser
+            from alist in (ParseBinaryOperatorND.Or(ParseMethodInvoke)).Many().Optional()
             select BuildExpressionTree(t, alist);
 
         /// <summary>
