@@ -53,6 +53,24 @@ namespace PlotLingoLibTest.Expressions.Values
             Assert.AreEqual(1, v1.Evaluated, "# of times evaluated");
         }
 
+        [TestMethod]
+        public void TestGenerationWithVariableNames()
+        {
+            var k1 = new VariableValue("Color");
+            var v1 = new IntegerValue(1);
+
+            var allvals = new Tuple<IExpression, IExpression>[] {
+                new Tuple<IExpression, IExpression>(k1, v1),
+            };
+
+            var dv = new DictionaryValue(allvals);
+            var c = new Context();
+            var o = dv.Evaluate(c);
+
+            var od = o as IDictionary<object, object>;
+            Assert.AreEqual(1, od["Color"], "value of 1");
+        }
+
         /// <summary>
         /// Record the # of times we get called to evaluate things.
         /// </summary>

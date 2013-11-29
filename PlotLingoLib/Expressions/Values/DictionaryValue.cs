@@ -33,6 +33,7 @@ namespace PlotLingoLib.Expressions.Values
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
+        /// <remarks>We special case a variable name - at call it an actual value</remarks>
         public object Evaluate(Context c)
         {
             if (_cached != null)
@@ -42,7 +43,16 @@ namespace PlotLingoLib.Expressions.Values
 
             foreach (var v in Values)
             {
-                result[v.Item1.Evaluate(c)] = v.Item2.Evaluate(c);
+                object keyObj = null;
+                if (v.Item1 is VariableValue)
+                {
+                    keyObj = (v.Item1 as VariableValue).VariableName;
+                }
+                else
+                {
+                    keyObj = v.Item1.Evaluate(c);
+                }
+                result[keyObj] = v.Item2.Evaluate(c);
             }
             _cached = result;
             return result;
