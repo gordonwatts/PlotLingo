@@ -515,5 +515,15 @@ namespace PlotLingoLibTest
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
             Assert.AreEqual("{5 => {10 => 15}};", r[0].ToString(), "Result of the expression");
         }
+
+        [TestMethod]
+        public void TestValueDictionaryStringKey()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("5 => {\"quark\" => 15};");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("{5 => {\"quark\" => 15}};", r[0].ToString(), "Result of the expression");
+        }
     }
 }
