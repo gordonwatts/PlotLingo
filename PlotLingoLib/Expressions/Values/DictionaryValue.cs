@@ -37,8 +37,23 @@ namespace PlotLingoLib.Expressions.Values
         /// <returns></returns>
         public object Evaluate(Context c)
         {
-            throw new NotImplementedException();
+            if (_cached != null)
+                return _cached;
+
+            var result = new Dictionary<object, object>();
+
+            foreach (var v in Values)
+            {
+                result[v.Item1.Evaluate(c)] = v.Item2.Evaluate(c);
+            }
+            _cached = result;
+            return result;
         }
+
+        /// <summary>
+        /// Cache the result of evaluation to prevent multiple evaluation.
+        /// </summary>
+        private IDictionary<object, object> _cached = null;
 
         /// <summary>
         /// Dump for debugging and other reasons.
