@@ -455,5 +455,45 @@ namespace PlotLingoLibTest
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
             Assert.AreEqual("\"hi\";", r[0].ToString(), "Result of the expression");
         }
+
+        [TestMethod]
+        public void TestValueDictionary()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("{5 => 10, 6 => 11};");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("{5 => 10, 6 => 11};", r[0].ToString(), "Result of the expression");
+        }
+
+        [TestMethod]
+        public void TestValueDictionaryColon()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("{5 : 10, 6 : 11};");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("{5 => 10, 6 => 11};", r[0].ToString(), "Result of the expression");
+        }
+
+        [TestMethod]
+        public void TestValueDictionaryEmpty()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("{};");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("{};", r[0].ToString(), "Result of the expression");
+        }
+
+        [TestMethod]
+        public void TestValueDictionarySingleValue()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("5 => 10;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("{5 => 10};", r[0].ToString(), "Result of the expression");
+        }
     }
 }

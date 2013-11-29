@@ -48,6 +48,9 @@ namespace PlotLingoLib
         private static readonly Parser<string> Minus = StringToken("-");
         private static readonly Parser<string> Times = StringToken("*");
         private static readonly Parser<string> Divide = StringToken("/");
+        private static readonly Parser<string> DictionaryRelation = StringToken(":").Or(StringToken("=>"));
+        private static readonly Parser<string> OpenBrace = StringToken("{");
+        private static readonly Parser<string> CloseBrace = StringToken("}");
 
         /// <summary>
         /// Binary operators supported by this simple language.
@@ -71,17 +74,15 @@ namespace PlotLingoLib
             from dg in Parse.Digit.AtLeastOnce().Text().Token()
             select new IntegerValue(Int32.Parse(dg));
 
+        /// <summary>
+        /// Parse a double value
+        /// </summary>
         private static readonly Parser<IExpression> DoubleValueParser =
             (from d in Dot from n in Parse.Number select new DoubleValue(double.Parse("." + n)))
             .Or(from n1 in Parse.Number from d in Dot from n2 in Parse.Number select new DoubleValue(double.Parse(n1 + "." + n2)))
             .Or(from n in Parse.Number from d in Dot select new DoubleValue(double.Parse(n)))
             ;
-#if false
-            from fn in Parse.Digit.Many().Text().Token()
-            from dot in Dot
-            from sn in Parse.Digit.Many().Text().Token()
-            select new DoubleValue(double.Parse(fn + "." + sn));
-#endif
+
         /// <summary>
         /// Parse an identifier that is a variable name.
         /// </summary>
@@ -90,10 +91,30 @@ namespace PlotLingoLib
             select new VariableValue(name);
 
         /// <summary>
+        /// Parse a single relation in a dictionary
+        /// </summary>
+        private static readonly Parser<Tuple<IExpression, IExpression>> DictionaryItemParser =
+            from name in Parse.Ref(() => ExpressionParser)
+            from rl in DictionaryRelation
+            from val in Parse.Ref(() => ExpressionParser)
+            select Tuple.Create(name, val);
+
+        /// <summary>
+        /// Parse a dictionary expression
+        /// </summary>
+        private static readonly Parser<IExpression> DictionaryValueParser =
+            from values in DictionaryItemParser
+            .DelimitedBy(Parse.Char(',')).Optional()
+            .Contained(OpenBrace, CloseBrace)
+            select values.IsEmpty ? new DictionaryValue() : new DictionaryValue(values.Get());
+
+
+        /// <summary>
         /// Parse a value (like a number or a string).
         /// </summary>
         private static readonly Parser<IExpression> ValueExpressionParser
-            = StringValueParser
+            = DictionaryValueParser
+            .Or(StringValueParser)
             .Or(DoubleValueParser)
             .Or(IntegerValueParser);
 
@@ -170,7 +191,7 @@ namespace PlotLingoLib
         /// <param name="firstTerm"></param>
         /// <returns></returns>
         private static Parser<Tuple<string, IExpression>> ParseBinaryOperator =
-            from op in BinaryOperators
+            from op in BinaryOperators.Or(DictionaryRelation)
             from secondTerm in TermParser
             select Tuple.Create(op, secondTerm);
 
@@ -213,6 +234,7 @@ namespace PlotLingoLib
 
             // Look for each set of operators in turn.
             CombineForOperators(lst, new string[] { "." }, (obj, opName, funcCall) => new MethodCallExpression(obj, funcCall as FunctionExpression));
+            CombineForOperators(lst, new string[] { ":", "=>" }, (key, opName, val) => new DictionaryValue(new Tuple<IExpression, IExpression>[] { Tuple.Create(key, val) }));
             CombineForOperators(lst, new string[] { "*", "/" }, (left, opName, right) => new FunctionExpression(opName, new IExpression[] { left, right }));
 
             // Next, just combine the left overs. We could use Combine, but then we'd have to add funny logic to it.
