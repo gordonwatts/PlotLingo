@@ -10,7 +10,15 @@ namespace PlotLingoConsole
     {
         static void Main(string[] args)
         {
-            var fi = new FileInfo(args[0]);
+            // What file are we going to monitor and parse?
+            var fname = GetFilenameOfScript(args);
+            if (fname == null)
+            {
+                Console.WriteLine("Invoke this application by opening a plot lingo script file (.plotlingo extension).");
+                return;
+            }
+
+            var fi = new FileInfo(fname);
 
             if (!fi.Exists)
             {
@@ -45,6 +53,31 @@ namespace PlotLingoConsole
             // Sit there and wait until we are killed or...
 
             while (Console.Read() != 'q') ;
+        }
+
+        /// <summary>
+        /// Get the filename of the script we are to proces
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        private static string GetFilenameOfScript(string[] args)
+        {
+            // From the command line?
+            if (args.Length > 0)
+            {
+                return args[0];
+            }
+
+            // Via click-once?
+            var activationData = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
+            if (activationData.Length > 0)
+            {
+                Uri uri = new Uri(activationData[0]);
+                string fileNamePassedIn = uri.LocalPath.ToString();
+                return fileNamePassedIn;
+            }
+
+            return null;
         }
 
         /// <summary>
