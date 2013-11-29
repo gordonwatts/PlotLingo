@@ -14,10 +14,23 @@ namespace PlotLingoFunctionality.Plots
     [Export(typeof(IFunctionObject))]
     class LegendMaker : IFunctionObject
     {
+        class LegendInfo
+        {
+            /// <summary>
+            /// The title in the legend for this color
+            /// </summary>
+            public string Title;
+
+            /// <summary>
+            /// The color for this legend
+            /// </summary>
+            public int Color;
+        }
+
         /// <summary>
         /// Track the actual legend items
         /// </summary>
-        private static Dictionary<string, int> _legendInfo = new Dictionary<string, int>();
+        private static Dictionary<string, LegendInfo> _legendInfo = new Dictionary<string, LegendInfo>();
 
         /// <summary>
         /// A function to add a few legends for the plot. This remembers them for
@@ -39,13 +52,30 @@ namespace PlotLingoFunctionality.Plots
                 }
                 else
                 {
-                    if (item.Value.GetType() != typeof(int))
+                    if (item.Value.GetType() == typeof(int))
                     {
-                        Console.WriteLine("In legend generation unable to parse {0} into an integer.", item.Value.ToString());
+                        _legendInfo[s] = new LegendInfo() { Color = (int)item.Value, Title = s };
+                    } else if (item.Value is IDictionary<object, object>)
+                    {
+                        var linfo = new LegendInfo() { Title = s };
+                        var dict = item.Value as IDictionary<object, object>;
+                        if (!dict.ContainsKey("Color"))
+                        {
+                            Console.WriteLine("Dictionary for legend does not contain a Color key!");
+                        }
+                        else
+                        {
+                            linfo.Color = (int)dict["Color"];
+                            if (dict.ContainsKey("Title"))
+                            {
+                                linfo.Title = (string) dict["Title"];
+                            }
+                        }
+                        _legendInfo[s] = linfo;
                     }
                     else
                     {
-                        _legendInfo[s] = (int)item.Value;
+                        Console.WriteLine("In legend generation unable to parse {0} into an integer or a dictionary of values (with Title and Color as members).", item.Value.ToString());
                     }
                 }
             }
@@ -66,9 +96,9 @@ namespace PlotLingoFunctionality.Plots
                 {
                     if (p.Title.IndexOf(legInfo.Key) >= 0)
                     {
-                        p.LineColor = (short) legInfo.Value;
-                        l.AddEntry(p, legInfo.Key);
-                        letterLength = Math.Max(letterLength, legInfo.Key.Length);
+                        p.LineColor = (short) legInfo.Value.Color;
+                        l.AddEntry(p, legInfo.Value.Title);
+                        letterLength = Math.Max(letterLength, legInfo.Value.Title.Length);
                         count++;
                     }
                 }
