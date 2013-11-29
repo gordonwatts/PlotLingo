@@ -80,6 +80,7 @@
     <Compile Include="Files\TC\TCAccess.cs" />
     <Compile Include="Files\TC\teamcityAccess.cs" />
     <Compile Include="IPlotScriptResult.cs" />
+    <Compile Include="Plots\LegendMaker.cs" />
     <Compile Include="Plots\PlotContext.cs" />
     <Compile Include="Plots\PlotMaker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

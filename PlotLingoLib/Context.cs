@@ -62,19 +62,20 @@ namespace PlotLingoLib
         /// <summary>
         /// Maintain a list of post-function and method call hooks.
         /// </summary>
-        private Dictionary<string, List<Func<object, object, object>>> _postCallHooks = new Dictionary<string, List<Func<object, object, object>>>();
+        private Dictionary<string, Dictionary<string, Func<object, object, object>>> _postCallHooks = new Dictionary<string, Dictionary<string, Func<object, object, object>>>();
 
         /// <summary>
         /// Add a call back that is called after each time the method is called.
         /// </summary>
         /// <param name="functionName">Function to call. First argument is the object this was called against (or null if a function) and the second is the return value from the function or method. And returns the new value of the result object (which may be the same as the old one).</param>
         /// <param name="callback">Name of the method or function that should trigger this callback</param>
-        public void AddPostCallHook (string functionName, Func<object, object, object> callback)
+        /// <param name="slotname">The slot where the callback is called. One function per slot, and overwrite anything that was there.</param>
+        public void AddPostCallHook (string functionName, string slotname, Func<object, object, object> callback)
         {
             if (!_postCallHooks.ContainsKey(functionName))
-                _postCallHooks[functionName] = new List<Func<object, object, object>>();
+                _postCallHooks[functionName] = new Dictionary<string, Func<object, object, object>>();
 
-            _postCallHooks[functionName].Add(callback);
+            _postCallHooks[functionName][slotname] = callback;
         }
 
         /// <summary>
@@ -87,12 +88,12 @@ namespace PlotLingoLib
         /// <returns></returns>
         internal object ExecutePostCallHook (string fmName, object obj, object result)
         {
-            List<Func<object, object, object>> callbacks;
+            Dictionary<string, Func<object, object, object>> callbacks;
             if (_postCallHooks.TryGetValue(fmName, out callbacks))
             {
                 foreach (var cb in callbacks)
                 {
-                    result = cb(obj, result);
+                    result = cb.Value(obj, result);
                 }
             }
             return result;

@@ -11,8 +11,6 @@ namespace PlotLingoLib.Expressions.Values
     /// </summary>
     class DictionaryValue : IExpression
     {
-        private Sprache.IOption<IEnumerable<Tuple<IExpression, IExpression>>> values;
-
         /// <summary>
         /// Initialize with a sequence of values.
         /// </summary>

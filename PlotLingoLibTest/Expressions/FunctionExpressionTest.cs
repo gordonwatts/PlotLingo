@@ -25,7 +25,7 @@ namespace PlotLingoLibTest.Expressions
             var fo = new FunctionExpression("GetMe", new IExpression[] { new StringValue("hi there") });
             var c = new Context();
             int count = 0;
-            c.AddPostCallHook("GetMe", (shouldbenull, result) =>
+            c.AddPostCallHook("GetMe", "test", (shouldbenull, result) =>
             {
                 Assert.IsNull(shouldbenull, "function call should be null obj");
                 Assert.AreEqual(8, result, "Result in call back");

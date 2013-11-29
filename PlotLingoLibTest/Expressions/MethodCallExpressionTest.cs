@@ -52,7 +52,7 @@ namespace PlotLingoLibTest.Expressions
             var tc = new testClass();
             var ctx = new Context();
             int count = 0;
-            ctx.AddPostCallHook("CallNoArgs", (obj, result) =>
+            ctx.AddPostCallHook("CallNoArgs", "test", (obj, result) =>
             {
                 count++;
                 Assert.AreEqual(tc, obj, "object that is passed in as central object");
@@ -70,7 +70,7 @@ namespace PlotLingoLibTest.Expressions
         {
             var tc = new testClass();
             var ctx = new Context();
-            ctx.AddPostCallHook("CallNoArgs", (obj, result) =>
+            ctx.AddPostCallHook("CallNoArgs", "test", (obj, result) =>
             {
                 return 33;
             });
@@ -123,7 +123,7 @@ namespace PlotLingoLibTest.Expressions
             var tc = new testClass();
             ctx.SetVariableValue("p", tc);
             int count = 0;
-            ctx.AddPostCallHook("CallOneStringArgExt", (obj, result) => {
+            ctx.AddPostCallHook("CallOneStringArgExt", "test", (obj, result) => {
                 count++;
                 Assert.AreEqual(tc, obj, "Object that is getting the callb ack");
                 Assert.AreEqual(4, result, "Result of callback");
@@ -142,8 +142,8 @@ namespace PlotLingoLibTest.Expressions
             ctx.SetVariableValue("p", new testClass());
             int count1 = 0;
             int count2 = 0;
-            ctx.AddPostCallHook("CallOneStringArgExt", (o, obj) => count1++);
-            ctx.AddPostCallHook("CallOneStringArgExt", (o, obj) => count2++);
+            ctx.AddPostCallHook("CallOneStringArgExt", "test1", (o, obj) => count1++);
+            ctx.AddPostCallHook("CallOneStringArgExt", "test2", (o, obj) => count2++);
             var s = new StringValue("hi");
             var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallOneStringArgExt", new IExpression[] { s }));
             var r = mc.Evaluate(ctx);

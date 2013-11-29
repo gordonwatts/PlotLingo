@@ -32,12 +32,26 @@ namespace PlotLingoFunctionality.Plots
         private List<Action<PlotContext>> _prePlotHook = new List<Action<PlotContext>>();
 
         /// <summary>
+        /// Track all the things we should call once the plotting is, basically, done.
+        /// </summary>
+        private List<Action<PlotContext, ROOTNET.Interface.NTCanvas>> _postPlotHook = new List<Action<PlotContext, ROOTNET.Interface.NTCanvas>>();
+
+        /// <summary>
         /// Add a pre-plot hook
         /// </summary>
         /// <param name="act"></param>
         public void AddPreplotHook (Action<PlotContext> act)
         {
             _prePlotHook.Add(act);
+        }
+
+        /// <summary>
+        /// Add a hook to be called after the basic plotting is done.
+        /// </summary>
+        /// <param name="act"></param>
+        public void AddPostplotHook(Action<PlotContext, ROOTNET.Interface.NTCanvas> act)
+        {
+            _postPlotHook.Add(act);
         }
 
         /// <summary>
@@ -109,6 +123,12 @@ namespace PlotLingoFunctionality.Plots
             {
                 p.Draw(optS);
                 optS = "SAME";
+            }
+
+            // And post-process
+            foreach (var a in _postPlotHook)
+            {
+                a(this, c);
             }
 
             // Save it

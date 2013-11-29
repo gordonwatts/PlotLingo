@@ -35,7 +35,7 @@ namespace PlotLingoFunctionality.Plots
         /// </summary>
         public static void TurnOffStatBoxes(Context c)
         {
-            c.AddPostCallHook("plot", (obj, result) =>
+            c.AddPostCallHook("plot", "statsboxes", (obj, result) =>
             {
                 var pc = result as PlotContext;
                 if (pc == null)
@@ -62,7 +62,7 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="c"></param>
         public static void NormalizePlots(Context c)
         {
-            c.AddPostCallHook("plot", (obj, result) =>
+            c.AddPostCallHook("plot", "normalize", (obj, result) =>
             {
                 var pc = result as PlotContext;
                 if (pc == null)
@@ -94,7 +94,7 @@ namespace PlotLingoFunctionality.Plots
         public static void ConfigureLineWidth(Context c)
         {
             short sz = 2;
-            c.AddPostCallHook("plot", (obj, result) =>
+            c.AddPostCallHook("plot", "linewidth", (obj, result) =>
             {
                 var pc = result as PlotContext;
                 if (pc == null)
