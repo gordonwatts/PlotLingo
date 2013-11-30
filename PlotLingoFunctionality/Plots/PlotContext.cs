@@ -40,7 +40,7 @@ namespace PlotLingoFunctionality.Plots
         /// Add a pre-plot hook
         /// </summary>
         /// <param name="act"></param>
-        public void AddPreplotHook (Action<PlotContext> act)
+        public void AddPreplotHook(Action<PlotContext> act)
         {
             _prePlotHook.Add(act);
         }
@@ -133,6 +133,8 @@ namespace PlotLingoFunctionality.Plots
 
             // Save it
             var fout = new FileInfo(string.Format("{0}.png", filenameStub));
+            if (fout.Exists)
+                fout.Delete();
             c.SaveAs(fout.FullName);
             return new FileInfo[] { fout };
         }
