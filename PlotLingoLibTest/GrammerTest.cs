@@ -1,9 +1,8 @@
-﻿using System;
-using Sprache;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PlotLingoLib.Statements;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PlotLingoLib.Expressions;
 using PlotLingoLib.Expressions.Values;
+using PlotLingoLib.Statements;
+using Sprache;
 
 namespace PlotLingoLibTest
 {
@@ -212,7 +211,7 @@ namespace PlotLingoLibTest
             Assert.IsNotNull(expr, "array expression");
             Assert.AreEqual(2, expr.Length, "#of values in array");
         }
-        
+
         /// <summary>
         /// Seen in the wild - variable names seem to cause problems..
         /// </summary>
@@ -447,13 +446,26 @@ namespace PlotLingoLibTest
         }
 
         [TestMethod]
-        public void TestValueString()
+        public void TestValueString1()
         {
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("\"hi\";");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
             Assert.AreEqual("\"hi\";", r[0].ToString(), "Result of the expression");
+        }
+
+        /// <summary>
+        /// Found in the while
+        /// </summary>
+        [TestMethod]
+        public void TestValueString2()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("\"Pass Rate (EMF < 0.5)\";");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("\"Pass Rate (EMF < 0.5)\";", r[0].ToString(), "Result of the expression");
         }
 
         [TestMethod]
