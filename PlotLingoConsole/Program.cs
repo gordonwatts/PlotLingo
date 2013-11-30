@@ -129,7 +129,7 @@ namespace PlotLingoConsole
                 if (pr != null)
                 {
                     // Generate a filename for saving this data
-                    var outFNameStub = string.Format("{0}/{1}-{2}-{3}", fi.DirectoryName, Path.GetFileNameWithoutExtension(fi.Name), pr.Name, sequenceNumber);
+                    var outFNameStub = string.Format("{0}/{1}-{2}-{3}", fi.DirectoryName, Path.GetFileNameWithoutExtension(fi.Name), pr.Name, sequenceNumber).FileNameSantize();
                     sequenceNumber++;
                     var outputs = pr.Save(outFNameStub);
                     foreach (var o in outputs)
