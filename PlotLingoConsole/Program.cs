@@ -16,7 +16,8 @@ namespace PlotLingoConsole
             if (fname == null)
             {
                 // Use a debugging filename?
-                fname = @"C:\Users\Gordon\Downloads\test.plotlingo";
+                //fname = @"C:\Users\Gordon\Downloads\test.plotlingo";
+                fname = @"C:\Users\Gordon\Documents\Code\HVMCQCDCorrelation\FirstJetStudies\Plots\FirstSecondCompare.plotlingo";
                 if (!File.Exists(fname))
                 {
                     Console.WriteLine("Invoke this application by opening a plot lingo script file (.plotlingo extension).");
@@ -140,7 +141,7 @@ namespace PlotLingoConsole
                 if (pr != null)
                 {
                     // Generate a filename for saving this data
-                    var outFNameStub = string.Format("{0}/{1}-{2}-{3}", fi.DirectoryName, Path.GetFileNameWithoutExtension(fi.Name), pr.Name, sequenceNumber).FileNameSantize();
+                    var outFNameStub = string.Format("{0}/{1}-{2}-{3}", fi.DirectoryName, Path.GetFileNameWithoutExtension(fi.Name), pr.Name.FileNameSantize(), sequenceNumber);
                     sequenceNumber++;
                     var outputs = pr.Save(outFNameStub);
                     foreach (var o in outputs)
