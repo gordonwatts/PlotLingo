@@ -77,7 +77,7 @@ namespace PlotLingoConsole
             }
             catch (Exception e)
             {
-                Console.WriteLine("Failed during parse: {0}", e.Message);
+                Console.WriteLine(" ->> ** Failed during parse: {0}", e.Message);
             }
             finally
             {
