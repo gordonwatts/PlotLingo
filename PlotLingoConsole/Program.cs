@@ -3,6 +3,7 @@ using PlotLingoLib;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace PlotLingoConsole
 {
@@ -37,7 +38,6 @@ namespace PlotLingoConsole
             {
                 if (e.FullPath == fi.FullName && lastWriteTime != File.GetLastWriteTime(fi.FullName))
                 {
-                    Console.WriteLine("Just got called");
                     ProtectedParse(fi);
 
                     fi.Refresh();
@@ -59,15 +59,17 @@ namespace PlotLingoConsole
         /// Parse, but protect against crashes.
         /// </summary>
         /// <param name="fi"></param>
-        private static void ProtectedParse (FileInfo fi)
+        private static void ProtectedParse(FileInfo fi)
         {
             try
             {
                 Parse(fi);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine("Failed during parse: {0}", e.Message);
-            } catch
+            }
+            catch
             {
                 Console.WriteLine("Unknown error occured");
             }
@@ -119,7 +121,7 @@ namespace PlotLingoConsole
 
             // For each result, see if it can be reported or not.
 
-            Console.WriteLine("There were {0} results.", results.Count);
+            Console.WriteLine("There were {0} results.", results.Where(r => r is IPlotScriptResult).Count());
             int sequenceNumber = 0;
             foreach (var r in results)
             {
