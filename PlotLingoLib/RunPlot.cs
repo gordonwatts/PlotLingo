@@ -61,6 +61,11 @@ namespace PlotLingoLib
             catch (Exception e)
             {
                 Console.WriteLine("Error parsing file: {0}", e.Message);
+                while (e.InnerException != null)
+                {
+                    e = e.InnerException;
+                    Console.WriteLine(" -> {0}", e.Message);
+                }
             }
         }
 

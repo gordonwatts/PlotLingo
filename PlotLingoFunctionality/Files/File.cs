@@ -30,5 +30,19 @@ namespace PlotLingoFunctionality.Files
 
             return f;
         }
+
+        /// <summary>
+        /// Search an input directory for a histogram.
+        /// </summary>
+        /// <param name="?"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static object Get (ROOTNET.Interface.NTDirectory d, string path)
+        {
+            var h = d.Get(path);
+            if (h == null)
+                throw new ArgumentException(string.Format("Unable to locate histogram '{0}' in directory '{1}'", path, d.Name));
+            return h;
+        }
     }
 }

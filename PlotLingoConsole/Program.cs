@@ -38,7 +38,7 @@ namespace PlotLingoConsole
                 if (e.FullPath == fi.FullName && lastWriteTime != File.GetLastWriteTime(fi.FullName))
                 {
                     Console.WriteLine("Just got called");
-                    Parse(fi);
+                    ProtectedParse(fi);
 
                     fi.Refresh();
                     lastWriteTime = fi.LastWriteTime;
@@ -48,11 +48,29 @@ namespace PlotLingoConsole
 
             // First time we should run it...
 
-            Parse(fi);
+            ProtectedParse(fi);
 
             // Sit there and wait until we are killed or...
 
             while (Console.Read() != 'q') ;
+        }
+
+        /// <summary>
+        /// Parse, but protect against crashes.
+        /// </summary>
+        /// <param name="fi"></param>
+        private static void ProtectedParse (FileInfo fi)
+        {
+            try
+            {
+                Parse(fi);
+            } catch (Exception e)
+            {
+                Console.WriteLine("Failed during parse: {0}", e.Message);
+            } catch
+            {
+                Console.WriteLine("Unknown error occured");
+            }
         }
 
         /// <summary>
