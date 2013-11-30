@@ -1,4 +1,5 @@
 ﻿
+using System.IO;
 namespace PlotLingoConsole
 {
     static class Utils
@@ -10,7 +11,8 @@ namespace PlotLingoConsole
         /// <returns></returns>
         public static string FileNameSantize(this string fname)
         {
-            return fname
+            var dirname = Path.GetDirectoryName(fname);
+            var filename = Path.GetFileName(fname)
                 .Replace("<", "-")
                 .Replace(">", "-")
                 .Replace(":", "-")
@@ -19,6 +21,8 @@ namespace PlotLingoConsole
                 .Replace("\"", "-")
                 .Replace("|", "-")
                 ;
+
+            return Path.Combine(dirname, filename);
         }
     }
 }
