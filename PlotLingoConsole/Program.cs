@@ -15,8 +15,13 @@ namespace PlotLingoConsole
             var fname = GetFilenameOfScript(args);
             if (fname == null)
             {
-                Console.WriteLine("Invoke this application by opening a plot lingo script file (.plotlingo extension).");
-                return;
+                // Use a debugging filename?
+                fname = @"C:\Users\Gordon\Downloads\test.plotlingo";
+                if (!File.Exists(fname))
+                {
+                    Console.WriteLine("Invoke this application by opening a plot lingo script file (.plotlingo extension).");
+                    return;
+                }
             }
 
             var fi = new FileInfo(fname);
@@ -29,14 +34,19 @@ namespace PlotLingoConsole
 
             // Watch that file for modifications.
             // Also keep track of last write time because we have to deal with "bounce" - many programs
-            // will trigger multiple events in the file system when they save the text (e.g. notepad, notpad++).
+            // will trigger multiple events in the file system when they save the text (e.g. notepad, notepad++).
+            // We also need the creation time b.c. some tools, like VS2012, seem to delete and recreate.
 
             var watcher = new FileSystemWatcher(fi.DirectoryName, string.Format("*{0}", fi.Extension));
-            watcher.NotifyFilter = NotifyFilters.LastWrite;
+            watcher.NotifyFilter =
+                NotifyFilters.LastWrite
+                | NotifyFilters.CreationTime
+                ;
+            watcher.Filter = fi.Name;
             var lastWriteTime = fi.LastWriteTime;
             watcher.Changed += (o, e) =>
             {
-                if (e.FullPath == fi.FullName && lastWriteTime != File.GetLastWriteTime(fi.FullName))
+                if (lastWriteTime != File.GetLastWriteTime(fi.FullName))
                 {
                     ProtectedParse(fi);
 
@@ -51,8 +61,8 @@ namespace PlotLingoConsole
             ProtectedParse(fi);
 
             // Sit there and wait until we are killed or...
-
-            while (Console.Read() != 'q') ;
+            Console.WriteLine("Hit 'q' to quit gracefully, or just kill this!");
+            while (Console.ReadKey().KeyChar != 'q') ;
         }
 
         /// <summary>
@@ -69,9 +79,10 @@ namespace PlotLingoConsole
             {
                 Console.WriteLine("Failed during parse: {0}", e.Message);
             }
-            catch
+            finally
             {
-                Console.WriteLine("Unknown error occured");
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             }
         }
 
