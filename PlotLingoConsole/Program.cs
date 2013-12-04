@@ -17,7 +17,7 @@ namespace PlotLingoConsole
             {
                 // Use a debugging filename?
                 //fname = @"C:\Users\Gordon\Downloads\test.plotlingo";
-                fname = @"C:\Users\Gordon\Documents\Code\HVMCQCDCorrelation\FirstJetStudies\Plots\FirstSecondCompare.plotlingo";
+                fname = @"C:\Users\Gordon\Documents\Code\HVDataComparisons\CalRatioScan\plots\ptCompare.plotlingo";
                 if (!File.Exists(fname))
                 {
                     Console.WriteLine("Invoke this application by opening a plot lingo script file (.plotlingo extension).");
@@ -148,6 +148,7 @@ namespace PlotLingoConsole
                     {
                         Console.WriteLine("  Wrote {0}", o.Name);
                     }
+                    sequenceNumber++;
                 }
             }
         }
