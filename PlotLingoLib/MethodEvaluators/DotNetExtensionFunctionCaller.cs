@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PlotLingoLib.MethodEvaluators
 {
@@ -42,8 +41,16 @@ namespace PlotLingoLib.MethodEvaluators
             }
 
             // Now call the method.
-            var r = funcs[0].Invoke(null, args);
-            return new Tuple<bool, object>(true, r);
+            try
+            {
+                var r = funcs[0].Invoke(null, args);
+                return new Tuple<bool, object>(true, r);
+            }
+            catch (TargetInvocationException e)
+            {
+                // We don't care above the invokation - just what actually threw it inside.
+                throw e.InnerException;
+            }
         }
     }
 }
