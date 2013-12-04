@@ -84,6 +84,7 @@
     <Compile Include="Plots\LegendMaker.cs" />
     <Compile Include="Plots\PlotContext.cs" />
     <Compile Include="Plots\PlotMaker.cs" />
+    <Compile Include="Plots\PlotOperations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
