@@ -46,7 +46,6 @@ namespace PlotLingoLib
 
             // Catalog with this assembly and anything else in the same directory
             var catalog = new AggregateCatalog();
-            catalog.Catalogs.Add(new AssemblyCatalog(typeof(ExtensibilityControl).Assembly));
             catalog.Catalogs.Add(new DirectoryCatalog(Path.GetDirectoryName(typeof(ExtensibilityControl).Assembly.Location)));
 
             // And attach the container to the catalog, and run the composition.
