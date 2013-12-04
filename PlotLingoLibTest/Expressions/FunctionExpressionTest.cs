@@ -1,9 +1,9 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.ComponentModel.Composition;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PlotLingoLib;
 using PlotLingoLib.Expressions;
 using PlotLingoLib.Expressions.Values;
+using System;
+using System.ComponentModel.Composition;
 
 namespace PlotLingoLibTest.Expressions
 {
@@ -44,24 +44,146 @@ namespace PlotLingoLibTest.Expressions
             var r = fo.Evaluate(c);
             Assert.AreEqual(12, r, "function result");
         }
+
+        [TestMethod]
+        public void TestAddCommutation1()
+        {
+            var fo = new FunctionExpression("+", new IExpression[] { new VariableValue("p"), new IntegerValue(7) });
+            var c = new Context();
+            c.SetVariableValue("p", new OperatorTestObjects());
+            var r = fo.Evaluate(c);
+            Assert.AreEqual(9, r, "Operator result");
+        }
+
+        [TestMethod]
+        public void TestAddCommutation2()
+        {
+            var fo = new FunctionExpression("+", new IExpression[] { new IntegerValue(7), new VariableValue("p") });
+            var c = new Context();
+            c.SetVariableValue("p", new OperatorTestObjects());
+            var r = fo.Evaluate(c);
+            Assert.AreEqual(9, r, "Operator result");
+        }
+
+        [TestMethod]
+        public void TestMultiplyCommutation1()
+        {
+            var fo = new FunctionExpression("*", new IExpression[] { new VariableValue("p"), new IntegerValue(7) });
+            var c = new Context();
+            c.SetVariableValue("p", new OperatorTestObjects());
+            var r = fo.Evaluate(c);
+            Assert.AreEqual(14, r, "Operator result");
+        }
+
+        [TestMethod]
+        public void TestMultiplyCommutation2()
+        {
+            var fo = new FunctionExpression("*", new IExpression[] { new IntegerValue(7), new VariableValue("p") });
+            var c = new Context();
+            c.SetVariableValue("p", new OperatorTestObjects());
+            var r = fo.Evaluate(c);
+            Assert.AreEqual(14, r, "Operator result");
+        }
+
+        [TestMethod]
+        public void TestSubtractCommutation1()
+        {
+            var fo = new FunctionExpression("-", new IExpression[] { new VariableValue("p"), new IntegerValue(7) });
+            var c = new Context();
+            c.SetVariableValue("p", new OperatorTestObjects());
+            var r = fo.Evaluate(c);
+            Assert.AreEqual(5, r, "Operator result");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotImplementedException))]
+        public void TestSubtractCommutation2()
+        {
+            var fo = new FunctionExpression("-", new IExpression[] { new IntegerValue(7), new VariableValue("p") });
+            var c = new Context();
+            c.SetVariableValue("p", new OperatorTestObjects());
+            var r = fo.Evaluate(c);
+        }
+
+        [TestMethod]
+        public void TestDivideCommutation1()
+        {
+            var fo = new FunctionExpression("/", new IExpression[] { new VariableValue("p"), new IntegerValue(8) });
+            var c = new Context();
+            c.SetVariableValue("p", new OperatorTestObjects());
+            var r = fo.Evaluate(c);
+            Assert.AreEqual(4, r, "Operator result");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotImplementedException))]
+        public void TestDivideCommutation2()
+        {
+            var fo = new FunctionExpression("/", new IExpression[] { new IntegerValue(7), new VariableValue("p") });
+            var c = new Context();
+            c.SetVariableValue("p", new OperatorTestObjects());
+            var r = fo.Evaluate(c);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotImplementedException))]
+        public void TestPlusNotDefined()
+        {
+            var fo = new FunctionExpression("/", new IExpression[] { new IntegerValue(7), new VariableValue("p") });
+            var c = new Context();
+            c.SetVariableValue("p", new OperatorTestNotDefined());
+            var r = fo.Evaluate(c);
+        }
     }
 
     /// <summary>
-    /// Some test objects for the function.
+    /// Some test objects for the function above.
     /// </summary>
     [Export(typeof(IFunctionObject))]
     public class FunctionObjectTests : IFunctionObject
     {
-        static public int GetMe (string arg)
+        static public int GetMe(string arg)
         {
             return arg.Length;
         }
 
-        static public int GetMeContext (Context c)
+        static public int GetMeContext(Context c)
         {
             if (c == null)
                 return 0;
             return 12;
         }
+    }
+
+    /// <summary>
+    /// Objects used to test operators and how we can permute the operands.
+    /// </summary>
+    [Export(typeof(IFunctionObject))]
+    public class OperatorTestObjects : IFunctionObject
+    {
+        static public int OperatorPlus(OperatorTestObjects obj, int val)
+        {
+            return val + 2;
+        }
+
+        static public int OperatorMultiply(OperatorTestObjects obj, int val)
+        {
+            return val * 2;
+        }
+
+        static public int OperatorMinus(OperatorTestObjects obj, int val)
+        {
+            return val - 2;
+        }
+
+        static public int OperatorDivide(OperatorTestObjects obj, int val)
+        {
+            return val / 2;
+        }
+    }
+
+    public class OperatorTestNotDefined
+    {
+
     }
 }
