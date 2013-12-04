@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PlotLingoLib.Expressions
 {
@@ -62,7 +60,7 @@ namespace PlotLingoLib.Expressions
             {
                 return c.ExecutePostCallHook(FunctionCall.FunctionName, obj, goodEval.Item2);
             }
-            throw new InvalidOperationException(string.Format("Don't know how to call the function {0} on the object {1}.", FunctionCall.ToString(), ObjectExpression.ToString()));
+            throw new InvalidOperationException(string.Format("Don't know how to call the function {0} on the object {1} of type {2}.", FunctionCall.ToString(), ObjectExpression.ToString(), obj.GetType().Name));
         }
 
         /// <summary>
