@@ -16,7 +16,7 @@ namespace PlotLingoLibTest.Functions
         {
             var d = new Dictionary<object, object>();
             var fo = new MethodCallExpression(new PlotLingoLib.Expressions.Values.VariableValue("p"),
-                new FunctionExpression("Sum", new IExpression[0]));
+                new FunctionExpression("sum", new IExpression[0]));
             var c = new Context();
             c.SetVariableValue("p", d);
             fo.Evaluate(c);
@@ -28,7 +28,7 @@ namespace PlotLingoLibTest.Functions
             var d = new Dictionary<object, object>();
             d["hi"] = 10;
             var fo = new MethodCallExpression(new PlotLingoLib.Expressions.Values.VariableValue("p"),
-                new FunctionExpression("Sum", new IExpression[0]));
+                new FunctionExpression("sum", new IExpression[0]));
             var c = new Context();
             c.SetVariableValue("p", d);
             var v = fo.Evaluate(c);
@@ -42,7 +42,7 @@ namespace PlotLingoLibTest.Functions
             d["hi"] = 10;
             d[5] = 20;
             var fo = new MethodCallExpression(new PlotLingoLib.Expressions.Values.VariableValue("p"),
-                new FunctionExpression("Sum", new IExpression[0]));
+                new FunctionExpression("sum", new IExpression[0]));
             var c = new Context();
             c.SetVariableValue("p", d);
             var v = fo.Evaluate(c);

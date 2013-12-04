@@ -18,7 +18,7 @@ namespace PlotLingoLib.Functions
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static object Sum(IDictionary<object, object> input)
+        public static object sum(IDictionary<object, object> input)
         {
             // Can't sum if empty because we don't know what type of value to return!
             if (input.Count == 0)
