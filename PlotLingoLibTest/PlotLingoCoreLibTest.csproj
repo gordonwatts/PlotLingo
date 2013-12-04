@@ -60,6 +60,8 @@
   <ItemGroup>
     <Compile Include="Expressions\MethodCallExpressionTest.cs" />
     <Compile Include="Expressions\Values\DictionaryValueTest.cs" />
+    <Compile Include="Functions\DictionaryOperationsTest.cs" />
+    <Compile Include="Functions\NumberOperationsTest.cs" />
     <Compile Include="GrammerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ContextTest.cs" />

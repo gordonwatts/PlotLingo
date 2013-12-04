@@ -101,9 +101,12 @@
     <Compile Include="Expressions\Values\DictionaryValue.cs" />
     <Compile Include="Expressions\Values\DoubleValue.cs" />
     <Compile Include="Expressions\Values\IntegerValue.cs" />
+    <Compile Include="Expressions\Values\ObjectValue.cs" />
     <Compile Include="Expressions\Values\StringValue.cs" />
     <Compile Include="Expressions\Values\VariableValue.cs" />
     <Compile Include="ExtensibilityControl.cs" />
+    <Compile Include="Functions\DictionaryOperations.cs" />
+    <Compile Include="Functions\NumberOperations.cs" />
     <Compile Include="IArray.cs" />
     <Compile Include="IFunctionObject.cs" />
     <Compile Include="MethodEvaluators\DotNetExtensionFunctionCaller.cs" />
