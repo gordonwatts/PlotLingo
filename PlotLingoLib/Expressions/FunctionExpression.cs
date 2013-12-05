@@ -46,11 +46,20 @@ namespace PlotLingoLib.Expressions
             var funcs = FindFunction(c, ref args);
 
             // Now call the method.
-            var r = funcs.Invoke(null, args);
+            try
+            {
+                var r = funcs.Invoke(null, args);
 
-            // Deal with post-hook call backs now
-            r = c.ExecutePostCallHook(FunctionName, null, r);
-            return r;
+                // Deal with post-hook call backs now
+                r = c.ExecutePostCallHook(FunctionName, null, r);
+                return r;
+            }
+            catch (TargetInvocationException e)
+            {
+                if (e.InnerException != null)
+                    throw e.InnerException;
+                throw;
+            }
         }
 
         /// <summary>

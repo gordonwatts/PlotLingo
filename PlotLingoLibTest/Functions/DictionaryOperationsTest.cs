@@ -165,5 +165,97 @@ namespace PlotLingoLibTest.Functions
             Assert.AreEqual(5.0, d["hi"], "original value");
             Assert.AreEqual(1.5 / 5.0, r["hi"], "result");
         }
+
+        [TestMethod]
+        public void TestDivideByEmptyMatrixNum()
+        {
+            var d1 = new Dictionary<object, object>();
+            var d2 = new Dictionary<object, object>();
+            d2["hi"] = 5.0;
+            var cl = new FunctionExpression("/", new ObjectValue(d1), new ObjectValue(d2));
+            var c = new Context();
+            var rut = cl.Evaluate(c);
+            Assert.IsNotNull(rut, "Result null");
+            Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
+            var r = rut as Dictionary<object, object>;
+            Assert.AreEqual(0, r.Count, "# of items in resulting dict");
+        }
+
+        [TestMethod]
+        public void TestDivideByEmptyMatrix()
+        {
+            var d1 = new Dictionary<object, object>();
+            var d2 = new Dictionary<object, object>();
+            var cl = new FunctionExpression("/", new ObjectValue(d1), new ObjectValue(d2));
+            var c = new Context();
+            var rut = cl.Evaluate(c);
+            Assert.IsNotNull(rut, "Result null");
+            Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
+            var r = rut as Dictionary<object, object>;
+            Assert.AreEqual(0, r.Count, "# of items in resulting dict");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.DivideByZeroException))]
+        public void TestDivideByEmptyMatrixDenom()
+        {
+            var d1 = new Dictionary<object, object>();
+            d1["hi"] = 5.0;
+            var d2 = new Dictionary<object, object>();
+            var cl = new FunctionExpression("/", new ObjectValue(d1), new ObjectValue(d2));
+            var c = new Context();
+            var rut = cl.Evaluate(c);
+            Assert.IsNotNull(rut, "Result null");
+            Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
+            var r = rut as Dictionary<object, object>;
+            Assert.AreEqual(0, r.Count, "# of items in resulting dict");
+        }
+
+        [TestMethod]
+        public void TestDivideBySimilarMatrix()
+        {
+            var d1 = new Dictionary<object, object>();
+            d1["hi"] = 5.0;
+            var d2 = new Dictionary<object, object>();
+            d2["hi"] = 5.0;
+            var cl = new FunctionExpression("/", new ObjectValue(d1), new ObjectValue(d2));
+            var c = new Context();
+            var rut = cl.Evaluate(c);
+            Assert.IsNotNull(rut, "Result null");
+            Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
+            var r = rut as Dictionary<object, object>;
+            Assert.AreEqual(1.0, r["hi"], "Resulting value");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(DivideByZeroException))]
+        public void TestDivideByDisjointMatrixNum()
+        {
+            var d1 = new Dictionary<object, object>();
+            d1["hi"] = 5.0;
+            var d2 = new Dictionary<object, object>();
+            d2["hi"] = 5.0;
+            d2["there"] = 10.0;
+            var cl = new FunctionExpression("/", new ObjectValue(d2), new ObjectValue(d1));
+            var c = new Context();
+            var rut = cl.Evaluate(c);
+        }
+
+        [TestMethod]
+        public void TestDivideByDisjointMatrixDenom()
+        {
+            var d1 = new Dictionary<object, object>();
+            d1["hi"] = 5.0;
+            var d2 = new Dictionary<object, object>();
+            d2["hi"] = 5.0;
+            d2["there"] = 10.0;
+            var cl = new FunctionExpression("/", new ObjectValue(d1), new ObjectValue(d2));
+            var c = new Context();
+            var rut = cl.Evaluate(c);
+            Assert.IsNotNull(rut, "Result null");
+            Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
+            var r = rut as Dictionary<object, object>;
+            Assert.AreEqual(1.0, r["hi"], "Resulting value");
+        }
     }
 }

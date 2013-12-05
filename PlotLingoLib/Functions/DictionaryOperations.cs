@@ -95,6 +95,12 @@ namespace PlotLingoLib.Functions
             return r;
         }
 
+        /// <summary>
+        /// Divide a constant by a dictionary of items. Apply to each member of the dict constant / member.
+        /// </summary>
+        /// <param name="constant"></param>
+        /// <param name="sDict"></param>
+        /// <returns></returns>
         public static Dictionary<object, object> OperatorDivide(double constant, IDictionary<object, object> sDict)
         {
             var r = new Dictionary<object, object>();
@@ -106,6 +112,30 @@ namespace PlotLingoLib.Functions
                 var calc = new FunctionExpression("/", cv, new ObjectValue(item.Value));
                 r[item.Key] = calc.Evaluate(ctx);
             }
+            return r;
+        }
+
+        /// <summary>
+        /// Divide one matrix by the next
+        /// </summary>
+        /// <param name="num"></param>
+        /// <param name="denom"></param>
+        /// <returns></returns>
+        public static Dictionary<object, object> OperatorDivide(IDictionary<object, object> num, IDictionary<object, object> denom)
+        {
+            var r = new Dictionary<object, object>();
+            var ctx = new Context();
+
+            foreach (var item in num)
+            {
+                if (!denom.ContainsKey(item.Key))
+                {
+                    throw new DivideByZeroException(string.Format("Dictionary entry for '{0}' can't be divided by a non-existant (zero!) dictionary value!", item.Key));
+                }
+                var calc = new FunctionExpression("/", new ObjectValue(item.Value), new ObjectValue(denom[item.Key]));
+                r[item.Key] = calc.Evaluate(ctx);
+            }
+
             return r;
         }
     }
