@@ -26,7 +26,7 @@ namespace PlotLingoLib.Expressions
         /// </summary>
         /// <param name="fname"></param>
         /// <param name="args"></param>
-        public FunctionExpression(string fname, IExpression[] args)
+        public FunctionExpression(string fname, params IExpression[] args)
         {
             FunctionName = fname;
             Arguments = args;
@@ -112,7 +112,7 @@ namespace PlotLingoLib.Expressions
 
             // See if we have reasonable results, and throw if not.
             if (funcs.Length == 0)
-                throw new System.NotImplementedException(string.Format("Unknown function '{0}' referenced!", FunctionName));
+                throw new System.NotImplementedException(string.Format("Unknown function '{0}' referenced! {0}", FunctionName));
 
             if (funcs.Length > 1)
             {
