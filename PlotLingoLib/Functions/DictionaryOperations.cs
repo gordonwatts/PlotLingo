@@ -32,5 +32,25 @@ namespace PlotLingoLib.Functions
             });
             return r;
         }
+
+        /// <summary>
+        /// Multipley a dictionary by a constant. Multiplies each individual item.
+        /// </summary>
+        /// <param name="sDict"></param>
+        /// <param name="constant"></param>
+        /// <returns></returns>
+        public static Dictionary<object, object> OperatorMultiply(IDictionary<object, object> sDict, double constant)
+        {
+            var r = new Dictionary<object, object>();
+            var cv = new DoubleValue(constant);
+            var ctx = new Context();
+
+            foreach (var item in sDict)
+            {
+                var calc = new FunctionExpression("*", new ObjectValue(item.Value), cv);
+                r[item.Key] = calc.Evaluate(ctx);
+            }
+            return r;
+        }
     }
 }
