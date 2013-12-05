@@ -21,5 +21,18 @@ namespace PlotLingoFunctionality.Plots
             clone.Add(h2);
             return clone;
         }
+
+        /// <summary>
+        /// Scale the contents of a histogram up or down.
+        /// </summary>
+        /// <param name="h"></param>
+        /// <param name="scaleFactor"></param>
+        /// <returns></returns>
+        public static ROOTNET.Interface.NTH1 OperatorMultiply(ROOTNET.Interface.NTH1 h, double scaleFactor)
+        {
+            var clone = h.Clone() as ROOTNET.Interface.NTH1;
+            clone.Scale(scaleFactor);
+            return clone;
+        }
     }
 }
