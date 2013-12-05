@@ -56,21 +56,55 @@ namespace PlotLingoLib.Functions
         /// <summary>
         /// Multiply the first dict by the second. Items that are missing are treated as zeros.
         /// </summary>
-        /// <param name="numDict"></param>
-        /// <param name="denomDict"></param>
+        /// <param name="op1"></param>
+        /// <param name="op2"></param>
         /// <returns></returns>
-        public static Dictionary<object, object> OperatorMultiply(IDictionary<object, object> numDict, IDictionary<object, object> denomDict)
+        public static Dictionary<object, object> OperatorMultiply(IDictionary<object, object> op1, IDictionary<object, object> op2)
         {
             var r = new Dictionary<object, object>();
             var ctx = new Context();
 
-            foreach (var item in numDict)
+            foreach (var item in op1)
             {
-                if (denomDict.ContainsKey(item.Key))
+                if (op2.ContainsKey(item.Key))
                 {
-                    var calc = new FunctionExpression("*", new ObjectValue(item.Value), new ObjectValue(denomDict[item.Key]));
+                    var calc = new FunctionExpression("*", new ObjectValue(item.Value), new ObjectValue(op2[item.Key]));
                     r[item.Key] = calc.Evaluate(ctx);
                 }
+            }
+            return r;
+        }
+
+        /// <summary>
+        /// Divide a dictionary by a histogram
+        /// </summary>
+        /// <param name="sDict"></param>
+        /// <param name="constant"></param>
+        /// <returns></returns>
+        public static Dictionary<object, object> OperatorDivide(IDictionary<object, object> sDict, double constant)
+        {
+            var r = new Dictionary<object, object>();
+            var cv = new DoubleValue(constant);
+            var ctx = new Context();
+
+            foreach (var item in sDict)
+            {
+                var calc = new FunctionExpression("/", new ObjectValue(item.Value), cv);
+                r[item.Key] = calc.Evaluate(ctx);
+            }
+            return r;
+        }
+
+        public static Dictionary<object, object> OperatorDivide(double constant, IDictionary<object, object> sDict)
+        {
+            var r = new Dictionary<object, object>();
+            var cv = new DoubleValue(constant);
+            var ctx = new Context();
+
+            foreach (var item in sDict)
+            {
+                var calc = new FunctionExpression("/", cv, new ObjectValue(item.Value));
+                r[item.Key] = calc.Evaluate(ctx);
             }
             return r;
         }

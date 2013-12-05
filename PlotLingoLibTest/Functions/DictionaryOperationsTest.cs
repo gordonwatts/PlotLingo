@@ -131,5 +131,39 @@ namespace PlotLingoLibTest.Functions
             var r = rut as Dictionary<object, object>;
             Assert.AreEqual(25.0, r["hi"], "Resulting value");
         }
+
+        [TestMethod]
+        public void TestDivideByConstant1()
+        {
+            var d = new Dictionary<object, object>();
+            d["hi"] = 5.0;
+            var cl = new FunctionExpression("/", new ObjectValue(d), new DoubleValue(1.5));
+            var c = new Context();
+            var rut = cl.Evaluate(c);
+            Assert.IsNotNull(rut, "Result null");
+            Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
+            var r = rut as Dictionary<object, object>;
+
+            // Make sure the original isn't touched, as well as the final one updated
+            Assert.AreEqual(5.0, d["hi"], "original value");
+            Assert.AreEqual(5.0 / 1.5, r["hi"], "result");
+        }
+
+        [TestMethod]
+        public void TestDivideByConstant2()
+        {
+            var d = new Dictionary<object, object>();
+            d["hi"] = 5.0;
+            var cl = new FunctionExpression("/", new DoubleValue(1.5), new ObjectValue(d));
+            var c = new Context();
+            var rut = cl.Evaluate(c);
+            Assert.IsNotNull(rut, "Result null");
+            Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
+            var r = rut as Dictionary<object, object>;
+
+            // Make sure the original isn't touched, as well as the final one updated
+            Assert.AreEqual(5.0, d["hi"], "original value");
+            Assert.AreEqual(1.5 / 5.0, r["hi"], "result");
+        }
     }
 }
