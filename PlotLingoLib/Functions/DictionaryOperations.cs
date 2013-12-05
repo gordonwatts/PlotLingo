@@ -52,5 +52,27 @@ namespace PlotLingoLib.Functions
             }
             return r;
         }
+
+        /// <summary>
+        /// Multiply the first dict by the second. Items that are missing are treated as zeros.
+        /// </summary>
+        /// <param name="numDict"></param>
+        /// <param name="denomDict"></param>
+        /// <returns></returns>
+        public static Dictionary<object, object> OperatorMultiply(IDictionary<object, object> numDict, IDictionary<object, object> denomDict)
+        {
+            var r = new Dictionary<object, object>();
+            var ctx = new Context();
+
+            foreach (var item in numDict)
+            {
+                if (denomDict.ContainsKey(item.Key))
+                {
+                    var calc = new FunctionExpression("*", new ObjectValue(item.Value), new ObjectValue(denomDict[item.Key]));
+                    r[item.Key] = calc.Evaluate(ctx);
+                }
+            }
+            return r;
+        }
     }
 }

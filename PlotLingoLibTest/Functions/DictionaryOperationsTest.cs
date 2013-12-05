@@ -66,5 +66,70 @@ namespace PlotLingoLibTest.Functions
             Assert.AreEqual(5.0, d["hi"], "original value");
             Assert.AreEqual(5.0 * 1.5, r["hi"], "result");
         }
+
+        [TestMethod]
+        public void TestMultiplyByEmptyMatrix()
+        {
+            var d1 = new Dictionary<object, object>();
+            d1["hi"] = 5.0;
+            var d2 = new Dictionary<object, object>();
+            var cl = new FunctionExpression("*", new ObjectValue(d1), new ObjectValue(d2));
+            var c = new Context();
+            var rut = cl.Evaluate(c);
+            Assert.IsNotNull(rut, "Result null");
+            Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
+            var r = rut as Dictionary<object, object>;
+            Assert.AreEqual(0, r.Count, "# of items in resulting dict");
+        }
+
+        [TestMethod]
+        public void TestMultiplyBySimilarMatrix()
+        {
+            var d1 = new Dictionary<object, object>();
+            d1["hi"] = 5.0;
+            var d2 = new Dictionary<object, object>();
+            d2["hi"] = 5.0;
+            var cl = new FunctionExpression("*", new ObjectValue(d1), new ObjectValue(d2));
+            var c = new Context();
+            var rut = cl.Evaluate(c);
+            Assert.IsNotNull(rut, "Result null");
+            Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
+            var r = rut as Dictionary<object, object>;
+            Assert.AreEqual(25.0, r["hi"], "Resulting value");
+        }
+
+        [TestMethod]
+        public void TestMultiplyByDisjointMatrix1()
+        {
+            var d1 = new Dictionary<object, object>();
+            d1["hi"] = 5.0;
+            var d2 = new Dictionary<object, object>();
+            d2["hi"] = 5.0;
+            d2["there"] = 10.0;
+            var cl = new FunctionExpression("*", new ObjectValue(d1), new ObjectValue(d2));
+            var c = new Context();
+            var rut = cl.Evaluate(c);
+            Assert.IsNotNull(rut, "Result null");
+            Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
+            var r = rut as Dictionary<object, object>;
+            Assert.AreEqual(25.0, r["hi"], "Resulting value");
+        }
+
+        [TestMethod]
+        public void TestMultiplyByDisjointMatrix2()
+        {
+            var d1 = new Dictionary<object, object>();
+            d1["hi"] = 5.0;
+            d1["there"] = 10.0;
+            var d2 = new Dictionary<object, object>();
+            d2["hi"] = 5.0;
+            var cl = new FunctionExpression("*", new ObjectValue(d1), new ObjectValue(d2));
+            var c = new Context();
+            var rut = cl.Evaluate(c);
+            Assert.IsNotNull(rut, "Result null");
+            Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
+            var r = rut as Dictionary<object, object>;
+            Assert.AreEqual(25.0, r["hi"], "Resulting value");
+        }
     }
 }
