@@ -50,7 +50,6 @@ namespace PlotLingoLibTest.Functions
             Assert.AreEqual(30, v, "Value");
         }
 
-
         [TestMethod]
         public void TestSumThreeObj()
         {
@@ -65,7 +64,26 @@ namespace PlotLingoLibTest.Functions
             var v = fo.Evaluate(c);
             Assert.AreEqual(35, v, "Value");
         }
-        
+
+        [TestMethod]
+        public void TestSumSevenObj()
+        {
+            var d = new Dictionary<object, object>();
+            d["hi"] = 10;
+            d[5] = 20;
+            d["there"] = 5;
+            d["also"] = 1;
+            d["noway"] = 2;
+            d["stuff"] = 4;
+            d["ops"] = 5;
+            var fo = new MethodCallExpression(new PlotLingoLib.Expressions.Values.VariableValue("p"),
+                new FunctionExpression("sum", new IExpression[0]));
+            var c = new Context();
+            c.SetVariableValue("p", d);
+            var v = fo.Evaluate(c);
+            Assert.AreEqual(47, v, "Value");
+        }
+
         [TestMethod]
         public void TestMultiplyByConstant()
         {
