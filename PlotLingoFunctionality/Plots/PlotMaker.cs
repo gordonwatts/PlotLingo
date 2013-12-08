@@ -1,4 +1,5 @@
 ﻿using PlotLingoLib;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
@@ -14,10 +15,21 @@ namespace PlotLingoFunctionality.Plots
         /// Given a list of plots, return a plot context.
         /// </summary>
         /// <param name="plotList"></param>
-        /// <returns></returns>
+        /// <returns>A plot context that can be dumped</returns>
+        /// <remarks>Attempt to find a way to turn this into a list of plots by looking at whatever object is associated with it</remarks>
         public static PlotContext plot(object[] plotList)
         {
             return new PlotContext(plotList.Cast<ROOTNET.NTH1>().ToArray());
+        }
+
+        /// <summary>
+        /// Plot a list of values in a dictionary
+        /// </summary>
+        /// <param name="plotList"></param>
+        /// <returns></returns>
+        public static PlotContext plot(IDictionary<object, object> plotList)
+        {
+            return new PlotContext(plotList.Select(kv => kv.Value).Cast<ROOTNET.NTH1>().ToArray());
         }
 
         /// <summary>
