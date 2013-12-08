@@ -50,6 +50,22 @@ namespace PlotLingoLibTest.Functions
             Assert.AreEqual(30, v, "Value");
         }
 
+
+        [TestMethod]
+        public void TestSumThreeObj()
+        {
+            var d = new Dictionary<object, object>();
+            d["hi"] = 10;
+            d[5] = 20;
+            d["there"] = 5;
+            var fo = new MethodCallExpression(new PlotLingoLib.Expressions.Values.VariableValue("p"),
+                new FunctionExpression("sum", new IExpression[0]));
+            var c = new Context();
+            c.SetVariableValue("p", d);
+            var v = fo.Evaluate(c);
+            Assert.AreEqual(35, v, "Value");
+        }
+        
         [TestMethod]
         public void TestMultiplyByConstant()
         {
