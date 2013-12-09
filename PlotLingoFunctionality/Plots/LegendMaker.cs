@@ -2,9 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PlotLingoFunctionality.Plots
 {
@@ -39,7 +36,8 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="associations"></param>
         public static void Legend(Context c, IDictionary<object, object> associations)
         {
-            c.AddPostCallHook("plot", "legend", (obj, result) => {
+            c.AddPostCallHook("plot", "legend", (obj, result) =>
+            {
                 (result as PlotContext).AddPreplotHook(SetLegendColors);
                 return result;
             });
@@ -55,7 +53,8 @@ namespace PlotLingoFunctionality.Plots
                     if (item.Value.GetType() == typeof(int))
                     {
                         _legendInfo[s] = new LegendInfo() { Color = (int)item.Value, Title = s };
-                    } else if (item.Value is IDictionary<object, object>)
+                    }
+                    else if (item.Value is IDictionary<object, object>)
                     {
                         var linfo = new LegendInfo() { Title = s };
                         var dict = item.Value as IDictionary<object, object>;
@@ -68,7 +67,7 @@ namespace PlotLingoFunctionality.Plots
                             linfo.Color = (int)dict["Color"];
                             if (dict.ContainsKey("Title"))
                             {
-                                linfo.Title = (string) dict["Title"];
+                                linfo.Title = (string)dict["Title"];
                             }
                         }
                         _legendInfo[s] = linfo;
@@ -94,9 +93,9 @@ namespace PlotLingoFunctionality.Plots
             {
                 foreach (var legInfo in _legendInfo)
                 {
-                    if (p.Title.IndexOf(legInfo.Key) >= 0)
+                    if (p.Title.IndexOf(legInfo.Key) >= 0 || Tags.hasTag(p, legInfo.Key))
                     {
-                        p.LineColor = (short) legInfo.Value.Color;
+                        p.LineColor = (short)legInfo.Value.Color;
                         l.AddEntry(p, legInfo.Value.Title);
                         letterLength = Math.Max(letterLength, legInfo.Value.Title.Length);
                         count++;
@@ -112,7 +111,8 @@ namespace PlotLingoFunctionality.Plots
                 l.X2 = l.X1 + 0.20 + 0.01 * letterLength;
 
                 // Plot it when we have a canvas to plot it against.
-                ctx.AddPostplotHook((mctx, c) => {
+                ctx.AddPostplotHook((mctx, c) =>
+                {
                     l.Draw();
                     l.SetFillColor(c.FillColor);
                 });

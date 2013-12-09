@@ -19,6 +19,8 @@ namespace PlotLingoFunctionality.Plots
         {
             var clone = h1.Clone() as ROOTNET.Interface.NTH1;
             clone.Add(h2);
+            Tags.CopyTags(h1, clone);
+            Tags.CopyTags(h2, clone);
             return clone;
         }
 
@@ -32,6 +34,7 @@ namespace PlotLingoFunctionality.Plots
         {
             var clone = h.Clone() as ROOTNET.Interface.NTH1;
             clone.Scale(scaleFactor);
+            Tags.CopyTags(h, clone);
             return clone;
         }
     }
