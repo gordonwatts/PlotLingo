@@ -135,14 +135,19 @@ namespace PlotLingoConsole
 
             Console.WriteLine("There were {0} results.", results.Where(r => r is IPlotScriptResult).Count());
             int sequenceNumber = 0;
+            var written = new HashSet<string>();
             foreach (var r in results)
             {
                 var pr = r as IPlotScriptResult;
                 if (pr != null)
                 {
                     // Generate a filename for saving this data
-                    var outFNameStub = string.Format("{0}/{1}-{2}-{3}", fi.DirectoryName, Path.GetFileNameWithoutExtension(fi.Name), pr.Name.FileNameSantize(), sequenceNumber);
-                    sequenceNumber++;
+                    var outFNameStub = string.Format("{0}/{1} - {2}", fi.DirectoryName, Path.GetFileNameWithoutExtension(fi.Name), pr.Name.FileNameSantize());
+                    if (written.Contains(outFNameStub))
+                    {
+                        outFNameStub = string.Format("{0}/{1} - {2} - {3}", fi.DirectoryName, Path.GetFileNameWithoutExtension(fi.Name), pr.Name.FileNameSantize(), sequenceNumber);
+                    }
+                    written.Add(outFNameStub);
                     var outputs = pr.Save(outFNameStub);
                     foreach (var o in outputs)
                     {
