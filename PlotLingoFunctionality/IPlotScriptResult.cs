@@ -1,4 +1,5 @@
 ﻿
+using PlotLingoLib;
 using System.Collections.Generic;
 using System.IO;
 namespace PlotLingoFunctionality
@@ -19,6 +20,6 @@ namespace PlotLingoFunctionality
         /// </summary>
         /// <param name="filenameStub"></param>
         /// <returns></returns>
-        IEnumerable<FileInfo> Save(string filenameStub);
+        IEnumerable<FileInfo> Save(Context ctx, string filenameStub);
     }
 }

@@ -15,7 +15,7 @@ namespace PlotLingoLib
         /// </summary>
         /// <param name="nv"></param>
         /// <param name="p"></param>
-        internal void SetVariableValue(string nv, object p)
+        public void SetVariableValue(string nv, object p)
         {
             _variables[nv] = p;
         }
@@ -25,12 +25,41 @@ namespace PlotLingoLib
         /// </summary>
         /// <param name="nv"></param>
         /// <returns></returns>
-        internal object GetVariableValue(string nv)
+        public object GetVariableValue(string nv)
         {
             object r;
             if (_variables.TryGetValue(nv, out r))
                 return r;
             throw new ArgumentException(string.Format("Variable {0} is not defined.", nv));
+        }
+
+        /// <summary>
+        /// Cache of private variables that we keep around - should never be used for public variable
+        /// resolution.
+        /// </summary>
+        private Dictionary<string, object> _internalVariables = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Add internal variable.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <param name="val"></param>
+        public void AddInternalVariable(string v, object val)
+        {
+            _internalVariables[v] = val;
+        }
+
+        /// <summary>
+        /// Return an internal variable, or null if we don't know about it.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public object GetInternalVariable(string v)
+        {
+            object val = null;
+            if (_internalVariables.TryGetValue(v, out val))
+                return val;
+            return null;
         }
 
         /// <summary>

@@ -15,12 +15,12 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="h1"></param>
         /// <param name="h2"></param>
         /// <returns></returns>
-        public static ROOTNET.Interface.NTH1 OperatorPlus(ROOTNET.Interface.NTH1 h1, ROOTNET.Interface.NTH1 h2)
+        public static ROOTNET.Interface.NTH1 OperatorPlus(Context ctx, ROOTNET.Interface.NTH1 h1, ROOTNET.Interface.NTH1 h2)
         {
             var clone = h1.Clone() as ROOTNET.Interface.NTH1;
             clone.Add(h2);
-            Tags.CopyTags(h1, clone);
-            Tags.CopyTags(h2, clone);
+            Tags.CopyTags(ctx, h1, clone);
+            Tags.CopyTags(ctx, h2, clone);
             return clone;
         }
 
@@ -30,11 +30,11 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="h"></param>
         /// <param name="scaleFactor"></param>
         /// <returns></returns>
-        public static ROOTNET.Interface.NTH1 OperatorMultiply(ROOTNET.Interface.NTH1 h, double scaleFactor)
+        public static ROOTNET.Interface.NTH1 OperatorMultiply(Context ctx, ROOTNET.Interface.NTH1 h, double scaleFactor)
         {
             var clone = h.Clone() as ROOTNET.Interface.NTH1;
             clone.Scale(scaleFactor);
-            Tags.CopyTags(h, clone);
+            Tags.CopyTags(ctx, h, clone);
             return clone;
         }
     }

@@ -129,7 +129,7 @@ namespace PlotLingoConsole
             Console.WriteLine("Parsing & Executing...");
 
             var results = new List<object>();
-            RunPlot.Eval(files, new Action<object>[] { o => results.Add(o) });
+            var ctx = RunPlot.Eval(files, new Action<object>[] { o => results.Add(o) });
 
             // For each result, see if it can be reported or not.
 
@@ -148,7 +148,7 @@ namespace PlotLingoConsole
                         outFNameStub = string.Format("{0}/{1} - {2} - {3}", fi.DirectoryName, Path.GetFileNameWithoutExtension(fi.Name), pr.Name.FileNameSantize(), sequenceNumber);
                     }
                     written.Add(outFNameStub);
-                    var outputs = pr.Save(outFNameStub);
+                    var outputs = pr.Save(ctx, outFNameStub);
                     foreach (var o in outputs)
                     {
                         Console.WriteLine("  Wrote {0}", o.Name);

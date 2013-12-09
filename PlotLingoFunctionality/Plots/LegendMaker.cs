@@ -84,7 +84,7 @@ namespace PlotLingoFunctionality.Plots
         /// See if we can't set the legend colors.
         /// </summary>
         /// <param name="ctx"></param>
-        private static void SetLegendColors(PlotContext ctx)
+        private static void SetLegendColors(Context codeContext, PlotContext ctx)
         {
             var l = new ROOTNET.NTLegend(0.2, 0.2, 0.4, 0.4);
             int count = 0;
@@ -93,7 +93,7 @@ namespace PlotLingoFunctionality.Plots
             {
                 foreach (var legInfo in _legendInfo)
                 {
-                    if (p.Title.IndexOf(legInfo.Key) >= 0 || Tags.hasTag(p, legInfo.Key))
+                    if (p.Title.IndexOf(legInfo.Key) >= 0 || Tags.hasTag(codeContext, p, legInfo.Key))
                     {
                         p.LineColor = (short)legInfo.Value.Color;
                         l.AddEntry(p, legInfo.Value.Title);

@@ -16,7 +16,7 @@ namespace PlotLingoLib
         /// Given a stream, read and plot as needed.
         /// </summary>
         /// <param name="reader"></param>
-        public static void Eval(StreamReader reader, IEnumerable<Action<object>> expressionEvaluationReporters = null)
+        public static Context Eval(StreamReader reader, IEnumerable<Action<object>> expressionEvaluationReporters = null)
         {
             var sb = new StringBuilder();
             foreach (var l in reader.ReadFromReader())
@@ -24,7 +24,7 @@ namespace PlotLingoLib
                 sb.AppendLine(l);
             }
 
-            Eval(sb.ToString(), expressionEvaluationReporters);
+            return Eval(sb.ToString(), expressionEvaluationReporters);
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace PlotLingoLib
         /// </summary>
         /// <param name="sb"></param>
         /// <param name="expressionEvaluationReporters"></param>
-        private static void Eval(string sb, IEnumerable<Action<object>> expressionEvaluationReporters)
+        private static Context Eval(string sb, IEnumerable<Action<object>> expressionEvaluationReporters)
         {
             try
             {
@@ -57,6 +57,8 @@ namespace PlotLingoLib
 
                 // Some simple diagnostics
                 Console.WriteLine("Parsed and evaluated {0} statements.", r.Length);
+
+                return c;
             }
             catch (Exception e)
             {
@@ -66,6 +68,7 @@ namespace PlotLingoLib
                     e = e.InnerException;
                     Console.WriteLine(" -> {0}", e.Message);
                 }
+                return null;
             }
         }
 
@@ -74,7 +77,7 @@ namespace PlotLingoLib
         /// </summary>
         /// <param name="files"></param>
         /// <param name="action"></param>
-        public static void Eval(this List<FileInfo> files, Action<object>[] actions = null)
+        public static Context Eval(this List<FileInfo> files, Action<object>[] actions = null)
         {
             for (int i = 0; i < 10; i++)
                 try
@@ -91,8 +94,7 @@ namespace PlotLingoLib
                         }
                     }
 
-                    Eval(sb.ToString(), actions);
-                    return;
+                    return Eval(sb.ToString(), actions);
                 }
                 catch (IOException e)
                 {
@@ -100,21 +102,21 @@ namespace PlotLingoLib
                     i--;
                     Thread.Sleep(10);
                 }
+            return null;
         }
 
         /// <summary>
         /// Evaluate the contents of a file
         /// </summary>
         /// <param name="fi"></param>
-        public static void Eval(this FileInfo fi, IEnumerable<Action<object>> expressionEvaluationReporters = null)
+        public static Context Eval(this FileInfo fi, IEnumerable<Action<object>> expressionEvaluationReporters = null)
         {
             for (int i = 0; i < 10; i++)
                 try
                 {
                     using (var reader = fi.OpenText())
                     {
-                        Eval(reader, expressionEvaluationReporters);
-                        return;
+                        return Eval(reader, expressionEvaluationReporters);
                     }
                 }
                 catch (IOException e)
@@ -123,6 +125,7 @@ namespace PlotLingoLib
                     i--;
                     Thread.Sleep(10);
                 }
+            return null;
         }
 
         /// <summary>
