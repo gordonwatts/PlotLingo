@@ -60,9 +60,14 @@ namespace PlotLingoFunctionality.Plots
         private string _title = null;
 
         /// <summary>
+        /// Get the filename.
+        /// </summary>
+        private string _filename;
+
+        /// <summary>
         /// Init the title if it hasn't been already.
         /// </summary>
-        private void InitTitle()
+        private void InitTitleAndFileName()
         {
             if (_title == null)
             {
@@ -74,6 +79,11 @@ namespace PlotLingoFunctionality.Plots
                 {
                     _title = _plots[0].Title;
                 }
+            }
+
+            if (_filename == null)
+            {
+                _filename = _title;
             }
         }
 
@@ -89,11 +99,22 @@ namespace PlotLingoFunctionality.Plots
         }
 
         /// <summary>
+        /// Alter the name of the file.
+        /// </summary>
+        /// <param name="fname"></param>
+        /// <returns></returns>
+        public PlotContext filename(string fname)
+        {
+            _filename = fname;
+            return this;
+        }
+
+        /// <summary>
         /// Return the name of this script.
         /// </summary>
         public string Name
         {
-            get { InitTitle(); return _title; }
+            get { InitTitleAndFileName(); return _filename; }
         }
 
         /// <summary>
@@ -103,7 +124,7 @@ namespace PlotLingoFunctionality.Plots
         /// <returns></returns>
         public IEnumerable<FileInfo> Save(string filenameStub)
         {
-            InitTitle();
+            InitTitleAndFileName();
 
             // Now, do the pre-plot hook
             foreach (var act in _prePlotHook)
