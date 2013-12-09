@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace PlotLingoLib.Expressions.Values
 {
@@ -26,13 +22,38 @@ namespace PlotLingoLib.Expressions.Values
         }
 
         /// <summary>
+        /// Pattern to find anything that needs replacement
+        /// </summary>
+        static Regex _findVarSub = new Regex(@"{(\w+)}");
+
+        /// <summary>
         /// Evaluate a string value.
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
         public object Evaluate(Context c)
         {
-            return _content;
+            // Find all variable subsitutions that have to be done in the string.
+            var myl = _content;
+            var m = _findVarSub.Match(myl);
+            while (m != null && m.Success)
+            {
+                var vname = m.Groups[1].Value;
+                var value = c.GetVariableValueOrNull(vname);
+                int position = m.Groups[1].Index;
+                if (value.Item1)
+                {
+                    var s = value.Item2.ToString();
+                    myl = myl.Replace("{" + vname + "}", s);
+                    position += s.Length;
+                }
+                else
+                {
+                    position += m.Groups[1].Length;
+                }
+                m = position > myl.Length ? null : _findVarSub.Match(myl, position);
+            }
+            return myl;
         }
 
         /// <summary>
@@ -41,7 +62,7 @@ namespace PlotLingoLib.Expressions.Values
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("\"{0}\"",_content);
+            return string.Format("\"{0}\"", _content);
         }
     }
 }

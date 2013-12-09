@@ -34,6 +34,19 @@ namespace PlotLingoLib
         }
 
         /// <summary>
+        /// Return the variable value if we know about it, or null.
+        /// </summary>
+        /// <param name="nv">Variable to look up</param>
+        /// <returns>Null if the variable isn't defiend, or the value</returns>
+        internal Tuple<bool, object> GetVariableValueOrNull(string nv)
+        {
+            object r;
+            if (_variables.TryGetValue(nv, out r))
+                return Tuple.Create(true, r);
+            return Tuple.Create(false, (object)null);
+        }
+
+        /// <summary>
         /// Maintain a list of actions to perform when an expression is evaluated.
         /// </summary>
         private List<Action<object>> _expressionEvaluationCallbacks = new List<Action<object>>();
@@ -70,7 +83,7 @@ namespace PlotLingoLib
         /// <param name="functionName">Function to call. First argument is the object this was called against (or null if a function) and the second is the return value from the function or method. And returns the new value of the result object (which may be the same as the old one).</param>
         /// <param name="callback">Name of the method or function that should trigger this callback</param>
         /// <param name="slotname">The slot where the callback is called. One function per slot, and overwrite anything that was there.</param>
-        public void AddPostCallHook (string functionName, string slotname, Func<object, object, object> callback)
+        public void AddPostCallHook(string functionName, string slotname, Func<object, object, object> callback)
         {
             if (!_postCallHooks.ContainsKey(functionName))
                 _postCallHooks[functionName] = new Dictionary<string, Func<object, object, object>>();
@@ -86,7 +99,7 @@ namespace PlotLingoLib
         /// <param name="obj"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        internal object ExecutePostCallHook (string fmName, object obj, object result)
+        internal object ExecutePostCallHook(string fmName, object obj, object result)
         {
             Dictionary<string, Func<object, object, object>> callbacks;
             if (_postCallHooks.TryGetValue(fmName, out callbacks))
