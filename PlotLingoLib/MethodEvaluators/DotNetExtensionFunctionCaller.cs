@@ -20,12 +20,16 @@ namespace PlotLingoLib.MethodEvaluators
             var args = new object[] { obj }.Concat(arguments).ToArray();
 
             // All functions that look like they might be right. Fail if we find too many, but if we can't find one, then
-            // that means we should let some other method binder attempt.
-            var funcs = (from fo in ExtensibilityControl.Get().FunctionObjects
-                         let m = fo.GetType().GetMethod(methodName, args.Select(v => v.GetType()).ToArray())
-                         where m != null
-                         where m.IsStatic
-                         select m).ToArray();
+            // that means we should let some other method binder attempt. Also, look for the context being passed first.
+            var funcs = FindMethodForArgs(methodName, args);
+
+            if (funcs.Length == 0)
+            {
+                var args1 = new object[] { c }.Concat(args).ToArray();
+                funcs = FindMethodForArgs(methodName, args1);
+                if (funcs.Length != 0)
+                    args = args1;
+            }
 
             if (funcs.Length == 0)
                 return new Tuple<bool, object>(false, null);
@@ -51,6 +55,16 @@ namespace PlotLingoLib.MethodEvaluators
                 // We don't care above the invokation - just what actually threw it inside.
                 throw e.InnerException;
             }
+        }
+
+        private static MethodInfo[] FindMethodForArgs(string methodName, object[] args)
+        {
+            var funcs = (from fo in ExtensibilityControl.Get().FunctionObjects
+                         let m = fo.GetType().GetMethod(methodName, args.Select(v => v.GetType()).ToArray())
+                         where m != null
+                         where m.IsStatic
+                         select m).ToArray();
+            return funcs;
         }
     }
 }

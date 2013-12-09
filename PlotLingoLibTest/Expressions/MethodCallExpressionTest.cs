@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PlotLingoLib;
 using PlotLingoLib.Expressions;
 using PlotLingoLib.Expressions.Values;
+using System;
 using System.ComponentModel.Composition;
 
 namespace PlotLingoLibTest.Expressions
@@ -106,6 +106,17 @@ namespace PlotLingoLibTest.Expressions
         }
 
         [TestMethod]
+        public void TestExtensionMethodWithContext()
+        {
+            var ctx = new Context();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new StringValue("hi");
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallOneStringWithCTX", new IExpression[] { s }));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual(6, r, "3*length of string");
+        }
+
+        [TestMethod]
         public void TestExtensionMethodOverridesSameObjectGuy()
         {
             var ctx = new Context();
@@ -123,7 +134,8 @@ namespace PlotLingoLibTest.Expressions
             var tc = new testClass();
             ctx.SetVariableValue("p", tc);
             int count = 0;
-            ctx.AddPostCallHook("CallOneStringArgExt", "test", (obj, result) => {
+            ctx.AddPostCallHook("CallOneStringArgExt", "test", (obj, result) =>
+            {
                 count++;
                 Assert.AreEqual(tc, obj, "Object that is getting the callb ack");
                 Assert.AreEqual(4, result, "Result of callback");
@@ -175,7 +187,7 @@ namespace PlotLingoLibTest.Expressions
                 return 5;
             }
 
-            public int CallOneStringArg (string hi)
+            public int CallOneStringArg(string hi)
             {
                 return hi.Length;
             }
@@ -192,12 +204,17 @@ namespace PlotLingoLibTest.Expressions
         {
             public static int CallOneStringToOverride(testClass a, string hi)
             {
-                return 2*hi.Length;
+                return 2 * hi.Length;
             }
 
-            public static int CallOneStringArgExt (testClass a, string hi)
+            public static int CallOneStringArgExt(testClass a, string hi)
             {
-                return 2*hi.Length;
+                return 2 * hi.Length;
+            }
+
+            public static int CallOneStringWithCTX(Context ctx, testClass a, string hi)
+            {
+                return 3 * hi.Length;
             }
         }
     }
