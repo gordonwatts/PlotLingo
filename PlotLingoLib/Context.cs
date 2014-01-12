@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.IO;
 namespace PlotLingoLib
 {
     /// <summary>
@@ -149,5 +150,51 @@ namespace PlotLingoLib
             }
             return result;
         }
+
+        /// <summary>
+        /// This is the stack of scripts that are being executed right now.
+        /// </summary>
+        private Stack<FileInfo> _scriptStack = new Stack<FileInfo>();
+
+        /// <summary>
+        /// Returns the current file that current statements are being executed from. Returns a FileInfo that
+        /// points to a file called "in memory" if no actual script is being executed.
+        /// </summary>
+        public FileInfo CurrentScriptFile
+        {
+            get
+            {
+                if (_scriptStack.Count == 0)
+                {
+                    return new FileInfo("in memory");
+                }
+                else
+                {
+                    return _scriptStack.Peek();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Start executing a new script
+        /// </summary>
+        /// <param name="fileInfo"></param>
+        internal void ScriptFileContextPush(FileInfo fileInfo)
+        {
+            _scriptStack.Push(fileInfo);
+        }
+
+        /// <summary>
+        /// Finish up executing a script - so the context is no longer valid.
+        /// </summary>
+        internal void ScriptFileContextPop()
+        {
+            _scriptStack.Pop();
+        }
+
+        /// <summary>
+        /// True if we are currently executing a script
+        /// </summary>
+        public bool ExecutingScript { get { return _scriptStack.Count != 0; } }
     }
 }

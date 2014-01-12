@@ -2,6 +2,7 @@
 using PlotLingoLib;
 using PlotLingoLib.Expressions.Values;
 using System;
+using System.IO;
 
 namespace PlotLingoLibTest
 {
@@ -49,6 +50,45 @@ namespace PlotLingoLibTest
             c.RemoveExpressionStatementEvaluationCallback(saver);
             es.Evaluate(c);
             Assert.IsNull(r, "result of running");
+        }
+
+        [TestMethod]
+        public void DefaultScriptIsInMemory()
+        {
+            var c = new Context();
+            Assert.AreEqual("in memory", c.CurrentScriptFile.Name, "default script name");
+        }
+
+        [TestMethod]
+        public void AfterEmptyStackDefaultScriptStillThere()
+        {
+            var c = new Context();
+            c.ScriptFileContextPush(new FileInfo("dude.txt"));
+            c.ScriptFileContextPop();
+            Assert.AreEqual("in memory", c.CurrentScriptFile.Name, "default script name");
+        }
+
+        [TestMethod]
+        public void ScriptFileContextChangesAfterUse()
+        {
+            var c = new Context();
+            c.ScriptFileContextPush(new FileInfo("dude.txt"));
+            Assert.AreEqual("dude.txt", c.CurrentScriptFile.Name, "filename");
+        }
+
+        [TestMethod]
+        public void ExecutingScriptFalse()
+        {
+            var c = new Context();
+            Assert.IsFalse(c.ExecutingScript, "false");
+        }
+
+        [TestMethod]
+        public void ExecutingScriptTrue()
+        {
+            var c = new Context();
+            c.ScriptFileContextPush(new FileInfo("dude.txt"));
+            Assert.IsTrue(c.ExecutingScript, "false");
         }
     }
 }
