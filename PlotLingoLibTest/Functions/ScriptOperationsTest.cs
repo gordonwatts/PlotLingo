@@ -48,12 +48,12 @@ namespace PlotLingoLibTest.Functions
         [DeploymentItem("Functions/LoadFileWithSideEffects.plotlingo")]
         public void LoadFromMainScriptDirectory()
         {
-            if (Directory.Exists("dummy"))
-                Directory.Delete("dummy", true);
+            if (Directory.Exists("LoadFromMainScriptDirectory"))
+                Directory.Delete("LoadFromMainScriptDirectory", true);
 
-            var dirinfo = Directory.CreateDirectory("dummy");
+            var dirinfo = Directory.CreateDirectory("LoadFromMainScriptDirectory");
 
-            File.Copy("LoadFileWithSideEffects.plotlingo", @"dummy\effects.plotlingo");
+            File.Copy("LoadFileWithSideEffects.plotlingo", @"LoadFromMainScriptDirectory\effects.plotlingo");
 
             var f = new FunctionExpression("include", new IExpression[] { new StringValue("effects.plotlingo") });
             var c = new Context();
@@ -66,18 +66,44 @@ namespace PlotLingoLibTest.Functions
         /// When we load a file, after done loading, the script directory shouldn't have changed.
         /// </summary>
         [TestMethod]
+        [DeploymentItem("Functions/LoadFileWithSideEffects.plotlingo")]
         public void ScriptFileSameWhenRunning()
         {
-            Assert.Inconclusive();
+            if (Directory.Exists("ScriptFileSameWhenRunning"))
+                Directory.Delete("ScriptFileSameWhenRunning", true);
+
+            var dirinfo = Directory.CreateDirectory("ScriptFileSameWhenRunning");
+
+            File.Copy("LoadFileWithSideEffects.plotlingo", @"ScriptFileSameWhenRunning\effects.plotlingo");
+
+            var f = new FunctionExpression("include", new IExpression[] { new StringValue("effects.plotlingo") });
+            var c = new Context();
+            c.ScriptFileContextPush(new FileInfo(string.Format(@"{0}\bogus.plotlingo", dirinfo.FullName)));
+            var r = f.Evaluate(c);
+            Assert.AreEqual("bogus.plotlingo", c.CurrentScriptFile.Name, "Current script filename");
         }
 
         /// <summary>
         /// When we are running another script, the current script file should be reset.
         /// </summary>
         [TestMethod]
+        [DeploymentItem("Functions/ReturnCurrentScriptName.plotlingo")]
         public void ScriptFileSetCorrectlyDuringLoad()
         {
-            Assert.Inconclusive();
+            var f = new FunctionExpression("include", new IExpression[] { new StringValue("ReturnCurrentScriptName.plotlingo") });
+            var c = new Context();
+            var r = f.Evaluate(c) as string;
+            Assert.IsTrue(r.Contains("ReturnCurrentScriptName.plotlingo"), "the script name in the file");
+        }
+
+        [TestMethod]
+        public void CurrentScriptFunction()
+        {
+            var f = new FunctionExpression("currentscript");
+            var c = new Context();
+            c.ScriptFileContextPush(new FileInfo(@"{0}\bogus.plotlingo"));
+            var r = f.Evaluate(c) as string;
+            Assert.IsTrue(r.Contains("bogus.plotlingo"), "Current script filename");
         }
     }
 }

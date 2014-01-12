@@ -81,6 +81,9 @@
     <None Include="Functions\LoadFileWithSideEffects.plotlingo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Functions\ReturnCurrentScriptName.plotlingo">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

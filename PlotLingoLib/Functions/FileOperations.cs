@@ -17,6 +17,15 @@ namespace PlotLingoLib.Functions
         /// <returns></returns>
         public static string readfile(Context c, string filename)
         {
+            // THe search stradegy isn't easy. If this is a relative file, then we need to look near the currently
+            // executing script. If the currently executing script is "in memory", then we don't care.
+
+            if (!Path.IsPathRooted(filename) && c.ExecutingScript)
+            {
+                filename = Path.Combine(c.CurrentScriptFile.DirectoryName, filename);
+            }
+
+            // Attempt to open the file and read it in!
             var f = new FileInfo(filename);
             if (!f.Exists)
                 throw new FileNotFoundException(string.Format("Could not load file '{0}' for reading", filename), filename);

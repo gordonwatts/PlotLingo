@@ -2,6 +2,7 @@
 using Sprache;
 using System;
 using System.ComponentModel.Composition;
+using System.IO;
 
 namespace PlotLingoLib.Functions
 {
@@ -20,7 +21,15 @@ namespace PlotLingoLib.Functions
         public static object include(Context c, string filename)
         {
             var content = FileOperations.readfile(c, filename);
-            return eval(c, content);
+            c.ScriptFileContextPush(new FileInfo(filename));
+            try
+            {
+                return eval(c, content);
+            }
+            finally
+            {
+                c.ScriptFileContextPop();
+            }
         }
 
         /// <summary>
@@ -48,6 +57,16 @@ namespace PlotLingoLib.Functions
                 c.RemoveExpressionStatementEvaluationCallback(saver);
             }
             return result;
+        }
+
+        /// <summary>
+        /// Returns the full path of the currently executing script.
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static string currentscript(Context c)
+        {
+            return c.CurrentScriptFile.FullName;
         }
     }
 }
