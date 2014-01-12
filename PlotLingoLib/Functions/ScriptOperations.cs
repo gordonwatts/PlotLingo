@@ -3,6 +3,7 @@ using Sprache;
 using System;
 using System.ComponentModel.Composition;
 using System.IO;
+using System.Text;
 
 namespace PlotLingoLib.Functions
 {
@@ -21,10 +22,25 @@ namespace PlotLingoLib.Functions
         public static object include(Context c, string filename)
         {
             var content = FileOperations.readfile(c, filename);
+
+            // Parse for comments, etc.
+
+            var sb = new StringBuilder();
+            using (var rdr = (new StringReader(content)))
+            {
+                foreach (var l in rdr.ReadFromReader())
+                {
+                    sb.AppendLine(l);
+                }
+
+            }
+
+            // Now, push the script context, and off we go.
+
             c.ScriptFileContextPush(new FileInfo(filename));
             try
             {
-                return eval(c, content);
+                return eval(c, sb.ToString());
             }
             finally
             {

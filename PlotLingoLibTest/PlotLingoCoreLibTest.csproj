@@ -70,6 +70,7 @@
     <Compile Include="ContextTest.cs" />
     <Compile Include="Expressions\FunctionExpressionTest.cs" />
     <Compile Include="Statements\ExpressionStatementTest.cs" />
+    <Compile Include="RunPlotUnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PlotLingoLib\PlotLingoCoreLib.csproj">
@@ -82,6 +83,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Functions\ReturnCurrentScriptName.plotlingo">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Functions\ScriptWithComments.plotlingo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />

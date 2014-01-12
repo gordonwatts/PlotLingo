@@ -16,7 +16,7 @@ namespace PlotLingoLib
         /// Given a stream, read and plot as needed.
         /// </summary>
         /// <param name="reader"></param>
-        public static Context Eval(StreamReader reader, IEnumerable<Action<object>> expressionEvaluationReporters = null)
+        public static Context Eval(StreamReader reader, IEnumerable<Action<object>> expressionEvaluationReporters = null, FileInfo mainScriptFile = null)
         {
             var sb = new StringBuilder();
             foreach (var l in reader.ReadFromReader())
@@ -24,15 +24,16 @@ namespace PlotLingoLib
                 sb.AppendLine(l);
             }
 
-            return Eval(sb.ToString(), expressionEvaluationReporters);
+            return Eval(sb.ToString(), expressionEvaluationReporters, mainScriptFile);
         }
 
         /// <summary>
         /// Run evaluation after we have read in everything.
         /// </summary>
         /// <param name="sb"></param>
+        /// <param name="scriptFile">The script file we are taking commands from - to establish a context.</param>
         /// <param name="expressionEvaluationReporters"></param>
-        private static Context Eval(string sb, IEnumerable<Action<object>> expressionEvaluationReporters)
+        private static Context Eval(string sb, IEnumerable<Action<object>> expressionEvaluationReporters, FileInfo scriptFile = null)
         {
             try
             {
@@ -41,6 +42,8 @@ namespace PlotLingoLib
 
                 // For exvaluation, get the context setup correctly.
                 var c = new Context();
+                if (scriptFile != null)
+                    c.ScriptFileContextPush(scriptFile);
                 if (expressionEvaluationReporters != null)
                 {
                     foreach (var a in expressionEvaluationReporters)
@@ -77,7 +80,7 @@ namespace PlotLingoLib
         /// </summary>
         /// <param name="files"></param>
         /// <param name="action"></param>
-        public static Context Eval(this List<FileInfo> files, Action<object>[] actions = null)
+        public static Context Eval(this List<FileInfo> files, Action<object>[] actions = null, FileInfo mainScriptFile = null)
         {
             for (int i = 0; i < 10; i++)
                 try
@@ -94,7 +97,7 @@ namespace PlotLingoLib
                         }
                     }
 
-                    return Eval(sb.ToString(), actions);
+                    return Eval(sb.ToString(), actions, mainScriptFile);
                 }
                 catch (IOException e)
                 {
@@ -134,24 +137,87 @@ namespace PlotLingoLib
         /// <param name="finfo"></param>
         /// <returns></returns>
         /// <remarks>Implements commends with // at the start of the line, or # anywhere in the line. Doesn't escape the character if it is in quotes!</remarks>
-        private static IEnumerable<string> ReadFromReader(this StreamReader reader)
+        public static IEnumerable<string> ReadFromReader(this TextReader reader)
         {
-            while (!reader.EndOfStream)
+            bool done = false;
+            while (!done)
             {
-                var line = reader.ReadLine().Trim();
-                if (line.StartsWith("//"))
-                    continue;
-
-                var commentIndex = line.IndexOf("#");
-                if (commentIndex >= 0)
+                var line = reader.ReadLine();
+                if (line == null)
                 {
-                    line = line.Substring(0, commentIndex);
+                    done = true;
+                    continue;
                 }
+
                 line = line.Trim();
+
+                line = StripLineOfComments(line);
 
                 if (line.Length != 0)
                     yield return line;
             }
+        }
+
+        /// <summary>
+        /// Strip a line of all comments, but watch out for quotes!
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        private static string StripLineOfComments(string line)
+        {
+            var pos = FindGoodCommentStart(line);
+            if (pos >= 0)
+                return line.Substring(0, pos).Trim();
+            return line;
+        }
+
+        /// <summary>
+        /// Find the first comment character, if there is one, and take into
+        /// account quoted strings.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        private static int FindGoodCommentStart(string line)
+        {
+            int startPost = 0;
+
+            while (startPost < line.Length)
+            {
+                // Find the first comment character in the line
+                var commentChar = FirstCommentCharacter(line, startPost);
+
+                // Next, see if we have a string to contend with.
+                var quote = line.IndexOf("\"", startPost);
+                if (quote < 0)
+                    return commentChar;
+                if (quote > commentChar)
+                    return commentChar;
+
+                // So, commentChar > quote - which might mean we are in trouble...
+
+                var closeQuote = line.IndexOf("\"", quote + 1);
+                if (closeQuote < 0)
+                    return commentChar;
+
+                startPost = closeQuote + 1;
+            }
+
+            return -1;
+        }
+
+        // Find the first comment character in the string
+        private static int FirstCommentCharacter(string line, int startPos)
+        {
+            var pound = line.IndexOf("#", startPos);
+            var doubleSlash = line.IndexOf("//", startPos);
+
+            if (pound < 0)
+                return doubleSlash;
+
+            if (doubleSlash < 0)
+                return pound;
+
+            return Math.Min(pound, doubleSlash);
         }
     }
 }

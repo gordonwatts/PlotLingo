@@ -105,5 +105,15 @@ namespace PlotLingoLibTest.Functions
             var r = f.Evaluate(c) as string;
             Assert.IsTrue(r.Contains("bogus.plotlingo"), "Current script filename");
         }
+
+        [TestMethod]
+        [DeploymentItem("Functions/ScriptWithComments.plotlingo")]
+        public void ScriptWithComments()
+        {
+            var f = new FunctionExpression("include", new IExpression[] { new StringValue("ScriptWithComments.plotlingo") });
+            var c = new Context();
+            var r = f.Evaluate(c);
+            Assert.AreEqual(5, c.GetVariableValue("i"), "variable i");
+        }
     }
 }

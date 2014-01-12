@@ -129,7 +129,7 @@ namespace PlotLingoConsole
             Console.WriteLine("Parsing & Executing...");
 
             var results = new List<object>();
-            var ctx = RunPlot.Eval(files, new Action<object>[] { o => results.Add(o) });
+            var ctx = RunPlot.Eval(files, new Action<object>[] { o => results.Add(o) }, fi);
 
             // For each result, see if it can be reported or not.
 
