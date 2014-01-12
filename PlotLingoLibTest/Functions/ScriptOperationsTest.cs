@@ -28,5 +28,15 @@ namespace PlotLingoLibTest.Functions
             var r = f.Evaluate(c);
             Assert.AreEqual(5, c.GetVariableValue("i"), "variable i");
         }
+
+        [TestMethod]
+        [DeploymentItem("Functions/LoadFileWithSideEffects.plotlingo")]
+        public void LoadFileWithSideEffects()
+        {
+            var f = new FunctionExpression("include", new IExpression[] { new StringValue("LoadFileWithSideEffects.plotlingo") });
+            var c = new Context();
+            var r = f.Evaluate(c);
+            Assert.AreEqual(5, c.GetVariableValue("i"), "variable i");
+        }
     }
 }

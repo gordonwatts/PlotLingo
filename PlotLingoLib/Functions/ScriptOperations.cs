@@ -19,12 +19,8 @@ namespace PlotLingoLib.Functions
         /// <returns>Returns whatever the last statement of the script returns.</returns>
         public static object include(Context c, string filename)
         {
-            // Find the file
-
-            // Load and parse and evaluate the file
-
-            // Return the last value of the guy.
-            return null;
+            var content = FileOperations.readfile(c, filename);
+            return eval(c, content);
         }
 
         /// <summary>
