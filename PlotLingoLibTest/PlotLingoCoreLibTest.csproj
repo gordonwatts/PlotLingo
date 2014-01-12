@@ -63,6 +63,7 @@
     <Compile Include="Expressions\Values\StringValueTest.cs" />
     <Compile Include="Functions\DictionaryOperationsTest.cs" />
     <Compile Include="Functions\NumberOperationsTest.cs" />
+    <Compile Include="Functions\ScriptOperationsTest.cs" />
     <Compile Include="GrammerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ContextTest.cs" />

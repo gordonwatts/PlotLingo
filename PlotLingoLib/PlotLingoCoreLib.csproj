@@ -107,6 +107,7 @@
     <Compile Include="ExtensibilityControl.cs" />
     <Compile Include="Functions\DictionaryOperations.cs" />
     <Compile Include="Functions\NumberOperations.cs" />
+    <Compile Include="Functions\ScriptOperations.cs" />
     <Compile Include="IArray.cs" />
     <Compile Include="IFunctionObject.cs" />
     <Compile Include="MethodEvaluators\DotNetExtensionFunctionCaller.cs" />

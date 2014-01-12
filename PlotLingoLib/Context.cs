@@ -90,6 +90,15 @@ namespace PlotLingoLib
         }
 
         /// <summary>
+        /// Remove an expression statement eval callback
+        /// </summary>
+        /// <param name="act">The saver that was passed to AddExpressionStatementEvaluationCallback.</param>
+        internal void RemoveExpressionStatementEvaluationCallback(Action<object> act)
+        {
+            _expressionEvaluationCallbacks.Remove(act);
+        }
+
+        /// <summary>
         /// Report objects that have been evaluated.
         /// </summary>
         /// <param name="obj"></param>
