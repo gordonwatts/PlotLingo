@@ -176,13 +176,18 @@ namespace PlotLingoLib
         /// <summary>
         /// Parse the term for an expression
         /// </summary>
-        private static readonly Parser<IExpression> TermParser =
+        private static readonly Parser<IExpression> IndividualTermParser =
             from t in FunctionExpressionParser
                 .Or(ValueExpressionParser)
                 .Or(ArrayValueParser)
                 .Or(VariableValueParser)
                 .Or(GroupedExpressionParser)
             select t;
+
+        private static readonly Parser<IExpression> TermParser =
+            from t in IndividualTermParser
+            from e in Parse.Ref(() => ExpressionParser).Contained(OpenBracket, CloseBracket).Optional()
+            select BuildTermFromParts(t, e);
 
         /// <summary>
         /// Find an operator/term pairing
@@ -226,13 +231,6 @@ namespace PlotLingoLib
             select Tuple.Create(funcargs, funcCall as IExpression);
 
         /// <summary>
-        /// Look for reference to a dictionary or array with open and close brackets.
-        /// </summary>
-        private static Parser<Tuple<string, IExpression>> ParseIndexReference =
-            from term in TermParser.Contained(OpenBracket, CloseBracket)
-            select Tuple.Create("[", term);
-
-        /// <summary>
         /// Parse the basic expressions, and their operators, one at a go.
         /// </summary>
         /// <remarks>
@@ -243,7 +241,7 @@ namespace PlotLingoLib
         /// </remarks>
         private static readonly Parser<IExpression> ExpressionParser =
             from t in TermParser
-            from alist in (ParseBinaryOperator.Or(ParseMethodInvoke).Or(ParseIndexReference)).Many().Optional()
+            from alist in (ParseBinaryOperator.Or(ParseMethodInvoke)).Many().Optional()
             select BuildExpressionTree(t, alist);
 
         /// <summary>
@@ -274,7 +272,6 @@ namespace PlotLingoLib
             CombineForOperators(lst, new string[] { "." }, (obj, opName, funcCall) => new MethodCallExpression(obj, funcCall as FunctionExpression));
             CombineForOperators(lst, new string[] { ":", "=>" }, (key, opName, val) => new DictionaryValue(new Tuple<IExpression, IExpression>[] { Tuple.Create(key, val) }));
             CombineForOperators(lst, new string[] { "*", "/" }, (left, opName, right) => new FunctionExpression(opName, new IExpression[] { left, right }));
-            CombineForOperators(lst, new string[] { "[" }, (left, opName, right) => new IndexerRefExpression(left, right));
 
             // Next, just combine the left overs. We could use Combine, but then we'd have to add funny logic to it.
 
@@ -312,6 +309,20 @@ namespace PlotLingoLib
                     index = index + 1;
                 }
             }
+        }
+
+        /// <summary>
+        /// We have parsed an individual term, and perhaps a [] after it.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        private static IExpression BuildTermFromParts(IExpression t, IOption<IExpression> e)
+        {
+            if (e.IsEmpty)
+                return t;
+
+            return new IndexerRefExpression(t, e.Get());
         }
 
         /// <summary>

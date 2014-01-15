@@ -547,5 +547,15 @@ namespace PlotLingoLibTest
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
             Assert.AreEqual("a[5];", r[0].ToString(), "Result of the expression");
         }
+
+        [TestMethod]
+        public void TestDictReferenceInOper()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("a[5]/b[10];");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("/(a[5],b[10]);", r[0].ToString(), "Result of the expression");
+        }
     }
 }
