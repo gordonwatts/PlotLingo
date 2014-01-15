@@ -17,7 +17,7 @@ namespace PlotLingoConsole
             {
                 // Use a debugging filename?
                 //fname = @"C:\Users\Gordon\Downloads\test.plotlingo";
-                fname = @"C:\Users\Gordon\Documents\Code\HVQCDCorrelationStudy\FirstJetStudies\Plots\QuarkGluonJetCompare.plotlingo";
+                fname = @"C:\Users\Gordon\Documents\Code\HVCalRatioNote2012\figures\quarkgluon\QuarkGluonJetCompare.plotlingo";
                 if (!File.Exists(fname))
                 {
                     Console.WriteLine("Invoke this application by opening a plot lingo script file (.plotlingo extension).");
@@ -113,6 +113,12 @@ namespace PlotLingoConsole
         }
 
         /// <summary>
+        /// What should we use to generate file names?
+        /// </summary>
+        //private static string fnameFormat = "{0}/{1} - {2}";
+        private static string fnameFormat = "{0}/{2}";
+
+        /// <summary>
         /// Run the parser over the default file and the plotting file.
         /// </summary>
         /// <param name="fi"></param>
@@ -142,7 +148,7 @@ namespace PlotLingoConsole
                 if (pr != null)
                 {
                     // Generate a filename for saving this data
-                    var outFNameStub = string.Format("{0}/{1} - {2}", fi.DirectoryName, Path.GetFileNameWithoutExtension(fi.Name), pr.Name.FileNameSantize());
+                    var outFNameStub = string.Format(fnameFormat, fi.DirectoryName, Path.GetFileNameWithoutExtension(fi.Name), pr.Name.FileNameSantize());
                     if (written.Contains(outFNameStub))
                     {
                         outFNameStub = string.Format("{0}/{1} - {2} - {3}", fi.DirectoryName, Path.GetFileNameWithoutExtension(fi.Name), pr.Name.FileNameSantize(), sequenceNumber);
