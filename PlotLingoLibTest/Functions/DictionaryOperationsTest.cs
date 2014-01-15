@@ -85,6 +85,87 @@ namespace PlotLingoLibTest.Functions
         }
 
         [TestMethod]
+        public void TestAddEmptyMatricies()
+        {
+            var d1 = new Dictionary<object, object>();
+            var d2 = new Dictionary<object, object>();
+
+            var cl = new FunctionExpression("+", new ObjectValue(d1), new ObjectValue(d2));
+            var c = new Context();
+            var r = cl.Evaluate(c);
+            Assert.IsInstanceOfType(r, typeof(Dictionary<object, object>), "type of result");
+            var rut = r as Dictionary<object, object>;
+            Assert.AreEqual(0, rut.Count, "# of items");
+        }
+
+        [TestMethod]
+        public void TestAddEmptyAndGoodMatricies()
+        {
+            var d1 = new Dictionary<object, object>();
+            d1["hi"] = 10;
+            var d2 = new Dictionary<object, object>();
+
+            var cl = new FunctionExpression("+", new ObjectValue(d1), new ObjectValue(d2));
+            var c = new Context();
+            var r = cl.Evaluate(c);
+            Assert.IsInstanceOfType(r, typeof(Dictionary<object, object>), "type of result");
+            var rut = r as Dictionary<object, object>;
+            Assert.AreEqual(1, rut.Count, "# of items");
+            Assert.AreEqual(10, rut["hi"], "value of hi");
+        }
+
+        [TestMethod]
+        public void TestAddEmptyAndGoodMatriciesSwitched()
+        {
+            var d1 = new Dictionary<object, object>();
+            d1["hi"] = 10;
+            var d2 = new Dictionary<object, object>();
+
+            var cl = new FunctionExpression("+", new ObjectValue(d2), new ObjectValue(d1));
+            var c = new Context();
+            var r = cl.Evaluate(c);
+            Assert.IsInstanceOfType(r, typeof(Dictionary<object, object>), "type of result");
+            var rut = r as Dictionary<object, object>;
+            Assert.AreEqual(1, rut.Count, "# of items");
+            Assert.AreEqual(10, rut["hi"], "value of hi");
+        }
+
+        [TestMethod]
+        public void TestAddGoodMatchingMatricies()
+        {
+            var d1 = new Dictionary<object, object>();
+            d1["hi"] = 10;
+            var d2 = new Dictionary<object, object>();
+            d2["hi"] = 7;
+
+            var cl = new FunctionExpression("+", new ObjectValue(d1), new ObjectValue(d2));
+            var c = new Context();
+            var r = cl.Evaluate(c);
+            Assert.IsInstanceOfType(r, typeof(Dictionary<object, object>), "type of result");
+            var rut = r as Dictionary<object, object>;
+            Assert.AreEqual(1, rut.Count, "# of items");
+            Assert.AreEqual(17, rut["hi"], "value of hi");
+        }
+
+        [TestMethod]
+        public void TestAddDisjointGoodMatricies()
+        {
+            var d1 = new Dictionary<object, object>();
+            d1["hi"] = 10;
+            var d2 = new Dictionary<object, object>();
+            d2["there"] = 20;
+
+            var cl = new FunctionExpression("+", new ObjectValue(d1), new ObjectValue(d2));
+            var c = new Context();
+            var r = cl.Evaluate(c);
+            Assert.IsInstanceOfType(r, typeof(Dictionary<object, object>), "type of result");
+            var rut = r as Dictionary<object, object>;
+            Assert.AreEqual(2, rut.Count, "# of items");
+            Assert.AreEqual(10, rut["hi"], "value of hi");
+            Assert.AreEqual(20, rut["there"], "value of hi");
+        }
+
+        [TestMethod]
         public void TestMultiplyByConstant()
         {
             var d = new Dictionary<object, object>();

@@ -138,5 +138,43 @@ namespace PlotLingoLib.Functions
 
             return r;
         }
+
+        /// <summary>
+        /// Add two dictionaries together. We just try to loop over everything one at a time.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="o1"></param>
+        /// <param name="o2"></param>
+        /// <returns></returns>
+        public static Dictionary<object, object> OperatorPlus(Context ctx, IDictionary<object, object> o1, IDictionary<object, object> o2)
+        {
+            var r = new Dictionary<object, object>();
+            foreach (var k in o1.Keys.Concat(o2.Keys).Distinct())
+            {
+                object v1 = null;
+                object v2 = null;
+                o1.TryGetValue(k, out v1);
+                o2.TryGetValue(k, out v2);
+
+                object opresult = null;
+                if (v1 == null)
+                {
+                    opresult = v2;
+                }
+                else if (v2 == null)
+                {
+                    opresult = v1;
+                }
+                else
+                {
+                    var calc = new FunctionExpression("+", new ObjectValue(v1), new ObjectValue(v2));
+                    opresult = calc.Evaluate(ctx);
+                }
+                if (opresult != null)
+                    r[k] = opresult;
+            }
+
+            return r;
+        }
     }
 }
