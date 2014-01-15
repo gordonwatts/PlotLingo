@@ -59,6 +59,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Expressions\MethodCallExpressionTest.cs" />
+    <Compile Include="Expressions\IndexRefExpressionTest.cs" />
     <Compile Include="Expressions\Values\DictionaryValueTest.cs" />
     <Compile Include="Expressions\Values\StringValueTest.cs" />
     <Compile Include="Functions\DictionaryOperationsTest.cs" />
