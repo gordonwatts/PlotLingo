@@ -70,6 +70,16 @@ namespace PlotLingoFunctionality.Plots
         private string _title = null;
 
         /// <summary>
+        /// Cache the x axis title
+        /// </summary>
+        private string _yaxisTitle = null;
+
+        /// <summary>
+        /// Cache the y axis title
+        /// </summary>
+        private string _xaxisTitle = null;
+
+        /// <summary>
         /// Get the filename.
         /// </summary>
         private string _filename;
@@ -105,6 +115,28 @@ namespace PlotLingoFunctionality.Plots
         public PlotContext title(string title)
         {
             _title = title;
+            return this;
+        }
+
+        /// <summary>
+        /// Atlter the y axis of the canvas.
+        /// </summary>
+        /// <param name="yaxisName"></param>
+        /// <returns></returns>
+        public PlotContext yaxis(string yaxisName)
+        {
+            _yaxisTitle = yaxisName;
+            return this;
+        }
+
+        /// <summary>
+        /// Alter the x axis title.
+        /// </summary>
+        /// <param name="xaxisName"></param>
+        /// <returns></returns>
+        public PlotContext xaxis(string xaxisName)
+        {
+            _xaxisTitle = xaxisName;
             return this;
         }
 
@@ -147,6 +179,15 @@ namespace PlotLingoFunctionality.Plots
             c.Title = _title;
             if (_plots.Length > 0)
                 _plots[0].Title = _title;
+
+            // x and y axis titles
+            if (_plots.Length > 0)
+            {
+                if (_xaxisTitle != null)
+                    _plots[0].Xaxis.Title = _xaxisTitle;
+                if (_yaxisTitle != null)
+                    _plots[0].Yaxis.Title = _yaxisTitle;
+            }
 
             // Plot everything.
             var optS = "";
