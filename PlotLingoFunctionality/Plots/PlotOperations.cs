@@ -1,4 +1,5 @@
 ﻿using PlotLingoLib;
+using System;
 using System.ComponentModel.Composition;
 
 namespace PlotLingoFunctionality.Plots
@@ -35,6 +36,23 @@ namespace PlotLingoFunctionality.Plots
             var clone = h.Clone() as ROOTNET.Interface.NTH1;
             clone.Scale(scaleFactor);
             Tags.CopyTags(ctx, h, clone);
+            return clone;
+        }
+
+        /// <summary>
+        /// Divide one histogram by another
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="hNumerator"></param>
+        /// <param name="hDenomenator"></param>
+        /// <returns></returns>
+        public static ROOTNET.Interface.NTH1 OperatorDivide(Context ctx, ROOTNET.Interface.NTH1 hNumerator, ROOTNET.Interface.NTH1 hDenomenator)
+        {
+            var clone = hNumerator.Clone() as ROOTNET.Interface.NTH1;
+            if (!clone.Divide(hDenomenator))
+                throw new InvalidOperationException("ROOT refused to divide two histograms");
+            Tags.CopyTags(ctx, hNumerator, clone);
+            Tags.CopyTags(ctx, hDenomenator, clone);
             return clone;
         }
     }
