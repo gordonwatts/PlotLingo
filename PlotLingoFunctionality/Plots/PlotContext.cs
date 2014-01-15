@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace PlotLingoFunctionality.Plots
 {
@@ -204,11 +205,23 @@ namespace PlotLingoFunctionality.Plots
             }
 
             // Save it
-            var fout = new FileInfo(string.Format("{0}.png", filenameStub));
-            if (fout.Exists)
-                fout.Delete();
-            c.SaveAs(fout.FullName);
-            return new FileInfo[] { fout };
+            string[] formats = null;
+            var formatsExpr = ctx.GetVariableValue("plotformats") as object[];
+            if (formatsExpr != null)
+                formats = formatsExpr.Cast<string>().ToArray();
+            if (formats == null)
+                formats = new string[] { "png" };
+
+            var finfos = formats
+                .Select(fmt =>
+                {
+                    var fout = new FileInfo(string.Format("{0}.{1}", filenameStub, fmt));
+                    if (fout.Exists)
+                        fout.Delete();
+                    c.SaveAs(fout.FullName);
+                    return fout;
+                });
+            return finfos.ToArray();
         }
     }
 }

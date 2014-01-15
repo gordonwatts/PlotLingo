@@ -7,3 +7,6 @@
 NormalizePlots();
 TurnOffStatBoxes();
 ConfigureLineWidth();
+
+// Write out a png by default
+plotformats=["png"];
