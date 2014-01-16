@@ -557,5 +557,28 @@ namespace PlotLingoLibTest
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
             Assert.AreEqual("/(a[5],b[10]);", r[0].ToString(), "Result of the expression");
         }
+
+        [TestMethod]
+        public void TestForLoop()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("for(a) { a = 10; };");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exst = r[0] as ExpressionStatement;
+            var expr = exst.Expression;
+            Assert.IsInstanceOfType(expr, typeof(FunctionExpression), "list of expressions statement");
+            var func = expr as FunctionExpression;
+            Assert.AreEqual("for", func.FunctionName, "Func name");
+            Assert.AreEqual(2, func.Arguments.Length, "# of args");
+            Assert.IsInstanceOfType(func.Arguments[0], typeof(VariableValue), "First arg type");
+            var a1 = func.Arguments[0] as VariableValue;
+            Assert.AreEqual("a", a1.VariableName, "index dictionary");
+
+            Assert.IsInstanceOfType(func.Arguments[1], typeof(ListOfStatementsExpression), "list of statements type");
+            var list = func.Arguments[1] as ListOfStatementsExpression;
+            Assert.AreEqual(1, list.Statements.Length, "# of statements");
+            Assert.IsInstanceOfType(list.Statements[0], typeof(AssignmentStatement), "Internal statement type");
+        }
     }
 }

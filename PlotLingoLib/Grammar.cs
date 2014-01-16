@@ -141,7 +141,8 @@ namespace PlotLingoLib
         private static readonly Parser<FunctionExpression> FunctionExpressionParser =
             from fname in IdentifierParser
             from args in ArgumentListParser
-            select new FunctionExpression(fname, args);
+            from statements in StatementParser.Many().Contained(OpenBrace, CloseBrace).Optional()
+            select new FunctionExpression(fname, statements.IsEmpty ? args : args.Concat(new IExpression[] { new ListOfStatementsExpression(statements.Get()) }).ToArray());
 
         /// <summary>
         /// Parse an argument list that goes to a function or similar.
