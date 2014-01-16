@@ -35,24 +35,6 @@ namespace PlotLingoLibTest.Expressions.Values
         }
 
         [TestMethod]
-        public void TestGenerationNotEvalMoreThanOnce()
-        {
-            var k1 = new StringValue("1");
-            var v1 = new exprEvalOnce();
-
-            var allvals = new Tuple<IExpression, IExpression>[] {
-                new Tuple<IExpression, IExpression>(k1, v1),
-            };
-
-            var dv = new DictionaryValue(allvals);
-            var c = new RootContext();
-            var o = dv.Evaluate(c);
-            o = dv.Evaluate(c);
-
-            Assert.AreEqual(1, v1.Evaluated, "# of times evaluated");
-        }
-
-        [TestMethod]
         public void TestGenerationWithVariableNames()
         {
             var k1 = new VariableValue("Color");

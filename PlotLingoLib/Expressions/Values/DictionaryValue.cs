@@ -35,9 +35,6 @@ namespace PlotLingoLib.Expressions.Values
         /// <remarks>We special case a variable name - at call it an actual value</remarks>
         public object Evaluate(IScopeContext c)
         {
-            if (_cached != null)
-                return _cached;
-
             var result = new Dictionary<object, object>();
 
             foreach (var v in Values)
@@ -53,14 +50,8 @@ namespace PlotLingoLib.Expressions.Values
                 }
                 result[keyObj] = v.Item2.Evaluate(c);
             }
-            _cached = result;
             return result;
         }
-
-        /// <summary>
-        /// Cache the result of evaluation to prevent multiple evaluation.
-        /// </summary>
-        private IDictionary<object, object> _cached = null;
 
         /// <summary>
         /// Dump for debugging and other reasons.

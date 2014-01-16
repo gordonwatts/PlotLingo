@@ -24,19 +24,12 @@ namespace PlotLingoLib.Expressions
         }
 
         /// <summary>
-        /// Hold onto the evaluation so we don't re-run it.
-        /// </summary>
-        private object _result = null;
-
-        /// <summary>
-        /// Evaluate the guy, and cache the result.
+        /// Evaluate the guy
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
         public object Evaluate(IScopeContext c)
         {
-            if (_result != null)
-                return _result;
 
             var dictHope = _dictOrArray.Evaluate(c);
             if (!typeof(IDictionary).IsAssignableFrom(dictHope.GetType()))
@@ -50,8 +43,7 @@ namespace PlotLingoLib.Expressions
             if (!dict.Contains(k))
                 throw new KeyNotFoundException(string.Format("Unable to locate the key '{0}' in the dictionary", k.ToString()));
 
-            _result = dict[k];
-            return _result;
+            return dict[k];
         }
 
         /// <summary>
