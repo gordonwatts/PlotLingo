@@ -142,7 +142,7 @@ namespace PlotLingoLib
             from fname in IdentifierParser
             from args in ArgumentListParser
             from statements in StatementParser.Many().Contained(OpenBrace, CloseBrace).Optional()
-            select new FunctionExpression(fname, statements.IsEmpty ? args : args.Concat(new IExpression[] { new ListOfStatementsExpression(statements.Get()) }).ToArray());
+            select new FunctionExpression(fname, statements.IsEmpty ? args : args.Concat(new IExpression[] { new ObjectValue(new ListOfStatementsExpression(statements.Get())) }).ToArray());
 
         /// <summary>
         /// Parse an argument list that goes to a function or similar.
