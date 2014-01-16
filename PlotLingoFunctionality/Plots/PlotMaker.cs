@@ -17,7 +17,7 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="plotList"></param>
         /// <returns>A plot context that can be dumped</returns>
         /// <remarks>Attempt to find a way to turn this into a list of plots by looking at whatever object is associated with it</remarks>
-        public static PlotContext plot(object[] plotList)
+        public static PlotContext plot(IEnumerable<object> plotList)
         {
             return new PlotContext(plotList.Cast<ROOTNET.NTH1>().ToArray());
         }
