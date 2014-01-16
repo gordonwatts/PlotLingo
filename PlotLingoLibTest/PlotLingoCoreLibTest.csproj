@@ -68,6 +68,7 @@
     <Compile Include="Functions\ScriptOperationsTest.cs" />
     <Compile Include="Functions\FileOperationsTest.cs" />
     <Compile Include="Functions\ForLoopTest.cs" />
+    <Compile Include="Functions\ListOperationsTest.cs" />
     <Compile Include="GrammerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RootContextTest.cs" />

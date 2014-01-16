@@ -94,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Functions\ForLoop.cs" />
+    <Compile Include="Functions\ListOperations.cs" />
     <Compile Include="FunctionUtils.cs" />
     <Compile Include="RootContext.cs" />
     <Compile Include="ExecutionContext.cs" />
