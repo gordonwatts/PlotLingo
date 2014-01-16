@@ -38,7 +38,28 @@ namespace PlotLingoLib.Functions
                 if (v == null)
                     throw new ArgumentNullException("Iteration of map returned null!");
                 return v;
-            }).ToArray();
+            });
+        }
+
+        /// <summary>
+        /// Loop over the contents of an array
+        /// </summary>
+        /// <param name="ctx">The run context</param>
+        /// <param name="indexName">Name of the variable we should be setting</param>
+        /// <param name="mapOver">The array of objects we are going to loop over</param>
+        /// <param name="statements">The statements to be executed.</param>
+        /// <returns></returns>
+        public static IEnumerable<object> map(IScopeContext ctx, string indexName, IEnumerable<object> mapOver, ListOfStatementsExpression statements)
+        {
+            return mapOver.Select(indexObj =>
+            {
+                var newScope = new ScopeContext(ctx);
+                newScope.SetVariableValueLocally(indexName, indexObj);
+                var v = statements.Evaluate(newScope);
+                if (v == null)
+                    throw new ArgumentException("Iteration of map return null!");
+                return v;
+            });
         }
     }
 }

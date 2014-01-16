@@ -53,6 +53,29 @@ namespace PlotLingoLibTest.Functions
             Assert.AreEqual(5, lst.First());
         }
 
+
+        [TestMethod]
+        public void DictForOneResultArrayList()
+        {
+            var loopList = new object[] { 1, 2 };
+
+            var statement1 = new ExpressionStatement(new VariableValue("a"));
+            var exprStatement = new ObjectValue(new ListOfStatementsExpression(new IStatement[] { statement1 }));
+
+            var forLoop = new FunctionExpression("map", new StringValue("a"), new ObjectValue(loopList), exprStatement);
+
+            var c = new RootContext();
+            var r = forLoop.Evaluate(c);
+
+            Assert.IsNotNull(r, "for loop with nothing in it");
+            var lst = r as IEnumerable<object>;
+            Assert.IsNotNull(lst, "results isn't in good form!");
+            var list = lst.ToArray();
+            Assert.AreEqual(2, list.Count());
+            Assert.AreEqual(1, list[0]);
+            Assert.AreEqual(2, list[1]);
+        }
+
         [TestMethod]
         public void DictForVar2Iter()
         {
