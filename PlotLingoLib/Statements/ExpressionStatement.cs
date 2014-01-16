@@ -1,4 +1,6 @@
 ﻿using PlotLingoLib.Expressions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PlotLingoLib.Statements
 {
@@ -25,9 +27,14 @@ namespace PlotLingoLib.Statements
         /// We just evaluate the expression. Report it to anyone that is interested.
         /// </summary>
         /// <param name="c"></param>
+        /// <remarks>Force execution of anythign that is returned as an IEnumerable</remarks>
         public void Evaluate(IScopeContext c)
         {
             var r = Expression.Evaluate(c);
+            if (r is IEnumerable<object>)
+            {
+                r = (r as IEnumerable<object>).ToArray();
+            }
             c.ReportExpressionStatementEvaluation(r);
         }
 
