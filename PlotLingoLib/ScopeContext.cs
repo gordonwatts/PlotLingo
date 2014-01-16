@@ -44,6 +44,16 @@ namespace PlotLingoLib
         }
 
         /// <summary>
+        /// Set a variable value locally.
+        /// </summary>
+        /// <param name="vname">Variable Name</param>
+        /// <param name="val">Value to set it to</param>
+        internal void SetVariableValueLocally(string vname, object val)
+        {
+            _local.SetVariableValue(vname, val);
+        }
+
+        /// <summary>
         /// Return the variable name. Try local scope, and then march up the chain.
         /// </summary>
         /// <param name="vname"></param>

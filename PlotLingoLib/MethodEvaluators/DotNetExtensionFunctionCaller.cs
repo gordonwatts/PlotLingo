@@ -57,13 +57,21 @@ namespace PlotLingoLib.MethodEvaluators
             }
         }
 
+        /// <summary>
+        /// Find a method in the code, Account for use of C# reserved words by added "Reserved" onto the end of the method
+        /// we are trying to find.
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         private static MethodInfo[] FindMethodForArgs(string methodName, object[] args)
         {
             var funcs = (from fo in ExtensibilityControl.Get().FunctionObjects
-                         let m = fo.GetType().GetMethod(methodName, args.Select(v => v.GetType()).ToArray())
+                         let m = fo.GetType().GetMethod(methodName.FixUpReserved(), args.Select(v => v.GetType()).ToArray())
                          where m != null
                          where m.IsStatic
                          select m).ToArray();
+
             return funcs;
         }
     }

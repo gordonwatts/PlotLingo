@@ -146,6 +146,8 @@ namespace PlotLingoLib.Expressions
         /// <returns></returns>
         private static MethodInfo[] FindFunctionWithMaybeContextArg(string fname, IScopeContext c, ref object[] args)
         {
+            fname = fname.FixUpReserved();
+
             // All functions that look like they might be right. Fail if we don't find them or find too many.
             var funcs = FindFunctionFromFunctionObjects(fname, args);
 

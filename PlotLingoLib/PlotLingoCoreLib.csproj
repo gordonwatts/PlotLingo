@@ -93,6 +93,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Functions\ForLoop.cs" />
+    <Compile Include="FunctionUtils.cs" />
     <Compile Include="RootContext.cs" />
     <Compile Include="ExecutionContext.cs" />
     <Compile Include="Expressions\FunctionExpression.cs" />
