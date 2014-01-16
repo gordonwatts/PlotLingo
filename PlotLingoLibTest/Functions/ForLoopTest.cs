@@ -3,6 +3,7 @@ using PlotLingoLib;
 using PlotLingoLib.Expressions;
 using PlotLingoLib.Expressions.Values;
 using PlotLingoLib.Statements;
+using System;
 using System.Collections.Generic;
 
 namespace PlotLingoLibTest.Functions
@@ -127,6 +128,35 @@ namespace PlotLingoLibTest.Functions
             var r = forLoop.Evaluate(c);
 
             Assert.AreEqual(20, r, "for loop with nothing in it");
+        }
+
+        [TestMethod]
+        public void DictForCacheNotKept()
+        {
+            var loop1 = new Dictionary<object, object>() {
+                { "a", 10 }
+            };
+            var loop2 = new Dictionary<object, object>() {
+                { "a", 20 }
+            };
+            var loopdict = new ObjectValue(new Dictionary<object, object>[] { loop1, loop2 });
+
+            var dictEval = new Tuple<IExpression, IExpression>[] {
+                new Tuple<IExpression, IExpression>(new StringValue("hi"), new VariableValue("a"))
+            };
+            var dict = new DictionaryValue(dictEval);
+            var lookup = new IndexerRefExpression(dict, new StringValue("hi"));
+
+            var statement1 = new ExpressionStatement(lookup);
+            var exprStatement = new ObjectValue(new ListOfStatementsExpression(new IStatement[] { statement1 }));
+
+            var forLoop = new FunctionExpression("for", loopdict, exprStatement);
+
+            var c = new RootContext();
+            var r = forLoop.Evaluate(c);
+
+            Assert.AreEqual(20, r, "for loop with nothing in it");
+
         }
     }
 }
