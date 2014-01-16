@@ -2,6 +2,7 @@
 using PlotLingoLib;
 using PlotLingoLib.Expressions;
 using PlotLingoLib.Expressions.Values;
+using System;
 
 namespace PlotLingoLibTest.Functions
 {
@@ -9,6 +10,7 @@ namespace PlotLingoLibTest.Functions
     public class ListOperationsTest
     {
         [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void SumEmptyObjectArray()
         {
             var ar = new object[] { };
@@ -16,8 +18,6 @@ namespace PlotLingoLibTest.Functions
 
             var c = new RootContext();
             var r = f.Evaluate(c);
-
-            Assert.IsNull(r);
         }
 
         [TestMethod]
