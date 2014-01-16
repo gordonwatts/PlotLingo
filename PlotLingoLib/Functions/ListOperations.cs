@@ -26,5 +26,22 @@ namespace PlotLingoLib.Functions
             });
             return r;
         }
+
+        /// <summary>
+        /// Divide a list of items by somethign else. Depends on the divide function being defined, of course!
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="divisor"></param>
+        /// <returns></returns>
+        public static IEnumerable<object> OperatorDivide(IEnumerable<object> input, object divisor)
+        {
+            var c = new RootContext();
+            var r = input.Select(num =>
+            {
+                var fo = new FunctionExpression("/", new ObjectValue(num), new ObjectValue(divisor));
+                return fo.Evaluate(c);
+            });
+            return r;
+        }
     }
 }
