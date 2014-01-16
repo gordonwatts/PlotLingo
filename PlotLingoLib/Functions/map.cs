@@ -51,15 +51,8 @@ namespace PlotLingoLib.Functions
         /// <returns></returns>
         public static IEnumerable<object> map(IScopeContext ctx, string indexName, IEnumerable<object> mapOver, ListOfStatementsExpression statements)
         {
-            return mapOver.Select(indexObj =>
-            {
-                var newScope = new ScopeContext(ctx);
-                newScope.SetVariableValueLocally(indexName, indexObj);
-                var v = statements.Evaluate(newScope);
-                if (v == null)
-                    throw new ArgumentException("Iteration of map return null!");
-                return v;
-            });
+            var allDict = mapOver.Select(o => new Dictionary<object, object>() { { indexName, o } });
+            return map(ctx, allDict, statements);
         }
     }
 }
