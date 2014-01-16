@@ -139,6 +139,7 @@ namespace PlotLingoLib
         public void ReportExpressionStatementEvaluation(object obj)
         {
             _local.ReportExpressionStatementEvaluation(obj);
+            Parent.ReportExpressionStatementEvaluation(obj);
         }
 
 

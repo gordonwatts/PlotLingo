@@ -58,6 +58,19 @@ namespace PlotLingoLibTest
         }
 
         [TestMethod]
+        public void RegisterExprEvalIgnoredByParent()
+        {
+            var c = new ScopeContext(new RootContext());
+            object r = null;
+            Action<object> saver = o => r = o;
+            var es = new PlotLingoLib.Statements.ExpressionStatement(new StringValue("hi"));
+
+            c.AddExpressionStatementEvaluationCallback(saver);
+            es.Evaluate(c.Parent);
+            Assert.IsNull(r, "result of running");
+        }
+
+        [TestMethod]
         public void RegisterExprEvalHiddenInScope()
         {
             var c = new ScopeContext(new RootContext());
@@ -67,7 +80,7 @@ namespace PlotLingoLibTest
 
             c.Parent.AddExpressionStatementEvaluationCallback(saver);
             es.Evaluate(c);
-            Assert.IsNull(r, "result of running");
+            Assert.AreEqual("hi", r, "result of running");
         }
 
         [TestMethod]
