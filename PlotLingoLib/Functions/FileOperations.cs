@@ -15,7 +15,7 @@ namespace PlotLingoLib.Functions
         /// <param name="c"></param>
         /// <param name="filename">The filename to read. Hopefully not too big!</param>
         /// <returns></returns>
-        public static string readfile(RootContext c, string filename)
+        public static string readfile(IScopeContext c, string filename)
         {
             // THe search stradegy isn't easy. If this is a relative file, then we need to look near the currently
             // executing script. If the currently executing script is "in memory", then we don't care.

@@ -19,7 +19,7 @@ namespace PlotLingoLib.Functions
         /// </summary>
         /// <param name="filename">Filename to include, if relative, w.r.t. the initially invoked script.</param>
         /// <returns>Returns whatever the last statement of the script returns.</returns>
-        public static object include(RootContext c, string filename)
+        public static object include(IScopeContext c, string filename)
         {
             var content = FileOperations.readfile(c, filename);
 
@@ -54,7 +54,7 @@ namespace PlotLingoLib.Functions
         /// </summary>
         /// <param name="scriptline">text to execute</param>
         /// <returns>Whatever the value of the script line is</returns>
-        public static object eval(RootContext c, string scriptline)
+        public static object eval(IScopeContext c, string scriptline)
         {
             var statements = Grammar.ModuleParser.End().Parse(scriptline);
             object result = null;
@@ -80,7 +80,7 @@ namespace PlotLingoLib.Functions
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        public static string currentscript(RootContext c)
+        public static string currentscript(IScopeContext c)
         {
             return c.ExecutionContext.CurrentScriptFile.FullName;
         }

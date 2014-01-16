@@ -31,7 +31,7 @@ namespace PlotLingoFunctionality.Plots
         /// Contains the list of actions to be executed before an actual plot is made.
         /// These are run just before things are dumped out.
         /// </summary>
-        private List<Action<RootContext, PlotContext>> _prePlotHook = new List<Action<RootContext, PlotContext>>();
+        private List<Action<IScopeContext, PlotContext>> _prePlotHook = new List<Action<IScopeContext, PlotContext>>();
 
         /// <summary>
         /// Track all the things we should call once the plotting is, basically, done.
@@ -51,7 +51,7 @@ namespace PlotLingoFunctionality.Plots
         /// Add a pre-plot hook that needs a context
         /// </summary>
         /// <param name="act"></param>
-        public void AddPreplotHook(Action<RootContext, PlotContext> act)
+        public void AddPreplotHook(Action<IScopeContext, PlotContext> act)
         {
             _prePlotHook.Add(act);
         }
@@ -165,7 +165,7 @@ namespace PlotLingoFunctionality.Plots
         /// </summary>
         /// <param name="filenameStub"></param>
         /// <returns></returns>
-        public IEnumerable<FileInfo> Save(RootContext ctx, string filenameStub)
+        public IEnumerable<FileInfo> Save(IScopeContext ctx, string filenameStub)
         {
             InitTitleAndFileName();
 

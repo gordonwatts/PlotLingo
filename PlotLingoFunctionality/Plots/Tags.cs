@@ -15,7 +15,7 @@ namespace PlotLingoFunctionality.Plots
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        private static Dictionary<object, List<string>> GetTagInfo(RootContext ctx)
+        private static Dictionary<object, List<string>> GetTagInfo(IScopeContext ctx)
         {
             var r = ctx.GetInternalVariable("_tagInfo") as Dictionary<object, List<string>>;
             if (r != null)
@@ -31,7 +31,7 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="objToTag"></param>
         /// <param name="tagname"></param>
         /// <returns></returns>
-        public static object tag(RootContext ctx, object objToTag, string tagname)
+        public static object tag(IScopeContext ctx, object objToTag, string tagname)
         {
             List<string> info = null;
             var tinfo = GetTagInfo(ctx);
@@ -52,7 +52,7 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="obj"></param>
         /// <param name="tagname"></param>
         /// <returns></returns>
-        public static bool hasTag(RootContext ctx, object obj, string tagname)
+        public static bool hasTag(IScopeContext ctx, object obj, string tagname)
         {
             List<string> info = null;
             var tinfo = GetTagInfo(ctx);
@@ -66,7 +66,7 @@ namespace PlotLingoFunctionality.Plots
         /// </summary>
         /// <param name="h"></param>
         /// <param name="clone"></param>
-        internal static void CopyTags(RootContext ctx, object hOrig, object hDest)
+        internal static void CopyTags(IScopeContext ctx, object hOrig, object hDest)
         {
             List<string> info = null;
             var tinfo = GetTagInfo(ctx);

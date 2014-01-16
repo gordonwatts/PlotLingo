@@ -16,7 +16,7 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="h1"></param>
         /// <param name="h2"></param>
         /// <returns></returns>
-        public static ROOTNET.Interface.NTH1 OperatorPlus(RootContext ctx, ROOTNET.Interface.NTH1 h1, ROOTNET.Interface.NTH1 h2)
+        public static ROOTNET.Interface.NTH1 OperatorPlus(IScopeContext ctx, ROOTNET.Interface.NTH1 h1, ROOTNET.Interface.NTH1 h2)
         {
             var clone = h1.Clone() as ROOTNET.Interface.NTH1;
             clone.Add(h2);
@@ -31,7 +31,7 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="h"></param>
         /// <param name="scaleFactor"></param>
         /// <returns></returns>
-        public static ROOTNET.Interface.NTH1 OperatorMultiply(RootContext ctx, ROOTNET.Interface.NTH1 h, double scaleFactor)
+        public static ROOTNET.Interface.NTH1 OperatorMultiply(IScopeContext ctx, ROOTNET.Interface.NTH1 h, double scaleFactor)
         {
             var clone = h.Clone() as ROOTNET.Interface.NTH1;
             clone.Scale(scaleFactor);
@@ -46,7 +46,7 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="hNumerator"></param>
         /// <param name="hDenomenator"></param>
         /// <returns></returns>
-        public static ROOTNET.Interface.NTH1 OperatorDivide(RootContext ctx, ROOTNET.Interface.NTH1 hNumerator, ROOTNET.Interface.NTH1 hDenomenator)
+        public static ROOTNET.Interface.NTH1 OperatorDivide(IScopeContext ctx, ROOTNET.Interface.NTH1 hNumerator, ROOTNET.Interface.NTH1 hDenomenator)
         {
             var clone = hNumerator.Clone() as ROOTNET.Interface.NTH1;
             if (!clone.Divide(hDenomenator))

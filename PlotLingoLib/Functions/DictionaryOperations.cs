@@ -146,7 +146,7 @@ namespace PlotLingoLib.Functions
         /// <param name="o1"></param>
         /// <param name="o2"></param>
         /// <returns></returns>
-        public static Dictionary<object, object> OperatorPlus(RootContext ctx, IDictionary<object, object> o1, IDictionary<object, object> o2)
+        public static Dictionary<object, object> OperatorPlus(IScopeContext ctx, IDictionary<object, object> o1, IDictionary<object, object> o2)
         {
             var r = new Dictionary<object, object>();
             foreach (var k in o1.Keys.Concat(o2.Keys).Distinct())

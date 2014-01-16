@@ -45,7 +45,7 @@ namespace PlotLingoFunctionality.Plots
         /// <summary>
         /// Add a context to turn off stat boxes
         /// </summary>
-        public static void TurnOffStatBoxes(RootContext c)
+        public static void TurnOffStatBoxes(IScopeContext c)
         {
             c.ExecutionContext.AddPostCallHook("plot", "statsboxes", (obj, result) =>
             {
@@ -72,7 +72,7 @@ namespace PlotLingoFunctionality.Plots
         /// Make sure that everything fits
         /// </summary>
         /// <param name="c"></param>
-        public static void NormalizePlots(RootContext c)
+        public static void NormalizePlots(IScopeContext c)
         {
             c.ExecutionContext.AddPostCallHook("plot", "normalize", (obj, result) =>
             {
@@ -103,7 +103,7 @@ namespace PlotLingoFunctionality.Plots
         /// </summary>
         /// <param name="c"></param>
         /// <param name="sz"></param>
-        public static void ConfigureLineWidth(RootContext c)
+        public static void ConfigureLineWidth(IScopeContext c)
         {
             short sz = 2;
             c.ExecutionContext.AddPostCallHook("plot", "linewidth", (obj, result) =>
