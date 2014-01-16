@@ -18,7 +18,7 @@ namespace PlotLingoLibTest.Functions
             var d = new Dictionary<object, object>();
             var fo = new MethodCallExpression(new PlotLingoLib.Expressions.Values.VariableValue("p"),
                 new FunctionExpression("sum", new IExpression[0]));
-            var c = new Context();
+            var c = new RootContext();
             c.SetVariableValue("p", d);
             fo.Evaluate(c);
         }
@@ -30,7 +30,7 @@ namespace PlotLingoLibTest.Functions
             d["hi"] = 10;
             var fo = new MethodCallExpression(new PlotLingoLib.Expressions.Values.VariableValue("p"),
                 new FunctionExpression("sum", new IExpression[0]));
-            var c = new Context();
+            var c = new RootContext();
             c.SetVariableValue("p", d);
             var v = fo.Evaluate(c);
             Assert.AreEqual(10, v, "Value");
@@ -44,7 +44,7 @@ namespace PlotLingoLibTest.Functions
             d[5] = 20;
             var fo = new MethodCallExpression(new PlotLingoLib.Expressions.Values.VariableValue("p"),
                 new FunctionExpression("sum", new IExpression[0]));
-            var c = new Context();
+            var c = new RootContext();
             c.SetVariableValue("p", d);
             var v = fo.Evaluate(c);
             Assert.AreEqual(30, v, "Value");
@@ -59,7 +59,7 @@ namespace PlotLingoLibTest.Functions
             d["there"] = 5;
             var fo = new MethodCallExpression(new PlotLingoLib.Expressions.Values.VariableValue("p"),
                 new FunctionExpression("sum", new IExpression[0]));
-            var c = new Context();
+            var c = new RootContext();
             c.SetVariableValue("p", d);
             var v = fo.Evaluate(c);
             Assert.AreEqual(35, v, "Value");
@@ -78,7 +78,7 @@ namespace PlotLingoLibTest.Functions
             d["ops"] = 5;
             var fo = new MethodCallExpression(new PlotLingoLib.Expressions.Values.VariableValue("p"),
                 new FunctionExpression("sum", new IExpression[0]));
-            var c = new Context();
+            var c = new RootContext();
             c.SetVariableValue("p", d);
             var v = fo.Evaluate(c);
             Assert.AreEqual(47, v, "Value");
@@ -91,7 +91,7 @@ namespace PlotLingoLibTest.Functions
             var d2 = new Dictionary<object, object>();
 
             var cl = new FunctionExpression("+", new ObjectValue(d1), new ObjectValue(d2));
-            var c = new Context();
+            var c = new RootContext();
             var r = cl.Evaluate(c);
             Assert.IsInstanceOfType(r, typeof(Dictionary<object, object>), "type of result");
             var rut = r as Dictionary<object, object>;
@@ -106,7 +106,7 @@ namespace PlotLingoLibTest.Functions
             var d2 = new Dictionary<object, object>();
 
             var cl = new FunctionExpression("+", new ObjectValue(d1), new ObjectValue(d2));
-            var c = new Context();
+            var c = new RootContext();
             var r = cl.Evaluate(c);
             Assert.IsInstanceOfType(r, typeof(Dictionary<object, object>), "type of result");
             var rut = r as Dictionary<object, object>;
@@ -122,7 +122,7 @@ namespace PlotLingoLibTest.Functions
             var d2 = new Dictionary<object, object>();
 
             var cl = new FunctionExpression("+", new ObjectValue(d2), new ObjectValue(d1));
-            var c = new Context();
+            var c = new RootContext();
             var r = cl.Evaluate(c);
             Assert.IsInstanceOfType(r, typeof(Dictionary<object, object>), "type of result");
             var rut = r as Dictionary<object, object>;
@@ -139,7 +139,7 @@ namespace PlotLingoLibTest.Functions
             d2["hi"] = 7;
 
             var cl = new FunctionExpression("+", new ObjectValue(d1), new ObjectValue(d2));
-            var c = new Context();
+            var c = new RootContext();
             var r = cl.Evaluate(c);
             Assert.IsInstanceOfType(r, typeof(Dictionary<object, object>), "type of result");
             var rut = r as Dictionary<object, object>;
@@ -156,7 +156,7 @@ namespace PlotLingoLibTest.Functions
             d2["there"] = 20;
 
             var cl = new FunctionExpression("+", new ObjectValue(d1), new ObjectValue(d2));
-            var c = new Context();
+            var c = new RootContext();
             var r = cl.Evaluate(c);
             Assert.IsInstanceOfType(r, typeof(Dictionary<object, object>), "type of result");
             var rut = r as Dictionary<object, object>;
@@ -171,7 +171,7 @@ namespace PlotLingoLibTest.Functions
             var d = new Dictionary<object, object>();
             d["hi"] = 5.0;
             var cl = new FunctionExpression("*", new ObjectValue(d), new DoubleValue(1.5));
-            var c = new Context();
+            var c = new RootContext();
             var rut = cl.Evaluate(c);
             Assert.IsNotNull(rut, "Result null");
             Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
@@ -189,7 +189,7 @@ namespace PlotLingoLibTest.Functions
             d1["hi"] = 5.0;
             var d2 = new Dictionary<object, object>();
             var cl = new FunctionExpression("*", new ObjectValue(d1), new ObjectValue(d2));
-            var c = new Context();
+            var c = new RootContext();
             var rut = cl.Evaluate(c);
             Assert.IsNotNull(rut, "Result null");
             Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
@@ -205,7 +205,7 @@ namespace PlotLingoLibTest.Functions
             var d2 = new Dictionary<object, object>();
             d2["hi"] = 5.0;
             var cl = new FunctionExpression("*", new ObjectValue(d1), new ObjectValue(d2));
-            var c = new Context();
+            var c = new RootContext();
             var rut = cl.Evaluate(c);
             Assert.IsNotNull(rut, "Result null");
             Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
@@ -222,7 +222,7 @@ namespace PlotLingoLibTest.Functions
             d2["hi"] = 5.0;
             d2["there"] = 10.0;
             var cl = new FunctionExpression("*", new ObjectValue(d1), new ObjectValue(d2));
-            var c = new Context();
+            var c = new RootContext();
             var rut = cl.Evaluate(c);
             Assert.IsNotNull(rut, "Result null");
             Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
@@ -239,7 +239,7 @@ namespace PlotLingoLibTest.Functions
             var d2 = new Dictionary<object, object>();
             d2["hi"] = 5.0;
             var cl = new FunctionExpression("*", new ObjectValue(d1), new ObjectValue(d2));
-            var c = new Context();
+            var c = new RootContext();
             var rut = cl.Evaluate(c);
             Assert.IsNotNull(rut, "Result null");
             Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
@@ -253,7 +253,7 @@ namespace PlotLingoLibTest.Functions
             var d = new Dictionary<object, object>();
             d["hi"] = 5.0;
             var cl = new FunctionExpression("/", new ObjectValue(d), new DoubleValue(1.5));
-            var c = new Context();
+            var c = new RootContext();
             var rut = cl.Evaluate(c);
             Assert.IsNotNull(rut, "Result null");
             Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
@@ -270,7 +270,7 @@ namespace PlotLingoLibTest.Functions
             var d = new Dictionary<object, object>();
             d["hi"] = 5.0;
             var cl = new FunctionExpression("/", new DoubleValue(1.5), new ObjectValue(d));
-            var c = new Context();
+            var c = new RootContext();
             var rut = cl.Evaluate(c);
             Assert.IsNotNull(rut, "Result null");
             Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
@@ -288,7 +288,7 @@ namespace PlotLingoLibTest.Functions
             var d2 = new Dictionary<object, object>();
             d2["hi"] = 5.0;
             var cl = new FunctionExpression("/", new ObjectValue(d1), new ObjectValue(d2));
-            var c = new Context();
+            var c = new RootContext();
             var rut = cl.Evaluate(c);
             Assert.IsNotNull(rut, "Result null");
             Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
@@ -302,7 +302,7 @@ namespace PlotLingoLibTest.Functions
             var d1 = new Dictionary<object, object>();
             var d2 = new Dictionary<object, object>();
             var cl = new FunctionExpression("/", new ObjectValue(d1), new ObjectValue(d2));
-            var c = new Context();
+            var c = new RootContext();
             var rut = cl.Evaluate(c);
             Assert.IsNotNull(rut, "Result null");
             Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
@@ -318,7 +318,7 @@ namespace PlotLingoLibTest.Functions
             d1["hi"] = 5.0;
             var d2 = new Dictionary<object, object>();
             var cl = new FunctionExpression("/", new ObjectValue(d1), new ObjectValue(d2));
-            var c = new Context();
+            var c = new RootContext();
             var rut = cl.Evaluate(c);
             Assert.IsNotNull(rut, "Result null");
             Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
@@ -334,7 +334,7 @@ namespace PlotLingoLibTest.Functions
             var d2 = new Dictionary<object, object>();
             d2["hi"] = 5.0;
             var cl = new FunctionExpression("/", new ObjectValue(d1), new ObjectValue(d2));
-            var c = new Context();
+            var c = new RootContext();
             var rut = cl.Evaluate(c);
             Assert.IsNotNull(rut, "Result null");
             Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");
@@ -352,7 +352,7 @@ namespace PlotLingoLibTest.Functions
             d2["hi"] = 5.0;
             d2["there"] = 10.0;
             var cl = new FunctionExpression("/", new ObjectValue(d2), new ObjectValue(d1));
-            var c = new Context();
+            var c = new RootContext();
             var rut = cl.Evaluate(c);
         }
 
@@ -365,7 +365,7 @@ namespace PlotLingoLibTest.Functions
             d2["hi"] = 5.0;
             d2["there"] = 10.0;
             var cl = new FunctionExpression("/", new ObjectValue(d1), new ObjectValue(d2));
-            var c = new Context();
+            var c = new RootContext();
             var rut = cl.Evaluate(c);
             Assert.IsNotNull(rut, "Result null");
             Assert.IsInstanceOfType(rut, typeof(Dictionary<object, object>), "Type of result");

@@ -15,7 +15,7 @@ namespace PlotLingoLibTest.Expressions
             var dict = new Dictionary<string, int>();
             dict["hi"] = 5;
             var ir = new IndexerRefExpression(new ObjectValue(dict), new StringValue("hi"));
-            var c = new Context();
+            var c = new RootContext();
             var r = ir.Evaluate(c);
             Assert.IsNotNull(r, "result");
             Assert.AreEqual(5, r, "the final result");
@@ -28,7 +28,7 @@ namespace PlotLingoLibTest.Expressions
             var dict = new Dictionary<string, int>();
             dict["hi"] = 5;
             var ir = new IndexerRefExpression(new ObjectValue(dict), new StringValue("hioi"));
-            var c = new Context();
+            var c = new RootContext();
             var r = ir.Evaluate(c);
         }
 

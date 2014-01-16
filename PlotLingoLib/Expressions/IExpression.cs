@@ -3,6 +3,6 @@ namespace PlotLingoLib.Expressions
 {
     interface IExpression
     {
-        object Evaluate(Context c);
+        object Evaluate(IScopeContext c);
     }
 }

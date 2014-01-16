@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace PlotLingoLib.Expressions.Values
 {
     /// <summary>
@@ -15,7 +10,7 @@ namespace PlotLingoLib.Expressions.Values
         /// Initialize the variable
         /// </summary>
         /// <param name="vname"></param>
-        public VariableValue (string vname)
+        public VariableValue(string vname)
         {
             VariableName = vname;
         }
@@ -25,7 +20,7 @@ namespace PlotLingoLib.Expressions.Values
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        public object Evaluate(Context c)
+        public object Evaluate(IScopeContext c)
         {
             return c.GetVariableValue(VariableName);
         }

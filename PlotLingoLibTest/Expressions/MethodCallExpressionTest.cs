@@ -15,7 +15,7 @@ namespace PlotLingoLibTest.Expressions
         [ExpectedException(typeof(InvalidOperationException))]
         public void TestBadCall()
         {
-            var ctx = new Context();
+            var ctx = new RootContext();
             ctx.SetVariableValue("p", new testClass());
             var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallNoArgsBogus", new IExpression[] { }));
             var r = mc.Evaluate(ctx);
@@ -28,7 +28,7 @@ namespace PlotLingoLibTest.Expressions
         [TestMethod]
         public void TestCallNoArgs()
         {
-            var ctx = new Context();
+            var ctx = new RootContext();
             ctx.SetVariableValue("p", new testClass());
             var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallNoArgs", new IExpression[] { }));
             var r = mc.Evaluate(ctx);
@@ -38,7 +38,7 @@ namespace PlotLingoLibTest.Expressions
         [TestMethod]
         public void TestCallOneArg()
         {
-            var ctx = new Context();
+            var ctx = new RootContext();
             ctx.SetVariableValue("p", new testClass());
             var s = new StringValue("length");
             var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallOneStringArg", new IExpression[] { s }));
@@ -50,9 +50,9 @@ namespace PlotLingoLibTest.Expressions
         public void TestMethodOnObjectPostHookCallback()
         {
             var tc = new testClass();
-            var ctx = new Context();
+            var ctx = new RootContext();
             int count = 0;
-            ctx.AddPostCallHook("CallNoArgs", "test", (obj, result) =>
+            ctx.ExecutionContext.AddPostCallHook("CallNoArgs", "test", (obj, result) =>
             {
                 count++;
                 Assert.AreEqual(tc, obj, "object that is passed in as central object");
@@ -69,8 +69,8 @@ namespace PlotLingoLibTest.Expressions
         public void TestMethodCallbackAlterResult()
         {
             var tc = new testClass();
-            var ctx = new Context();
-            ctx.AddPostCallHook("CallNoArgs", "test", (obj, result) =>
+            var ctx = new RootContext();
+            ctx.ExecutionContext.AddPostCallHook("CallNoArgs", "test", (obj, result) =>
             {
                 return 33;
             });
@@ -86,7 +86,7 @@ namespace PlotLingoLibTest.Expressions
         [TestMethod]
         public void TestArgumentsEvaluatedOnlyOnce()
         {
-            var ctx = new Context();
+            var ctx = new RootContext();
             ctx.SetVariableValue("p", new testClass());
             var s = new MyStringExpression();
             var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallOneStringArg", new IExpression[] { s }));
@@ -97,7 +97,7 @@ namespace PlotLingoLibTest.Expressions
         [TestMethod]
         public void TestExtensionMethod()
         {
-            var ctx = new Context();
+            var ctx = new RootContext();
             ctx.SetVariableValue("p", new testClass());
             var s = new StringValue("hi");
             var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallOneStringArgExt", new IExpression[] { s }));
@@ -108,7 +108,7 @@ namespace PlotLingoLibTest.Expressions
         [TestMethod]
         public void TestExtensionMethodWithContext()
         {
-            var ctx = new Context();
+            var ctx = new RootContext();
             ctx.SetVariableValue("p", new testClass());
             var s = new StringValue("hi");
             var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallOneStringWithCTX", new IExpression[] { s }));
@@ -119,7 +119,7 @@ namespace PlotLingoLibTest.Expressions
         [TestMethod]
         public void TestExtensionMethodOverridesSameObjectGuy()
         {
-            var ctx = new Context();
+            var ctx = new RootContext();
             ctx.SetVariableValue("p", new testClass());
             var s = new StringValue("hi");
             var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallOneStringToOverride", new IExpression[] { s }));
@@ -130,11 +130,11 @@ namespace PlotLingoLibTest.Expressions
         [TestMethod]
         public void TestPostMethodHookCallInExtensionMethod()
         {
-            var ctx = new Context();
+            var ctx = new RootContext();
             var tc = new testClass();
             ctx.SetVariableValue("p", tc);
             int count = 0;
-            ctx.AddPostCallHook("CallOneStringArgExt", "test", (obj, result) =>
+            ctx.ExecutionContext.AddPostCallHook("CallOneStringArgExt", "test", (obj, result) =>
             {
                 count++;
                 Assert.AreEqual(tc, obj, "Object that is getting the callb ack");
@@ -150,12 +150,12 @@ namespace PlotLingoLibTest.Expressions
         [TestMethod]
         public void TestPostMethod2HookCallInExtensionMethod()
         {
-            var ctx = new Context();
+            var ctx = new RootContext();
             ctx.SetVariableValue("p", new testClass());
             int count1 = 0;
             int count2 = 0;
-            ctx.AddPostCallHook("CallOneStringArgExt", "test1", (o, obj) => count1++);
-            ctx.AddPostCallHook("CallOneStringArgExt", "test2", (o, obj) => count2++);
+            ctx.ExecutionContext.AddPostCallHook("CallOneStringArgExt", "test1", (o, obj) => count1++);
+            ctx.ExecutionContext.AddPostCallHook("CallOneStringArgExt", "test2", (o, obj) => count2++);
             var s = new StringValue("hi");
             var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallOneStringArgExt", new IExpression[] { s }));
             var r = mc.Evaluate(ctx);
@@ -170,7 +170,7 @@ namespace PlotLingoLibTest.Expressions
         private class MyStringExpression : IExpression
         {
             public int _evalCount = 0;
-            public object Evaluate(Context c)
+            public object Evaluate(IScopeContext c)
             {
                 _evalCount++;
                 return "Length";
@@ -212,7 +212,7 @@ namespace PlotLingoLibTest.Expressions
                 return 2 * hi.Length;
             }
 
-            public static int CallOneStringWithCTX(Context ctx, testClass a, string hi)
+            public static int CallOneStringWithCTX(RootContext ctx, testClass a, string hi)
             {
                 return 3 * hi.Length;
             }

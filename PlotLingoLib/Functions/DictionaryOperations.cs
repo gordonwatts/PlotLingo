@@ -24,7 +24,7 @@ namespace PlotLingoLib.Functions
             if (input.Count == 0)
                 throw new NotSupportedException("Unable to sum an empty dictionary.");
 
-            var tmp = new Context();
+            var tmp = new RootContext();
             var r = input.Values.Aggregate((v1, v2) =>
             {
                 var fo = new FunctionExpression("+", new IExpression[] { new ObjectValue(v1), new ObjectValue(v2) });
@@ -43,7 +43,7 @@ namespace PlotLingoLib.Functions
         {
             var r = new Dictionary<object, object>();
             var cv = new DoubleValue(constant);
-            var ctx = new Context();
+            var ctx = new RootContext();
 
             foreach (var item in sDict)
             {
@@ -62,7 +62,7 @@ namespace PlotLingoLib.Functions
         public static Dictionary<object, object> OperatorMultiply(IDictionary<object, object> op1, IDictionary<object, object> op2)
         {
             var r = new Dictionary<object, object>();
-            var ctx = new Context();
+            var ctx = new RootContext();
 
             foreach (var item in op1)
             {
@@ -85,7 +85,7 @@ namespace PlotLingoLib.Functions
         {
             var r = new Dictionary<object, object>();
             var cv = new DoubleValue(constant);
-            var ctx = new Context();
+            var ctx = new RootContext();
 
             foreach (var item in sDict)
             {
@@ -105,7 +105,7 @@ namespace PlotLingoLib.Functions
         {
             var r = new Dictionary<object, object>();
             var cv = new DoubleValue(constant);
-            var ctx = new Context();
+            var ctx = new RootContext();
 
             foreach (var item in sDict)
             {
@@ -124,7 +124,7 @@ namespace PlotLingoLib.Functions
         public static Dictionary<object, object> OperatorDivide(IDictionary<object, object> num, IDictionary<object, object> denom)
         {
             var r = new Dictionary<object, object>();
-            var ctx = new Context();
+            var ctx = new RootContext();
 
             foreach (var item in num)
             {
@@ -146,7 +146,7 @@ namespace PlotLingoLib.Functions
         /// <param name="o1"></param>
         /// <param name="o2"></param>
         /// <returns></returns>
-        public static Dictionary<object, object> OperatorPlus(Context ctx, IDictionary<object, object> o1, IDictionary<object, object> o2)
+        public static Dictionary<object, object> OperatorPlus(RootContext ctx, IDictionary<object, object> o1, IDictionary<object, object> o2)
         {
             var r = new Dictionary<object, object>();
             foreach (var k in o1.Keys.Concat(o2.Keys).Distinct())

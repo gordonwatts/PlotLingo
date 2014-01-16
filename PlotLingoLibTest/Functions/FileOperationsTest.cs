@@ -13,7 +13,7 @@ namespace PlotLingoLibTest.Functions
         public void TestReadFile()
         {
             var fs = new PlotLingoLib.Expressions.FunctionExpression("readfile", new StringValue("TestReadFile.txt"));
-            var c = new Context();
+            var c = new RootContext();
             var r = fs.Evaluate(c);
 
             Assert.AreEqual("hi\r\nthere", r, "content of file");
@@ -33,8 +33,8 @@ namespace PlotLingoLibTest.Functions
 
             File.Copy("TestReadFile.txt", @"ReadFromScriptFile\read.txt");
             var fs = new PlotLingoLib.Expressions.FunctionExpression("readfile", new StringValue("read.txt"));
-            var c = new Context();
-            c.ScriptFileContextPush(new FileInfo(string.Format(@"{0}\bogus.plotlingo", dirinfo.FullName)));
+            var c = new RootContext();
+            c.ExecutionContext.ScriptFileContextPush(new FileInfo(string.Format(@"{0}\bogus.plotlingo", dirinfo.FullName)));
             var r = fs.Evaluate(c);
 
             Assert.AreEqual("hi\r\nthere", r, "content of file");

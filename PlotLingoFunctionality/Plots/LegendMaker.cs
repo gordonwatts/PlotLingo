@@ -34,9 +34,9 @@ namespace PlotLingoFunctionality.Plots
         /// later attachment to a plot.
         /// </summary>
         /// <param name="associations"></param>
-        public static void Legend(Context c, IDictionary<object, object> associations)
+        public static void Legend(RootContext c, IDictionary<object, object> associations)
         {
-            c.AddPostCallHook("plot", "legend", (obj, result) =>
+            c.ExecutionContext.AddPostCallHook("plot", "legend", (obj, result) =>
             {
                 (result as PlotContext).AddPreplotHook(SetLegendColors);
                 return result;
@@ -84,7 +84,7 @@ namespace PlotLingoFunctionality.Plots
         /// See if we can't set the legend colors.
         /// </summary>
         /// <param name="ctx"></param>
-        private static void SetLegendColors(Context codeContext, PlotContext ctx)
+        private static void SetLegendColors(RootContext codeContext, PlotContext ctx)
         {
             var l = new ROOTNET.NTLegend(0.2, 0.2, 0.4, 0.4);
             int count = 0;

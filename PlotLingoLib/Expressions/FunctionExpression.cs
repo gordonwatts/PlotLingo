@@ -38,7 +38,7 @@ namespace PlotLingoLib.Expressions
         /// <param name="c">Context to use while doing the execution</param>
         /// <returns>Whatever the function returns</returns>
         /// <remarks>Use the IFunctionObject to decorate any function you want to add</remarks>
-        public object Evaluate(Context c)
+        public object Evaluate(IScopeContext c)
         {
             // Force evaluation of all arguments.
             var args = Arguments.Select(a => a.Evaluate(c)).ToArray();
@@ -51,7 +51,7 @@ namespace PlotLingoLib.Expressions
                 var r = funcs.Invoke(null, args);
 
                 // Deal with post-hook call backs now
-                r = c.ExecutePostCallHook(FunctionName, null, r);
+                r = c.ExecutionContext.ExecutePostCallHook(FunctionName, null, r);
                 return r;
             }
             catch (TargetInvocationException e)
@@ -98,7 +98,7 @@ namespace PlotLingoLib.Expressions
         ///   - Search using same stradegy above
         ///   - If that fails, and the operator operand doesn't matter (e.g. + or -) reverse the arguments and repeat above.
         /// </remarks>
-        private MethodInfo FindFunction(Context c, ref object[] args)
+        private MethodInfo FindFunction(IScopeContext c, ref object[] args)
         {
             // Try to find some functions that make some sense.
             MethodInfo[] funcs = null;
@@ -144,7 +144,7 @@ namespace PlotLingoLib.Expressions
         /// <param name="c"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        private static MethodInfo[] FindFunctionWithMaybeContextArg(string fname, Context c, ref object[] args)
+        private static MethodInfo[] FindFunctionWithMaybeContextArg(string fname, IScopeContext c, ref object[] args)
         {
             // All functions that look like they might be right. Fail if we don't find them or find too many.
             var funcs = FindFunctionFromFunctionObjects(fname, args);

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PlotLingoLib.Expressions.Values
 {
@@ -34,7 +33,7 @@ namespace PlotLingoLib.Expressions.Values
         /// <param name="c"></param>
         /// <returns></returns>
         /// <remarks>We special case a variable name - at call it an actual value</remarks>
-        public object Evaluate(Context c)
+        public object Evaluate(IScopeContext c)
         {
             if (_cached != null)
                 return _cached;

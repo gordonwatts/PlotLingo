@@ -7,6 +7,6 @@ namespace PlotLingoLib.Statements
     /// </summary>
     interface IStatement
     {
-        void Evaluate(Context c);
+        void Evaluate(IScopeContext c);
     }
 }

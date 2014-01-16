@@ -16,7 +16,7 @@ namespace PlotLingoLib
         /// Given a stream, read and plot as needed.
         /// </summary>
         /// <param name="reader"></param>
-        public static Context Eval(StreamReader reader, IEnumerable<Action<object>> expressionEvaluationReporters = null, FileInfo mainScriptFile = null)
+        public static RootContext Eval(StreamReader reader, IEnumerable<Action<object>> expressionEvaluationReporters = null, FileInfo mainScriptFile = null)
         {
             var sb = new StringBuilder();
             foreach (var l in reader.ReadFromReader())
@@ -33,7 +33,7 @@ namespace PlotLingoLib
         /// <param name="sb"></param>
         /// <param name="scriptFile">The script file we are taking commands from - to establish a context.</param>
         /// <param name="expressionEvaluationReporters"></param>
-        private static Context Eval(string sb, IEnumerable<Action<object>> expressionEvaluationReporters, FileInfo scriptFile = null)
+        private static RootContext Eval(string sb, IEnumerable<Action<object>> expressionEvaluationReporters, FileInfo scriptFile = null)
         {
             try
             {
@@ -41,9 +41,9 @@ namespace PlotLingoLib
                 var r = Grammar.ModuleParser.End().Parse(sb);
 
                 // For exvaluation, get the context setup correctly.
-                var c = new Context();
+                var c = new RootContext();
                 if (scriptFile != null)
-                    c.ScriptFileContextPush(scriptFile);
+                    c.ExecutionContext.ScriptFileContextPush(scriptFile);
                 if (expressionEvaluationReporters != null)
                 {
                     foreach (var a in expressionEvaluationReporters)
@@ -80,7 +80,7 @@ namespace PlotLingoLib
         /// </summary>
         /// <param name="files"></param>
         /// <param name="action"></param>
-        public static Context Eval(this List<FileInfo> files, Action<object>[] actions = null, FileInfo mainScriptFile = null)
+        public static RootContext Eval(this List<FileInfo> files, Action<object>[] actions = null, FileInfo mainScriptFile = null)
         {
             for (int i = 0; i < 10; i++)
                 try
@@ -112,7 +112,7 @@ namespace PlotLingoLib
         /// Evaluate the contents of a file
         /// </summary>
         /// <param name="fi"></param>
-        public static Context Eval(this FileInfo fi, IEnumerable<Action<object>> expressionEvaluationReporters = null)
+        public static RootContext Eval(this FileInfo fi, IEnumerable<Action<object>> expressionEvaluationReporters = null)
         {
             for (int i = 0; i < 10; i++)
                 try

@@ -9,7 +9,7 @@ namespace PlotLingoLib.Expressions
     /// Hodl onto a list of statements, and return the value of the last statement
     /// we've run.
     /// </summary>
-    class ListOfStatementsExpression : IExpression
+    internal class ListOfStatementsExpression : IExpression
     {
         /// <summary>
         /// Track the statements that we are going to be looking at.
@@ -22,8 +22,10 @@ namespace PlotLingoLib.Expressions
         /// <param name="statements">Initial statement list, flattened into an array when we use it.</param>
         public ListOfStatementsExpression(IEnumerable<IStatement> statements)
         {
-            // TODO: Complete member initialization
-            this.Statements = statements.ToArray();
+            if (statements == null)
+                throw new ArgumentNullException("Statements must not be null");
+
+            Statements = statements.ToArray();
         }
 
         /// <summary>
@@ -31,9 +33,25 @@ namespace PlotLingoLib.Expressions
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        public object Evaluate(Context c)
+        public object Evaluate(IScopeContext c)
         {
-            throw new NotImplementedException();
+            var newcontext = new ScopeContext(c);
+            object result = null;
+            Action<object> saver = a => { result = a; };
+            newcontext.AddExpressionStatementEvaluationCallback(saver);
+            try
+            {
+                foreach (var s in Statements)
+                {
+                    s.Evaluate(newcontext);
+                }
+
+                return result;
+            }
+            finally
+            {
+                c.RemoveExpressionStatementEvaluationCallback(saver);
+            }
         }
     }
 }

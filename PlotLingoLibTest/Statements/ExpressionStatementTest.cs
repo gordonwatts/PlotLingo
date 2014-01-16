@@ -12,7 +12,7 @@ namespace PlotLingoLibTest.Statements
         public void TestBasicExecution()
         {
             var exp = new simpleExprForTest();
-            var c = new Context();
+            var c = new RootContext();
             var expS = new ExpressionStatement(exp);
 
             expS.Evaluate(c);
@@ -25,7 +25,7 @@ namespace PlotLingoLibTest.Statements
         {
             var exp = new simpleExprForTest();
             int count = 0;
-            var c = new Context();
+            var c = new RootContext();
             c.AddExpressionStatementEvaluationCallback(o =>
             {
                 count++;
@@ -52,7 +52,7 @@ namespace PlotLingoLibTest.Statements
             /// </summary>
             /// <param name="c"></param>
             /// <returns></returns>
-            public object Evaluate(PlotLingoLib.Context c)
+            public object Evaluate(IScopeContext c)
             {
                 NumberOfTimesCalled++;
                 return null;

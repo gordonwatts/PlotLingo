@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PlotLingoLib.Expressions.Values;
-using PlotLingoLib.Expressions;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PlotLingoLib;
-using System.Collections;
+using PlotLingoLib.Expressions;
+using PlotLingoLib.Expressions.Values;
+using System;
 using System.Collections.Generic;
 
 namespace PlotLingoLibTest.Expressions.Values
@@ -26,7 +25,7 @@ namespace PlotLingoLibTest.Expressions.Values
             };
 
             var dv = new DictionaryValue(allvals);
-            var c = new Context();
+            var c = new RootContext();
             var o = dv.Evaluate(c);
 
             Assert.IsInstanceOfType(o, typeof(IDictionary<object, object>), "Dict type");
@@ -46,7 +45,7 @@ namespace PlotLingoLibTest.Expressions.Values
             };
 
             var dv = new DictionaryValue(allvals);
-            var c = new Context();
+            var c = new RootContext();
             var o = dv.Evaluate(c);
             o = dv.Evaluate(c);
 
@@ -64,7 +63,7 @@ namespace PlotLingoLibTest.Expressions.Values
             };
 
             var dv = new DictionaryValue(allvals);
-            var c = new Context();
+            var c = new RootContext();
             var o = dv.Evaluate(c);
 
             var od = o as IDictionary<object, object>;
@@ -76,7 +75,7 @@ namespace PlotLingoLibTest.Expressions.Values
         /// </summary>
         class exprEvalOnce : IExpression
         {
-            public exprEvalOnce ()
+            public exprEvalOnce()
             {
                 Evaluated = 0;
             }
@@ -86,7 +85,7 @@ namespace PlotLingoLibTest.Expressions.Values
             /// </summary>
             /// <param name="c"></param>
             /// <returns></returns>
-            public object Evaluate(Context c)
+            public object Evaluate(IScopeContext c)
             {
                 Evaluated++;
                 return 5;

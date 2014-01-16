@@ -1,9 +1,5 @@
-﻿using PlotLingoLib.Expressions;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PlotLingoLib.MethodEvaluators
 {
@@ -18,11 +14,11 @@ namespace PlotLingoLib.MethodEvaluators
         /// <param name="c"></param>
         /// <param name="expr"></param>
         /// <returns></returns>
-        public Tuple<bool, object> Evaluate(Context c, object obj, string methodName, object[] args)
+        public Tuple<bool, object> Evaluate(IScopeContext c, object obj, string methodName, object[] args)
         {
             // Get the type of the object
             var t = obj.GetType();
-            
+
             // Now, see if we can't get the method name from there.
             var method = t.GetMethod(methodName, args.Select(v => v.GetType()).ToArray());
             if (method == null)

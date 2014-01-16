@@ -47,7 +47,7 @@ namespace PlotLingoLib.Expressions
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        public object Evaluate(Context c)
+        public object Evaluate(IScopeContext c)
         {
             // All functions and the source object must evaluate correctly. Further, since we want to do the
             // evaluate only once, we do it here, at the top.
@@ -58,7 +58,7 @@ namespace PlotLingoLib.Expressions
             var goodEval = _evaluators.Select(e => e.Evaluate(c, obj, FunctionCall.FunctionName, args)).Where(r => r.Item1).FirstOrDefault();
             if (goodEval != null)
             {
-                return c.ExecutePostCallHook(FunctionCall.FunctionName, obj, goodEval.Item2);
+                return c.ExecutionContext.ExecutePostCallHook(FunctionCall.FunctionName, obj, goodEval.Item2);
             }
             throw new InvalidOperationException(string.Format("Don't know how to call the function {0} on the object {1} of type {2}.", FunctionCall.ToString(), ObjectExpression.ToString(), obj.GetType().Name));
         }

@@ -16,7 +16,7 @@ namespace PlotLingoLibTest.Functions
         public void TestEvalNumber()
         {
             var f = new FunctionExpression("eval", new IExpression[] { new StringValue("5;") });
-            var c = new Context();
+            var c = new RootContext();
             var r = f.Evaluate(c);
             Assert.AreEqual(5, r, "simple eval");
         }
@@ -25,7 +25,7 @@ namespace PlotLingoLibTest.Functions
         public void TestEvalWithContextUpdate()
         {
             var f = new FunctionExpression("eval", new IExpression[] { new StringValue("i=5;") });
-            var c = new Context();
+            var c = new RootContext();
             var r = f.Evaluate(c);
             Assert.AreEqual(5, c.GetVariableValue("i"), "variable i");
         }
@@ -35,7 +35,7 @@ namespace PlotLingoLibTest.Functions
         public void LoadFileWithSideEffects()
         {
             var f = new FunctionExpression("include", new IExpression[] { new StringValue("LoadFileWithSideEffects.plotlingo") });
-            var c = new Context();
+            var c = new RootContext();
             var r = f.Evaluate(c);
             Assert.AreEqual(5, c.GetVariableValue("i"), "variable i");
         }
@@ -56,8 +56,8 @@ namespace PlotLingoLibTest.Functions
             File.Copy("LoadFileWithSideEffects.plotlingo", @"LoadFromMainScriptDirectory\effects.plotlingo");
 
             var f = new FunctionExpression("include", new IExpression[] { new StringValue("effects.plotlingo") });
-            var c = new Context();
-            c.ScriptFileContextPush(new FileInfo(string.Format(@"{0}\bogus.plotlingo", dirinfo.FullName)));
+            var c = new RootContext();
+            c.ExecutionContext.ScriptFileContextPush(new FileInfo(string.Format(@"{0}\bogus.plotlingo", dirinfo.FullName)));
             var r = f.Evaluate(c);
             Assert.AreEqual(5, c.GetVariableValue("i"), "variable i");
         }
@@ -77,10 +77,10 @@ namespace PlotLingoLibTest.Functions
             File.Copy("LoadFileWithSideEffects.plotlingo", @"ScriptFileSameWhenRunning\effects.plotlingo");
 
             var f = new FunctionExpression("include", new IExpression[] { new StringValue("effects.plotlingo") });
-            var c = new Context();
-            c.ScriptFileContextPush(new FileInfo(string.Format(@"{0}\bogus.plotlingo", dirinfo.FullName)));
+            var c = new RootContext();
+            c.ExecutionContext.ScriptFileContextPush(new FileInfo(string.Format(@"{0}\bogus.plotlingo", dirinfo.FullName)));
             var r = f.Evaluate(c);
-            Assert.AreEqual("bogus.plotlingo", c.CurrentScriptFile.Name, "Current script filename");
+            Assert.AreEqual("bogus.plotlingo", c.ExecutionContext.CurrentScriptFile.Name, "Current script filename");
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace PlotLingoLibTest.Functions
         public void ScriptFileSetCorrectlyDuringLoad()
         {
             var f = new FunctionExpression("include", new IExpression[] { new StringValue("ReturnCurrentScriptName.plotlingo") });
-            var c = new Context();
+            var c = new RootContext();
             var r = f.Evaluate(c) as string;
             Assert.IsTrue(r.Contains("ReturnCurrentScriptName.plotlingo"), "the script name in the file");
         }
@@ -100,8 +100,8 @@ namespace PlotLingoLibTest.Functions
         public void CurrentScriptFunction()
         {
             var f = new FunctionExpression("currentscript");
-            var c = new Context();
-            c.ScriptFileContextPush(new FileInfo(@"{0}\bogus.plotlingo"));
+            var c = new RootContext();
+            c.ExecutionContext.ScriptFileContextPush(new FileInfo(@"{0}\bogus.plotlingo"));
             var r = f.Evaluate(c) as string;
             Assert.IsTrue(r.Contains("bogus.plotlingo"), "Current script filename");
         }
@@ -111,7 +111,7 @@ namespace PlotLingoLibTest.Functions
         public void ScriptWithComments()
         {
             var f = new FunctionExpression("include", new IExpression[] { new StringValue("ScriptWithComments.plotlingo") });
-            var c = new Context();
+            var c = new RootContext();
             var r = f.Evaluate(c);
             Assert.AreEqual(5, c.GetVariableValue("i"), "variable i");
         }

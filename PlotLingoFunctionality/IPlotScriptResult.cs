@@ -20,6 +20,6 @@ namespace PlotLingoFunctionality
         /// </summary>
         /// <param name="filenameStub"></param>
         /// <returns></returns>
-        IEnumerable<FileInfo> Save(Context ctx, string filenameStub);
+        IEnumerable<FileInfo> Save(RootContext ctx, string filenameStub);
     }
 }

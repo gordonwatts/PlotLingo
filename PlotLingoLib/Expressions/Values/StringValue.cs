@@ -31,7 +31,7 @@ namespace PlotLingoLib.Expressions.Values
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        public object Evaluate(Context c)
+        public object Evaluate(IScopeContext c)
         {
             // Find all variable subsitutions that have to be done in the string.
             var myl = _content;

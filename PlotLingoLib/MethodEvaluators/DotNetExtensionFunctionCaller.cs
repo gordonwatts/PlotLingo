@@ -15,7 +15,7 @@ namespace PlotLingoLib.MethodEvaluators
         /// Attempt to evaluate the expression.
         /// </summary>
         /// <returns></returns>
-        public Tuple<bool, object> Evaluate(Context c, object obj, string methodName, object[] arguments)
+        public Tuple<bool, object> Evaluate(IScopeContext c, object obj, string methodName, object[] arguments)
         {
             var args = new object[] { obj }.Concat(arguments).ToArray();
 

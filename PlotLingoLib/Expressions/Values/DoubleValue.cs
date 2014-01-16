@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace PlotLingoLib.Expressions.Values
 {
     /// <summary>
@@ -15,7 +10,7 @@ namespace PlotLingoLib.Expressions.Values
         /// Init with the value we will hold onto.
         /// </summary>
         /// <param name="v"></param>
-        public DoubleValue (double v)
+        public DoubleValue(double v)
         {
             Value = v;
         }
@@ -25,7 +20,7 @@ namespace PlotLingoLib.Expressions.Values
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        public object Evaluate(Context c)
+        public object Evaluate(IScopeContext c)
         {
             return Value;
         }

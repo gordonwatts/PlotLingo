@@ -1,9 +1,4 @@
 ﻿using PlotLingoLib.Expressions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PlotLingoLib.Statements
 {
@@ -30,7 +25,7 @@ namespace PlotLingoLib.Statements
         /// Assign the variable to the value.
         /// </summary>
         /// <param name="c"></param>
-        public void Evaluate(Context c)
+        public void Evaluate(IScopeContext c)
         {
             c.SetVariableValue(_variable, _expression.Evaluate(c));
         }

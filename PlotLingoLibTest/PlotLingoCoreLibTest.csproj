@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Expressions\MethodCallExpressionTest.cs" />
     <Compile Include="Expressions\IndexRefExpressionTest.cs" />
+    <Compile Include="Expressions\ListOfStatementsExpressionTest.cs" />
     <Compile Include="Expressions\Values\DictionaryValueTest.cs" />
     <Compile Include="Expressions\Values\StringValueTest.cs" />
     <Compile Include="Functions\DictionaryOperationsTest.cs" />
@@ -68,10 +69,12 @@
     <Compile Include="Functions\FileOperationsTest.cs" />
     <Compile Include="GrammerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ContextTest.cs" />
+    <Compile Include="RootContextTest.cs" />
     <Compile Include="Expressions\FunctionExpressionTest.cs" />
     <Compile Include="Statements\ExpressionStatementTest.cs" />
     <Compile Include="RunPlotUnitTests.cs" />
+    <Compile Include="ExecutionContextTest.cs" />
+    <Compile Include="ScopeContextTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PlotLingoLib\PlotLingoCoreLib.csproj">

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace PlotLingoLib.Expressions.Values
 {
@@ -25,7 +21,7 @@ namespace PlotLingoLib.Expressions.Values
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        public object Evaluate(Context c)
+        public object Evaluate(IScopeContext c)
         {
             return Values.Select(v => v.Evaluate(c)).ToArray();
         }

@@ -1,9 +1,4 @@
-﻿using PlotLingoLib.Expressions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace PlotLingoLib.MethodEvaluators
 {
@@ -21,6 +16,6 @@ namespace PlotLingoLib.MethodEvaluators
         /// <param name="methodName">Name of the method</param>
         /// <param name="obj">The object against which to call</param>
         /// <returns>Value with true if the call succeeded, and then also the result</returns>
-        Tuple<bool, object> Evaluate(Context c, object obj, string methodName, object[] args);
+        Tuple<bool, object> Evaluate(IScopeContext c, object obj, string methodName, object[] args);
     }
 }

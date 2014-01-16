@@ -33,7 +33,7 @@ namespace PlotLingoLib.Expressions
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        public object Evaluate(Context c)
+        public object Evaluate(IScopeContext c)
         {
             if (_result != null)
                 return _result;

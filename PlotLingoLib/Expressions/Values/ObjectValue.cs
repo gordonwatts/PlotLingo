@@ -11,7 +11,7 @@ namespace PlotLingoLib.Expressions.Values
             Value = v;
         }
 
-        public object Evaluate(Context c)
+        public object Evaluate(IScopeContext c)
         {
             return Value;
         }

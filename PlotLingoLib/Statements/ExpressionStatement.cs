@@ -25,7 +25,7 @@ namespace PlotLingoLib.Statements
         /// We just evaluate the expression. Report it to anyone that is interested.
         /// </summary>
         /// <param name="c"></param>
-        public void Evaluate(Context c)
+        public void Evaluate(IScopeContext c)
         {
             var r = Expression.Evaluate(c);
             c.ReportExpressionStatementEvaluation(r);
