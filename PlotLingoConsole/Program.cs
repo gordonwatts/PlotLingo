@@ -142,7 +142,7 @@ namespace PlotLingoConsole
             Console.WriteLine("There were {0} results.", results.Where(r => r is IPlotScriptResult).Count());
             int sequenceNumber = 0;
             var written = new HashSet<string>();
-            foreach (var r in results)
+            foreach (var r in results.Distinct())
             {
                 var pr = r as IPlotScriptResult;
                 if (pr != null)
