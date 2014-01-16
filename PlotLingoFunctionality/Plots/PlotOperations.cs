@@ -55,5 +55,33 @@ namespace PlotLingoFunctionality.Plots
             Tags.CopyTags(ctx, hDenomenator, clone);
             return clone;
         }
+
+        /// <summary>
+        /// Normalize the area of the plot to a specified number.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="plot"></param>
+        /// <param name="totalArea"></param>
+        /// <returns></returns>
+        public static ROOTNET.Interface.NTH1 normalize(IScopeContext ctx, ROOTNET.Interface.NTH1 plot)
+        {
+            var np = plot.Clone() as ROOTNET.Interface.NTH1;
+            var area = np.Integral();
+            np.Scale(1.0 / area);
+            return np;
+        }
+
+        /// <summary>
+        /// Rebin by a factor
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="plot"></param>
+        /// <returns></returns>
+        public static ROOTNET.Interface.NTH1 rebin(IScopeContext ctx, ROOTNET.Interface.NTH1 plot, int rebinFactor)
+        {
+            var np = plot.Clone() as ROOTNET.Interface.NTH1;
+            np.Rebin(rebinFactor);
+            return np;
+        }
     }
 }
