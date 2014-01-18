@@ -575,10 +575,8 @@ namespace PlotLingoLibTest
             var a1 = func.Arguments[0] as VariableValue;
             Assert.AreEqual("a", a1.VariableName, "index dictionary");
 
-            Assert.IsInstanceOfType(func.Arguments[1], typeof(ObjectValue), "object holder for statements");
-            var listHolder = func.Arguments[1] as ObjectValue;
-            Assert.IsInstanceOfType(listHolder.Value, typeof(ListOfStatementsExpression), "list of statements type");
-            var list = listHolder.Value as ListOfStatementsExpression;
+            Assert.IsInstanceOfType(func.Arguments[1], typeof(ListOfStatementsExpression), "list of statements type");
+            var list = func.Arguments[1] as ListOfStatementsExpression;
             Assert.AreEqual(1, list.Statements.Length, "# of statements");
             Assert.IsInstanceOfType(list.Statements[0], typeof(AssignmentStatement), "Internal statement type");
         }

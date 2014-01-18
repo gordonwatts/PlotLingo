@@ -137,12 +137,14 @@ namespace PlotLingoLib
 
         /// <summary>
         /// Parser that returns a function.
+        /// The function call can be followed by a list of statements that are contained in
+        /// { and }. Those are just passed as an argument to the function in that case.
         /// </summary>
         private static readonly Parser<FunctionExpression> FunctionExpressionParser =
             from fname in IdentifierParser
             from args in ArgumentListParser
             from statements in StatementParser.Many().Contained(OpenBrace, CloseBrace).Optional()
-            select new FunctionExpression(fname, statements.IsEmpty ? args : args.Concat(new IExpression[] { new ObjectValue(new ListOfStatementsExpression(statements.Get())) }).ToArray());
+            select new FunctionExpression(fname, statements.IsEmpty ? args : args.Concat(new IExpression[] { new ListOfStatementsExpression(statements.Get()) }).ToArray());
 
         /// <summary>
         /// Parse an argument list that goes to a function or similar.
@@ -185,6 +187,9 @@ namespace PlotLingoLib
                 .Or(GroupedExpressionParser)
             select t;
 
+        /// <summary>
+        /// A term can have a "[" and "]" at the end - which is an index ref expression of some sort.
+        /// </summary>
         private static readonly Parser<IExpression> TermParser =
             from t in IndividualTermParser
             from e in Parse.Ref(() => ExpressionParser).Contained(OpenBracket, CloseBracket).Optional()
