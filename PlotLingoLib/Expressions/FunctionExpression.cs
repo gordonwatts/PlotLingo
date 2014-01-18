@@ -54,11 +54,6 @@ namespace PlotLingoLib.Expressions
             if (funcCaller == null)
                 throw new NotImplementedException(string.Format("Unable to find function {0}", FunctionName));
 
-#if false
-            var args = Arguments.Select(a => a.Evaluate(c)).ToArray();
-
-            var funcs = FindFunction(c, ref args);
-#endif
             // Now call the method.
             try
             {
@@ -246,101 +241,6 @@ namespace PlotLingoLib.Expressions
             var funcs = (from fo in ExtensibilityControl.Get().FunctionObjects
                          from m in fo.GetType().GetMethods(BindingFlags.Public | BindingFlags.Static)
                          where m.Name == fname
-                         select m).ToArray();
-            return funcs;
-        }
-
-        /// <summary>
-        /// Find the proper function to call. Throw if we can't find it, or if we find more than one that matches.
-        /// </summary>
-        /// <param name="c"></param>
-        /// <param name="args"></param>
-        /// <returns>The funciton invokation object</returns>
-        /// <remarks>
-        /// Normal Function Call:
-        ///   - Search to see if we can't find the proper function
-        ///   - If that fails, then try adding the Context onto the beginning of it
-        ///   
-        /// Operator:
-        ///   - Replace with name.
-        ///   - Search using same stradegy above
-        ///   - If that fails, and the operator operand doesn't matter (e.g. + or -) reverse the arguments and repeat above.
-        /// </remarks>
-        private MethodInfo FindFunction(IScopeContext c, ref object[] args)
-        {
-            // Try to find some functions that make some sense.
-            MethodInfo[] funcs = null;
-            if (_binaryOperators.Keys.Contains(FunctionName))
-            {
-                var op = _binaryOperators[FunctionName];
-                funcs = FindFunctionWithMaybeContextArg(op.MethodName, c, ref args);
-                if (funcs.Length == 0 && op.ReverseOperandsOK)
-                {
-                    var argsR = args.Reverse().ToArray();
-                    funcs = FindFunctionWithMaybeContextArg(op.MethodName, c, ref argsR);
-                    if (funcs.Length > 0)
-                        args = argsR;
-                }
-            }
-            else
-            {
-                funcs = FindFunctionWithMaybeContextArg(FunctionName, c, ref args);
-            }
-
-            // See if we have reasonable results, and throw if not.
-            if (funcs.Length == 0)
-                throw new System.NotImplementedException(string.Format("Unknown function '{0}' referenced! {0}", FunctionName));
-
-            if (funcs.Length > 1)
-            {
-                StringBuilder bld = new StringBuilder();
-                foreach (var item in funcs)
-                {
-                    bld.AppendFormat("{0}.{1}", item.DeclaringType.Name, item.Name);
-                }
-                throw new System.NotImplementedException(string.Format("Function '{0}' referenced - but has more than one possible resolution in types {1}", FunctionName, bld.ToString()));
-            }
-
-            // And off to the races we go!
-            return funcs[0];
-        }
-
-        /// <summary>
-        /// Find the list of functions that match these arguments, perhaps with
-        /// a Context argument pre-pended.
-        /// </summary>
-        /// <param name="c"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        private static MethodInfo[] FindFunctionWithMaybeContextArg(string fname, IScopeContext c, ref object[] args)
-        {
-            fname = fname.FixUpReserved();
-
-            // All functions that look like they might be right. Fail if we don't find them or find too many.
-            var funcs = FindFunctionFromFunctionObjects(fname, args);
-
-            // If we couldn't find it, see if it is a special function - so put Context at the start.
-            if (funcs.Length == 0)
-            {
-                var argsExtended = new object[] { c }.Concat(args).ToArray();
-                funcs = FindFunctionFromFunctionObjects(fname, argsExtended);
-                if (funcs.Length > 0)
-                    args = argsExtended;
-            }
-            return funcs;
-        }
-
-        /// <summary>
-        /// Search through all extensibility points for the function to call.
-        /// </summary>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        private static MethodInfo[] FindFunctionFromFunctionObjects(string fname, object[] args)
-        {
-            var funcs = (from fo in ExtensibilityControl.Get().FunctionObjects
-                         let m = fo.GetType().GetMethod(fname, args.Select(v => v.GetType()).ToArray())
-                         where m != null
-                         where m.IsStatic
                          select m).ToArray();
             return funcs;
         }
