@@ -146,9 +146,12 @@ namespace PlotLingoLibTest.Expressions
         }
 
         [TestMethod]
-        public void LookForBadArgList()
+        [ExpectedException(typeof(NotImplementedException))]
+        public void FuncCallWithNoArgsAtArgedFunction()
         {
-            Assert.Inconclusive("Make sure that zero args can't be sent to a function with args.");
+            var fo = new FunctionExpression("GetMe");
+            var c = new RootContext();
+            var r = fo.Evaluate(c);
         }
 
         [TestMethod]
