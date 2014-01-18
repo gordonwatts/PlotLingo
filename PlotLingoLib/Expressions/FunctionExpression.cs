@@ -171,7 +171,8 @@ namespace PlotLingoLib.Expressions
         {
             if (typeof(IScopeContext).IsAssignableFrom(pair._parameter.ParameterType))
                 return c;
-            if (pair._parameter.ParameterType != typeof(object) && pair._parameter.ParameterType.IsAssignableFrom(typeof(IExpression)))
+            if (typeof(IExpression).IsAssignableFrom(pair._parameter.ParameterType)
+                        && pair._parameter.ParameterType.IsAssignableFrom(pair._arg.Expression.GetType()))
                 return pair._arg.Expression;
 
             return pair._arg.Value;
@@ -205,7 +206,8 @@ namespace PlotLingoLib.Expressions
                     // If the parameter is an IExpression, then we by default have it as all arguments
                     // come in that way. Note the reverse logic here for the is assignable from... we want to treat
                     // any arg using IExpression specially...
-                    if (arg._parameter.ParameterType != typeof(object) && arg._parameter.ParameterType.IsAssignableFrom(typeof(IExpression)))
+                    if (typeof(IExpression).IsAssignableFrom(arg._parameter.ParameterType)
+                        && arg._parameter.ParameterType.IsAssignableFrom(arg._arg.Expression.GetType()))
                         return arg._parameter.ParameterType;
 
                     // If we got here, then we will let the framework figure out the last. We have to do this

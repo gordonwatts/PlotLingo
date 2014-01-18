@@ -152,9 +152,23 @@ namespace PlotLingoLibTest.Expressions
         }
 
         [TestMethod]
-        public void ArgIsIExprestionSpecific()
+        [ExpectedException(typeof(NotImplementedException))]
+        public void ArgExpressionIsSpecificIncorrect()
         {
-            Assert.Inconclusive("call a fucntion with an argument StringValue, amke sure it matchs and doesn't");
+            var v = new IntegerValue(5);
+            var fo = new FunctionExpression("GetMeWithIndex2", v);
+            var c = new RootContext();
+            var r = fo.Evaluate(c);
+        }
+
+        [TestMethod]
+        public void ArgExpressionIsSpecificCorrect()
+        {
+            var v = new StringValue("5");
+            var fo = new FunctionExpression("GetMeWithIndex2", v);
+            var c = new RootContext();
+            var r = fo.Evaluate(c);
+            Assert.AreEqual("5", r, "expression called failed");
         }
 
     }
@@ -178,6 +192,12 @@ namespace PlotLingoLibTest.Expressions
         }
 
         static public object GetMeWithIndex(IExpression expr)
+        {
+            var r = new RootContext();
+            return expr.Evaluate(r);
+        }
+
+        static public object GetMeWithIndex2(StringValue expr)
         {
             var r = new RootContext();
             return expr.Evaluate(r);
