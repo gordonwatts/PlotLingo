@@ -62,7 +62,7 @@ namespace PlotLingoLibTest.Functions
             var statement1 = new ExpressionStatement(new VariableValue("a"));
             var exprStatement = new ObjectValue(new ListOfStatementsExpression(new IStatement[] { statement1 }));
 
-            var forLoop = new FunctionExpression("map", new StringValue("a"), new ObjectValue(loopList), exprStatement);
+            var forLoop = new FunctionExpression("map", new VariableValue("a"), new ObjectValue(loopList), exprStatement);
 
             var c = new RootContext();
             var r = forLoop.Evaluate(c);

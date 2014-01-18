@@ -191,7 +191,7 @@ namespace PlotLingoLib.Expressions
         {
             var parameterInfo = method.GetParameters();
 
-            var argtypelist = FunctionUtils.ZipArgs(args, parameterInfo)
+            var argtypelistItr = FunctionUtils.ZipArgs(args, parameterInfo)
                 .Select(arg =>
                 {
                     // A reference to the execution context anywhere is also legal.
@@ -214,16 +214,26 @@ namespace PlotLingoLib.Expressions
                     // because there are some implicit cast operations we can't automatically detect with
                     // IsAssignableFrom.
                     return arg._arg.Type;
-                })
-                .ToArray();
+                });
 
-            // If any null's got through, then we are dead
-            if (argtypelist.Where(a => a == null).Any())
+            // It is possible for some IExpressions to fail when we try to evaluate them on other
+            // sets of input.
+            try
+            {
+                var argtypelist = argtypelistItr.ToArray();
+
+                // If any null's got through, then we are dead
+                if (argtypelist.Where(a => a == null).Any())
+                    return false;
+
+                // Make sure all casts are taking into account using this squirly work around.
+                var m = method.DeclaringType.GetMethod(method.Name, argtypelist);
+                return m != null && m == method;
+            }
+            catch
+            {
                 return false;
-
-            // Make sure all casts are taking into account using this squirly work around.
-            var m = method.DeclaringType.GetMethod(method.Name, argtypelist);
-            return m != null && m == method;
+            }
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using PlotLingoLib.Expressions;
+using PlotLingoLib.Expressions.Values;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -49,9 +50,9 @@ namespace PlotLingoLib.Functions
         /// <param name="mapOver">The array of objects we are going to loop over</param>
         /// <param name="statements">The statements to be executed.</param>
         /// <returns></returns>
-        public static IEnumerable<object> map(IScopeContext ctx, string indexName, IEnumerable<object> mapOver, ListOfStatementsExpression statements)
+        public static IEnumerable<object> map(IScopeContext ctx, VariableValue indexName, IEnumerable<object> mapOver, ListOfStatementsExpression statements)
         {
-            var allDict = mapOver.Select(o => new Dictionary<object, object>() { { indexName, o } });
+            var allDict = mapOver.Select(o => new Dictionary<object, object>() { { indexName.VariableName, o } });
             return map(ctx, allDict, statements);
         }
     }
