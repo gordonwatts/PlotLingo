@@ -1,7 +1,9 @@
 ﻿using PlotLingoLib.Expressions;
+using PlotLingoLib.Expressions.Values;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 
 namespace PlotLingoLib.Functions
 {
@@ -42,6 +44,19 @@ namespace PlotLingoLib.Functions
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Loop over an array with a variable index.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="loopControl"></param>
+        /// <param name="statements"></param>
+        /// <returns></returns>
+        public static object forReserved(IScopeContext ctx, VariableValue loopIndex, IEnumerable<object> loopControl, ListOfStatementsExpression statements)
+        {
+            var indexList = loopControl.Select(i => new Dictionary<object, object>() { { loopIndex.VariableName, i } });
+            return forReserved(ctx, indexList, statements);
         }
     }
 }

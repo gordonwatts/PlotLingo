@@ -20,7 +20,7 @@ namespace PlotLingoLibTest.Functions
             var loopdict = new ObjectValue(new Dictionary<object, object>[] { });
 
             var statement1 = new ExpressionStatement(new IntegerValue(5));
-            var exprStatement = new ObjectValue(new ListOfStatementsExpression(new IStatement[] { statement1 }));
+            var exprStatement = new ListOfStatementsExpression(new IStatement[] { statement1 });
 
             var forLoop = new FunctionExpression("for", loopdict, exprStatement);
 
@@ -39,7 +39,7 @@ namespace PlotLingoLibTest.Functions
             var loopdict = new ObjectValue(new Dictionary<object, object>[] { loop1 });
 
             var statement1 = new ExpressionStatement(new IntegerValue(5));
-            var exprStatement = new ObjectValue(new ListOfStatementsExpression(new IStatement[] { statement1 }));
+            var exprStatement = new ListOfStatementsExpression(new IStatement[] { statement1 });
 
             var forLoop = new FunctionExpression("for", loopdict, exprStatement);
 
@@ -47,6 +47,25 @@ namespace PlotLingoLibTest.Functions
             var r = forLoop.Evaluate(c);
 
             Assert.AreEqual(5, r, "for loop with nothing in it");
+        }
+
+        [TestMethod]
+        public void ArrayForOneResult()
+        {
+            var loop1 = new object[] {
+                10
+            };
+            var loopdict = new ObjectValue(loop1);
+
+            var statement1 = new ExpressionStatement(new VariableValue("a"));
+            var exprStatement = new ListOfStatementsExpression(new IStatement[] { statement1 });
+
+            var forLoop = new FunctionExpression("for", new VariableValue("a"), loopdict, exprStatement);
+
+            var c = new RootContext();
+            var r = forLoop.Evaluate(c);
+
+            Assert.AreEqual(10, r, "for loop with nothing in it");
         }
 
         [TestMethod]
@@ -58,7 +77,7 @@ namespace PlotLingoLibTest.Functions
             var loopdict = new ObjectValue(new Dictionary<object, object>[] { loop1 });
 
             var statement1 = new ExpressionStatement(new IntegerValue(5));
-            var exprStatement = new ObjectValue(new ListOfStatementsExpression(new IStatement[] { statement1 }));
+            var exprStatement = new ListOfStatementsExpression(new IStatement[] { statement1 });
 
             var forLoop = new FunctionExpression("for", loopdict, exprStatement);
 
@@ -78,7 +97,7 @@ namespace PlotLingoLibTest.Functions
             var loopdict = new ObjectValue(new Dictionary<object, object>[] { loop1 });
 
             var statement1 = new ExpressionStatement(new VariableValue("a"));
-            var exprStatement = new ObjectValue(new ListOfStatementsExpression(new IStatement[] { statement1 }));
+            var exprStatement = new ListOfStatementsExpression(new IStatement[] { statement1 });
 
             var forLoop = new FunctionExpression("for", loopdict, exprStatement);
 
@@ -98,7 +117,7 @@ namespace PlotLingoLibTest.Functions
             var loopdict = new ObjectValue(new Dictionary<object, object>[] { loop1 });
 
             var statement1 = new ExpressionStatement(new FunctionExpression("+", new VariableValue("a"), new VariableValue("b")));
-            var exprStatement = new ObjectValue(new ListOfStatementsExpression(new IStatement[] { statement1 }));
+            var exprStatement = new ListOfStatementsExpression(new IStatement[] { statement1 });
 
             var forLoop = new FunctionExpression("for", loopdict, exprStatement);
 
@@ -120,7 +139,7 @@ namespace PlotLingoLibTest.Functions
             var loopdict = new ObjectValue(new Dictionary<object, object>[] { loop1, loop2 });
 
             var statement1 = new ExpressionStatement(new VariableValue("a"));
-            var exprStatement = new ObjectValue(new ListOfStatementsExpression(new IStatement[] { statement1 }));
+            var exprStatement = new ListOfStatementsExpression(new IStatement[] { statement1 });
 
             var forLoop = new FunctionExpression("for", loopdict, exprStatement);
 
@@ -148,7 +167,7 @@ namespace PlotLingoLibTest.Functions
             var lookup = new IndexerRefExpression(dict, new StringValue("hi"));
 
             var statement1 = new ExpressionStatement(lookup);
-            var exprStatement = new ObjectValue(new ListOfStatementsExpression(new IStatement[] { statement1 }));
+            var exprStatement = new ListOfStatementsExpression(new IStatement[] { statement1 });
 
             var forLoop = new FunctionExpression("for", loopdict, exprStatement);
 
