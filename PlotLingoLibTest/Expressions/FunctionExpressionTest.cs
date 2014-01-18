@@ -134,6 +134,29 @@ namespace PlotLingoLibTest.Expressions
             c.SetVariableValue("p", new OperatorTestNotDefined());
             var r = fo.Evaluate(c);
         }
+
+        [TestMethod]
+        public void TestIExpreFunction()
+        {
+            var v = new IntegerValue(5);
+            var fo = new FunctionExpression("GetMeWithIndex", v);
+            var c = new RootContext();
+            var r = fo.Evaluate(c);
+            Assert.AreEqual(5, r, "expression called failed");
+        }
+
+        [TestMethod]
+        public void LookForBadArgList()
+        {
+            Assert.Inconclusive("Make sure that zero args can't be sent to a function with args.");
+        }
+
+        [TestMethod]
+        public void ArgIsIExprestionSpecific()
+        {
+            Assert.Inconclusive("call a fucntion with an argument StringValue, amke sure it matchs and doesn't");
+        }
+
     }
 
     /// <summary>
@@ -147,11 +170,17 @@ namespace PlotLingoLibTest.Expressions
             return arg.Length;
         }
 
-        static public int GetMeContext(RootContext c)
+        static public int GetMeContext(IScopeContext c)
         {
             if (c == null)
                 return 0;
             return 12;
+        }
+
+        static public object GetMeWithIndex(IExpression expr)
+        {
+            var r = new RootContext();
+            return expr.Evaluate(r);
         }
     }
 

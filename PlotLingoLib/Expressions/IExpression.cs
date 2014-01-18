@@ -4,7 +4,7 @@ namespace PlotLingoLib.Expressions
     /// <summary>
     /// An expression that can be evaluated
     /// </summary>
-    interface IExpression
+    public interface IExpression
     {
         /// <summary>
         /// Evaluate the expression in the given context
