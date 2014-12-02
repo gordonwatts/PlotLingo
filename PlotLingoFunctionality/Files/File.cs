@@ -16,16 +16,33 @@ namespace PlotLingoFunctionality.Files
         /// </summary>
         /// <param name="fname"></param>
         /// <returns></returns>
-        public static object file(string fname)
+        public static object file(IScopeContext c, string fname)
         {
-            var fi = new FileInfo(fname);
+            // See if we can locate the file. If a relative path look relative to the
+            // script directory.
+
+            FileInfo fi = null;
+            if (Path.IsPathRooted(fname))
+            {
+                fi = new FileInfo(fname);
+            }
+            else
+            {
+                // Located near the script?
+                fi = new FileInfo(Path.Combine(c.ExecutionContext.CurrentScriptFile.DirectoryName, fname));
+                if (!fi.Exists)
+                {
+                    fi = new FileInfo(fname);
+                }
+            }
+
             if (!fi.Exists)
             {
                 throw new ArgumentException(string.Format("Unable to locate file {0}.", fi.FullName));
             }
 
-            var f = ROOTNET.NTFile.Open(fname);
-            if (!f.IsOpen())
+            var f = ROOTNET.NTFile.Open(fi.FullName);
+            if (f == null || !f.IsOpen())
                 throw new ArgumentException(string.Format("ROOT is unable to open file {0}.", fi.FullName));
 
             return f;
@@ -37,7 +54,7 @@ namespace PlotLingoFunctionality.Files
         /// <param name="?"></param>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static object Get (ROOTNET.Interface.NTDirectory d, string path)
+        public static object Get(ROOTNET.Interface.NTDirectory d, string path)
         {
             var h = d.Get(path);
             if (h == null)
