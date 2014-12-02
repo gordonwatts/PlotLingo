@@ -10,7 +10,7 @@ namespace PlotLingoLib.Functions
     class FileOperations : IFunctionObject
     {
         /// <summary>
-        /// Read in a file, return the copmlete contents as an array of strings.
+        /// Read in a file, return the complete contents as an array of strings.
         /// </summary>
         /// <param name="c"></param>
         /// <param name="filename">The filename to read. Hopefully not too big!</param>
