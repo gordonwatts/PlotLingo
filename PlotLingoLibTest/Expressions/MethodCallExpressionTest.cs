@@ -95,6 +95,48 @@ namespace PlotLingoLibTest.Expressions
         }
 
         [TestMethod]
+        public void TestPropertyGet()
+        {
+            var ctx = new RootContext();
+            var tc = new testClass();
+            tc.MyProp = 10;
+            ctx.SetVariableValue("p", tc);
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("MyProp"));
+            var r = mc.Evaluate(ctx);
+            Assert.IsInstanceOfType(r, typeof(int));
+            Assert.AreEqual(10, r);
+        }
+
+        [TestMethod]
+        public void TestPropertySet()
+        {
+            var ctx = new RootContext();
+            var tc = new testClass();
+            tc.MyProp = 10;
+            ctx.SetVariableValue("p", tc);
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("MyProp", new IntegerValue(20)));
+            var r = mc.Evaluate(ctx);
+            Assert.IsInstanceOfType(r, typeof(testClass));
+            Assert.AreEqual(tc, r);
+            Assert.AreEqual(20, tc.MyProp);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void TestPropertySetBadType()
+        {
+            var ctx = new RootContext();
+            var tc = new testClass();
+            tc.MyProp = 10;
+            ctx.SetVariableValue("p", tc);
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("MyProp", new StringValue("hi there")));
+            var r = mc.Evaluate(ctx);
+            Assert.IsInstanceOfType(r, typeof(testClass));
+            Assert.AreEqual(tc, r);
+            Assert.AreEqual(20, tc.MyProp);
+        }
+
+        [TestMethod]
         public void TestExtensionMethod()
         {
             var ctx = new RootContext();
@@ -197,6 +239,9 @@ namespace PlotLingoLibTest.Expressions
             {
                 return hi.Length;
             }
+
+            // Simple property
+            public int MyProp { get; set; }
         }
 
         [Export(typeof(IFunctionObject))]

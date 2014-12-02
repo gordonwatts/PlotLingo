@@ -99,6 +99,7 @@
     <Compile Include="Functions\ListOperations.cs" />
     <Compile Include="Functions\Map.cs" />
     <Compile Include="FunctionUtils.cs" />
+    <Compile Include="MethodEvaluators\PropertyMethodCall.cs" />
     <Compile Include="RootContext.cs" />
     <Compile Include="ExecutionContext.cs" />
     <Compile Include="Expressions\FunctionExpression.cs" />
