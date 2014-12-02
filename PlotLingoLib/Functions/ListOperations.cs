@@ -16,7 +16,7 @@ namespace PlotLingoLib.Functions
         /// <returns></returns>
         public static object sum(IEnumerable<object> input)
         {
-            // Since these are already evalutaed objects (or should be), we don't
+            // Since these are already evaluated objects (or should be), we don't
             // need a real context.
             var tmp = new RootContext();
             var r = input.Aggregate((v1, v2) =>
