@@ -83,5 +83,47 @@ namespace PlotLingoFunctionality.Plots
             np.Rebin(rebinFactor);
             return np;
         }
+
+        /// <summary>
+        /// Given a 2D plot, map to a 1D plot assuming radial distances.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="plot"></param>
+        /// <returns>1D plot of the 2D plot</returns>
+        /// <remarks>
+        /// - Radial conversion assumes that both coordinates are the same units. For example, if they are x and y distances.
+        /// - Overflow & underflow bins are not handled.
+        /// - Errors are not properly handled.
+        /// </remarks>
+        public static ROOTNET.Interface.NTH1 asRadial(IScopeContext ctx, ROOTNET.Interface.NTH2 plot)
+        {
+            // First, determine the distances
+            var xmin = plot.Xaxis.GetBinLowEdge(1);
+            var ymin = plot.Yaxis.GetBinLowEdge(1);
+            var xmax = plot.Xaxis.GetBinUpEdge(plot.Xaxis.Nbins);
+            var ymax = plot.Yaxis.GetBinUpEdge(plot.Yaxis.Nbins);
+
+            var rmin = Math.Sqrt(xmin * xmin + ymin * ymin);
+            var rmax = Math.Sqrt(xmax * xmax + ymax * ymax);
+
+            var nbin = Math.Max(plot.Xaxis.Nbins, plot.Yaxis.Nbins);
+
+            var result = new ROOTNET.NTH1F(plot.Name, plot.Title, nbin, rmin, rmax);
+
+            // Loop over, adding everything in.
+            for (int i_x = 1; i_x <= plot.Xaxis.Nbins; i_x++)
+            {
+                for (int i_y = 1; i_y <= plot.Yaxis.Nbins; i_y++)
+                {
+                    var x = plot.Xaxis.GetBinCenter(i_x);
+                    var y = plot.Yaxis.GetBinCenter(i_y);
+                    var r = Math.Sqrt(x * x + y * y);
+
+                    result.Fill(r, plot.GetBinContent(i_x, i_y));
+                }
+            }
+
+            return result;
+        }
     }
 }
