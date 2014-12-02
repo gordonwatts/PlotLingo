@@ -28,7 +28,7 @@ namespace PlotLingoLib.Functions
         }
 
         /// <summary>
-        /// Divide a list of items by somethign else. Depends on the divide function being defined, of course!
+        /// Divide a list of items by something else. Depends on the divide function being defined, of course!
         /// </summary>
         /// <param name="input"></param>
         /// <param name="divisor"></param>
