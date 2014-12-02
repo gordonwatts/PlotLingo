@@ -107,8 +107,8 @@ namespace PlotLingoFunctionality.Plots
             if (count > 0)
             {
                 // Resize the box to be about right for the text.
-                l.Y2 = l.Y1 + 0.06 * count;
-                l.X2 = l.X1 + 0.20 + 0.01 * letterLength;
+                //l.Y2 = l.Y1 + 0.06 * count;
+                //l.X2 = l.X1 + 0.20 + 0.01 * letterLength;
 
                 // Plot it when we have a canvas to plot it against.
                 ctx.AddPostplotHook((mctx, c) =>
