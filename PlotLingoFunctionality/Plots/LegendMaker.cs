@@ -86,7 +86,7 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="ctx"></param>
         private static void SetLegendColors(IScopeContext codeContext, PlotContext ctx)
         {
-            var l = new ROOTNET.NTLegend(0.2, 0.2, 0.4, 0.4);
+            // First pass: determine how many items there are, set the color, etc.
             int count = 0;
             int letterLength = 0;
             foreach (var p in ctx.Plots)
@@ -96,19 +96,31 @@ namespace PlotLingoFunctionality.Plots
                     if (p.Title.IndexOf(legInfo.Key) >= 0 || Tags.hasTag(codeContext, p, legInfo.Key))
                     {
                         p.LineColor = (short)legInfo.Value.Color;
-                        l.AddEntry(p, legInfo.Value.Title);
                         letterLength = Math.Max(letterLength, legInfo.Value.Title.Length);
                         count++;
                     }
                 }
             }
 
-            // No need to do anything if we couldn't match anything!
+            // If we have things to make as a legend, then go through and take care of them.
             if (count > 0)
             {
-                // Resize the box to be about right for the text.
-                //l.Y2 = l.Y1 + 0.06 * count;
-                //l.X2 = l.X1 + 0.20 + 0.01 * letterLength;
+                double xmin = 0.2;
+                double ymin = 0.2;
+                double ymax = ymin + 0.06 * count;
+                double xmax = xmin + 0.20 + 0.01 * letterLength;
+
+                var l = new ROOTNET.NTLegend(xmin, ymin, xmax, ymax);
+                foreach (var p in ctx.Plots)
+                {
+                    foreach (var legInfo in _legendInfo)
+                    {
+                        if (p.Title.IndexOf(legInfo.Key) >= 0 || Tags.hasTag(codeContext, p, legInfo.Key))
+                        {
+                            l.AddEntry(p, legInfo.Value.Title);
+                        }
+                    }
+                }
 
                 // Plot it when we have a canvas to plot it against.
                 ctx.AddPostplotHook((mctx, c) =>
@@ -117,6 +129,9 @@ namespace PlotLingoFunctionality.Plots
                     l.SetFillColor(c.FillColor);
                 });
             }
+
+            // Second pass: create the legend and throw it up there.
+
         }
     }
 }
