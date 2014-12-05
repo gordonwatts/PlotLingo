@@ -43,7 +43,7 @@ namespace PlotLingoConsole
                 NotifyFilters.LastWrite
                 | NotifyFilters.CreationTime
                 ;
-            watcher.Filter = fi.Name;
+            watcher.Filter = "*.*";
             var lastWriteTime = fi.LastWriteTime;
             watcher.Changed += (o, e) =>
             {
