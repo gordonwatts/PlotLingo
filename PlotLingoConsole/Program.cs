@@ -116,7 +116,7 @@ namespace PlotLingoConsole
         /// What should we use to generate file names?
         /// </summary>
         //private static string fnameFormat = "{0}/{1} - {2}";
-        private static string fnameFormat = "{0}/{2}";
+        private static string fnameFormat = "{0}\\{2}";
 
         /// <summary>
         /// Run the parser over the default file and the plotting file.
@@ -151,7 +151,7 @@ namespace PlotLingoConsole
                     var outFNameStub = string.Format(fnameFormat, fi.DirectoryName, Path.GetFileNameWithoutExtension(fi.Name), pr.Name.FileNameSantize());
                     if (written.Contains(outFNameStub))
                     {
-                        outFNameStub = string.Format("{0}/{1} - {2} - {3}", fi.DirectoryName, Path.GetFileNameWithoutExtension(fi.Name), pr.Name.FileNameSantize(), sequenceNumber);
+                        outFNameStub = string.Format("{0}\\{1} - {2} - {3}", fi.DirectoryName, Path.GetFileNameWithoutExtension(fi.Name), pr.Name.FileNameSantize(), sequenceNumber);
                     }
                     written.Add(outFNameStub);
                     var outputs = pr.Save(ctx, outFNameStub);
