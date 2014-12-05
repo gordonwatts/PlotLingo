@@ -217,11 +217,51 @@ namespace PlotLingoFunctionality.Plots
                 {
                     var fout = new FileInfo(string.Format("{0}.{1}", filenameStub, fmt));
                     if (fout.Exists)
-                        fout.Delete();
+                    {
+                        try
+                        {
+                            fout.Delete();
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Had trouble removing the old file {0}", fout.FullName);
+                            Console.WriteLine("  -> {0}", e.Message);
+                        }
+                    }
                     c.SaveAs(fout.FullName);
                     return fout;
                 });
             return finfos.ToArray();
+        }
+
+        /// <summary>
+        /// Track a property bag for things that others want to associated with this plot context.
+        /// </summary>
+        private Dictionary<string, object> _prop = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Grab a property from the plot context.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public object GetProperty (string name)
+        {
+            object r;
+            if (_prop.TryGetValue(name, out r))
+            {
+                return r;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Save a property in the plot contex.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="o"></param>
+        public void SetProperty (string name, object o)
+        {
+            _prop[name] = o;
         }
     }
 }

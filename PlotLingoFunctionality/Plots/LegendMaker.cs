@@ -80,6 +80,57 @@ namespace PlotLingoFunctionality.Plots
             }
         }
 
+        private class Options
+        {
+            public double xmarg = 0.0;
+            public double ymarg = 0.0;
+            public enum WhereToPlaceLegend
+            {
+                LowerLeft, LowerRight, UpperLeft, UpperRight
+            }
+            public WhereToPlaceLegend placement = WhereToPlaceLegend.UpperRight;
+            public bool drawBox = true;
+        }
+
+        /// <summary>
+        /// Set legend options for a particlar plot.
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="associations"></param>
+        public static PlotContext LegendOptions(IScopeContext c, PlotContext ctx, IDictionary<object, object> associations)
+        {
+            // If there is no associated legend options with the ctx yet, then create a default one.
+            Options opt = ctx.GetProperty("LegendOptions") as Options;
+            if (opt == null) {
+                opt = new Options();
+                ctx.SetProperty("LegendOptions", opt);
+            }
+
+            // Parse the list of options.
+            foreach (var k in associations.Keys)
+	        {
+                switch (k as string) {
+                    case "xmarg":
+                        opt.xmarg = double.Parse(associations[k] as string);
+                        break;
+
+                    case "ymarg":
+                        opt.ymarg = double.Parse(associations[k] as string);
+                        break;
+
+                    case "drawbox":
+                        opt.drawBox = bool.Parse(associations[k] as string);
+                        break;
+
+                    case "placement":
+                        opt.placement = (Options.WhereToPlaceLegend) Enum.Parse(typeof(Options.WhereToPlaceLegend), associations[k] as string);
+                        break;
+                }
+            }
+
+            return ctx;
+        }
+
         /// <summary>
         /// See if we can't set the legend colors.
         /// </summary>
@@ -105,11 +156,37 @@ namespace PlotLingoFunctionality.Plots
             // If we have things to make as a legend, then go through and take care of them.
             if (count > 0)
             {
-                double xmin = 0.2;
-                double ymin = 0.2;
-                double ymax = ymin + 0.06 * count;
-                double xmax = xmin + 0.20 + 0.01 * letterLength;
+                // Get the options out and calculate basic placement.
+                var opt = ctx.GetProperty("LegendOptions") as Options;
+                if (opt == null)
+                {
+                    opt = new Options();
+                }
 
+                double xmin, xmax;
+                double ymin, ymax;
+                if (opt.placement == Options.WhereToPlaceLegend.LowerLeft || opt.placement == Options.WhereToPlaceLegend.UpperLeft)
+                {
+                    xmin = opt.xmarg;
+                    xmax = xmin + 0.20 + 0.01 * letterLength;
+                }
+                else
+                {
+                    xmin = 0.87 - opt.xmarg;
+                    xmax = xmin -(0.20 + 0.01 * letterLength);
+                }
+                if (opt.placement == Options.WhereToPlaceLegend.LowerLeft || opt.placement == Options.WhereToPlaceLegend.LowerRight)
+                {
+                    ymin = opt.ymarg;
+                    ymax = ymin + 0.06 * count;
+                }
+                else
+                {
+                    ymin = 0.86 - opt.ymarg;
+                    ymax = ymin - (0.06 * count);
+                }
+
+                // Create the legend box
                 var l = new ROOTNET.NTLegend(xmin, ymin, xmax, ymax);
                 foreach (var p in ctx.Plots)
                 {
@@ -122,16 +199,17 @@ namespace PlotLingoFunctionality.Plots
                     }
                 }
 
-                // Plot it when we have a canvas to plot it against.
+                // Plot it when we have a canvas to plot it against when the plot is actually drawn.
                 ctx.AddPostplotHook((mctx, c) =>
                 {
                     l.Draw();
                     l.SetFillColor(c.FillColor);
+                    if (!opt.drawBox)
+                    {
+                        l.SetLineColor(c.FillColor);
+                    }
                 });
             }
-
-            // Second pass: create the legend and throw it up there.
-
         }
     }
 }
