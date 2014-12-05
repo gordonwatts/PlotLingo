@@ -84,7 +84,7 @@ namespace PlotLingoFunctionality.Plots
                 {
                     if (plotContex.Plots.Length > 1)
                     {
-                        var max = plotContex.Plots.Select(p => p.Maximum).Max();
+                        var max = plotContex.Plots.Select(p => FindPlotMaximum(p)).Max();
                         max = max * 1.10;
 
                         foreach (var p in plotContex.Plots)
@@ -96,6 +96,18 @@ namespace PlotLingoFunctionality.Plots
 
                 return result;
             });
+        }
+
+        /// <summary>
+        /// Determine the maximum value for a plot, taking the size of the errors into account.
+        /// This isn't perfect, but does a slightly faster job than scanning everything. May have to fix eventually.
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        private static double FindPlotMaximum(ROOTNET.NTH1 p)
+        {
+            var b = p.GetMaximumBin();
+            return p.GetBinContent(b) + p.GetBinError(b);
         }
 
         /// <summary>
