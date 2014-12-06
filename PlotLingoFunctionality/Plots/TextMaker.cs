@@ -114,6 +114,7 @@ namespace PlotLingoFunctionality.Plots
             {
                 loc.matchToUserRequest(t);
                 var tbox = new ROOTNET.NTText(loc._x, loc._y, t._text);
+                tbox.NDC = true;
                 tbox.Draw();
             }
         }
