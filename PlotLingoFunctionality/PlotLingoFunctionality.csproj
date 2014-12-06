@@ -88,6 +88,7 @@
     <Compile Include="Plots\PlotMaker.cs" />
     <Compile Include="Plots\PlotOperations.cs" />
     <Compile Include="Plots\Tags.cs" />
+    <Compile Include="Plots\TextMaker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
