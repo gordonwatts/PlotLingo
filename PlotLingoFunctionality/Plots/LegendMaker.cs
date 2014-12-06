@@ -90,6 +90,7 @@ namespace PlotLingoFunctionality.Plots
             }
             public WhereToPlaceLegend placement = WhereToPlaceLegend.UpperRight;
             public bool drawBox = true;
+            public double scale = 1.0;
         }
 
         /// <summary>
@@ -111,11 +112,11 @@ namespace PlotLingoFunctionality.Plots
 	        {
                 switch (k as string) {
                     case "xmarg":
-                        opt.xmarg = double.Parse(associations[k] as string);
+                        opt.xmarg = (double) associations[k];
                         break;
 
                     case "ymarg":
-                        opt.ymarg = double.Parse(associations[k] as string);
+                        opt.ymarg = (double) associations[k];
                         break;
 
                     case "drawbox":
@@ -125,6 +126,13 @@ namespace PlotLingoFunctionality.Plots
                     case "placement":
                         opt.placement = (Options.WhereToPlaceLegend) Enum.Parse(typeof(Options.WhereToPlaceLegend), associations[k] as string);
                         break;
+
+                    case "scale":
+                        opt.scale = (double)associations[k];
+                        break;
+
+                    default:
+                        throw new ArgumentException(string.Format("Unknown legend option '{0}'", k as string));
                 }
             }
 
@@ -168,22 +176,22 @@ namespace PlotLingoFunctionality.Plots
                 if (opt.placement == Options.WhereToPlaceLegend.LowerLeft || opt.placement == Options.WhereToPlaceLegend.UpperLeft)
                 {
                     xmin = opt.xmarg;
-                    xmax = xmin + 0.20 + 0.01 * letterLength;
+                    xmax = xmin + (0.20 + 0.01 * letterLength) * opt.scale;
                 }
                 else
                 {
                     xmin = 0.87 - opt.xmarg;
-                    xmax = xmin -(0.20 + 0.01 * letterLength);
+                    xmax = xmin - (0.20 + 0.01 * letterLength) * opt.scale;
                 }
                 if (opt.placement == Options.WhereToPlaceLegend.LowerLeft || opt.placement == Options.WhereToPlaceLegend.LowerRight)
                 {
                     ymin = opt.ymarg;
-                    ymax = ymin + 0.06 * count;
+                    ymax = ymin + 0.06 * count * opt.scale;
                 }
                 else
                 {
                     ymin = 0.86 - opt.ymarg;
-                    ymax = ymin - (0.06 * count);
+                    ymax = ymin - (0.06 * count)*opt.scale;
                 }
 
                 // Create the legend box
