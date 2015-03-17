@@ -55,6 +55,10 @@ namespace PlotLingoLib.Functions
         /// <returns></returns>
         public static object forReserved(IScopeContext ctx, VariableValue loopIndex, IEnumerable<object> loopControl, ListOfStatementsExpression statements)
         {
+            if (loopControl.Where(o => o == null).Any())
+            {
+                throw new ArgumentNullException(string.Format("indexed for loop: Some of the objects we are looping over are null! Not allowed!"));
+            }
             var indexList = loopControl.Select(i => new Dictionary<object, object>() { { loopIndex.VariableName, i } });
             return forReserved(ctx, indexList, statements);
         }
