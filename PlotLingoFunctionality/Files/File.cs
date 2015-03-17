@@ -1,7 +1,10 @@
 ﻿using PlotLingoLib;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace PlotLingoFunctionality.Files
 {
@@ -49,7 +52,7 @@ namespace PlotLingoFunctionality.Files
         }
 
         /// <summary>
-        /// Search an input directory for a histogram.
+        /// Search an input directory for a histogram or any ROOT object.
         /// </summary>
         /// <param name="?"></param>
         /// <param name="path"></param>
@@ -60,6 +63,28 @@ namespace PlotLingoFunctionality.Files
             if (h == null)
                 throw new ArgumentException(string.Format("Unable to locate histogram '{0}' in directory '{1}'", path, d.Name));
             return h;
+        }
+
+        /// <summary>
+        /// Search an input directory for a histogram or any ROOT object whose name matches the regular expression name.
+        /// Only does the matching in the current directory.
+        /// </summary>
+        /// <param name="d">Directory to search for</param>
+        /// <param name="regularExpression"></param>
+        /// <returns>List of objects that match the regular expression, including a zero length list.</returns>
+        public static object[] GetAll(ROOTNET.Interface.NTDirectory d, string regularExpression)
+        {
+            var re = new Regex(regularExpression);
+
+            var found = new List<object>();
+            foreach (var key in d.ListOfKeys.Cast<ROOTNET.Interface.NTKey>())
+            {
+                if (!key.IsFolder() && re.Match(key.Name).Success)
+                {
+                    found.Add(d.Get(key.Name));
+                }
+            }
+            return found.ToArray();
         }
     }
 }
