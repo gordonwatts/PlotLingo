@@ -33,6 +33,7 @@ namespace PlotLingoConsole
                 return;
             }
 
+            Console.WriteLine("Looking at file {0}.", fi.FullName);
             // Watch that file for modifications.
             // Also keep track of last write time because we have to deal with "bounce" - many programs
             // will trigger multiple events in the file system when they save the text (e.g. notepad, notepad++).
