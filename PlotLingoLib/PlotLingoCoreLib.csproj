@@ -108,6 +108,7 @@
     <Compile Include="Functions\ForLoop.cs" />
     <Compile Include="Functions\ListOperations.cs" />
     <Compile Include="Functions\Map.cs" />
+    <Compile Include="Functions\StringOperations.cs" />
     <Compile Include="FunctionUtils.cs" />
     <Compile Include="MethodEvaluators\PropertyMethodCall.cs" />
     <Compile Include="RootContext.cs" />
