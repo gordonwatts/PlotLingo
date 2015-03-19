@@ -290,7 +290,7 @@ namespace PlotLingoLibTest.Expressions
             }
 
             // Will be overridden by below
-            public static int CallOneStringToOverride(string hi)
+            public int CallOneStringToOverride(string hi)
             {
                 return hi.Length;
             }
