@@ -12,20 +12,31 @@ namespace PlotLingoLib.MethodEvaluators
         /// <param name="m"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public static bool ArgumentListMatches(this MethodInfo m, Type[] args)
+        public static MethodInfo ArgumentListMatches(this MethodInfo m, Type[] args, Type callingType)
         {
             // If there are less arguments, then it just doesn't matter.
             var pInfo = m.GetParameters();
             if (pInfo.Length < args.Length)
-                return false;
+                return null;
 
-            // Now, check compatibility of the first set of arguments.
-            var commonArgs = args.Zip(pInfo, (margs, pinfo) => Tuple.Create(margs, pinfo.ParameterType));
-            if (commonArgs.Where(t => !t.Item1.IsAssignableFrom(t.Item2)).Any())
-                return false;
+            // In order to deal with generic arguments, we have to re-run this whole thing and see what methods come back.
+            var allTypes = args;
+            if (pInfo.Length > args.Length)
+            {
+                var extraArgs = pInfo.Skip(args.Length);
+                if (extraArgs.Where(a => !a.IsOptional).Any())
+                    return null;
 
-            // And make sure the last set of arguments are actually default!
-            return pInfo.Skip(args.Length).All(p => p.IsOptional);
+                allTypes = args
+                    .Concat(pInfo.Skip(args.Length).Select(a => a.ParameterType)).ToArray();
+            }
+
+            var method = callingType.GetMethod(m.Name, allTypes);
+            if (method == null)
+                return null;
+
+            // Return the method. This could be from a generic class that has now been made non-generic.
+            return method;
         }
     }
 }

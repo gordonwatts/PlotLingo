@@ -83,8 +83,9 @@ namespace PlotLingoLib.MethodEvaluators
                          from m in fo.GetType().GetMethods()
                          where m.Name == methodNameFixed
                          where m.IsStatic
-                         where m.ArgumentListMatches(argListTypes)
-                         select m).ToArray();
+                         let newm = m.ArgumentListMatches(argListTypes, fo.GetType())
+                         where newm != null
+                         select newm).ToArray();
 
             return funcs;
         }

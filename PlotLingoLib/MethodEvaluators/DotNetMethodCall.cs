@@ -22,8 +22,9 @@ namespace PlotLingoLib.MethodEvaluators
 
             var funcs = (from m in t.GetMethods()
                          where m.Name == methodName
-                         where m.ArgumentListMatches(argListTypes)
-                         select m).ToArray();
+                         let newm = m.ArgumentListMatches(argListTypes, t)
+                         where newm != null
+                         select newm).ToArray();
 
             if (funcs.Length != 1)
                 return new Tuple<bool, object>(false, null);
