@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 
 namespace PlotLingoLib.MethodEvaluators
 {
@@ -26,8 +27,17 @@ namespace PlotLingoLib.MethodEvaluators
                          where newm != null
                          select newm).ToArray();
 
-            if (funcs.Length != 1)
+            if (funcs.Length == 0)
                 return new Tuple<bool, object>(false, null);
+            if (funcs.Length > 1)
+            {
+                StringBuilder bld = new StringBuilder();
+                foreach (var item in funcs)
+                {
+                    bld.AppendFormat("{0}.{1}", item.DeclaringType.Name, item.Name);
+                }
+                throw new System.NotImplementedException(string.Format("Method '{0}' referenced - but has more than one possible resolution in types {1}", methodName, bld.ToString()));
+            }
 
             // And invoke the method and see what we can get back.
             // Optional arguments means we have to fill things in.

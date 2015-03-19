@@ -41,7 +41,7 @@ namespace PlotLingoLib.MethodEvaluators
                 {
                     bld.AppendFormat("{0}.{1}", item.DeclaringType.Name, item.Name);
                 }
-                throw new System.NotImplementedException(string.Format("Method '{0}' referenced - but has more than one possible resolution in types {1}", methodName, bld.ToString()));
+                throw new System.NotImplementedException(string.Format("Extension Method '{0}' referenced - but has more than one possible resolution in types {1}", methodName, bld.ToString()));
             }
 
             // Now call the method.
