@@ -315,6 +315,28 @@ namespace PlotLingoLibTest.Expressions
             var r = mc.Evaluate(ctx);
         }
 
+        [TestMethod]
+        public void TestMethodWithMultiSignatureLowerClass()
+        {
+            var ctx = new RootContext();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new ObjectValue(new t1() { i = 10 });
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("MultiSignatureHierarchy", s));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual(10, (int)r);
+        }
+
+        [TestMethod]
+        public void TestMethodWithMultiSignatureHigherClass()
+        {
+            var ctx = new RootContext();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new ObjectValue(new t2() { i = 10, i2 = 20 });
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("MultiSignatureHierarchy", s));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual(20, (int)r);
+        }
+
         /// <summary>
         /// Small expression class that will hold onto a string and count the number of times
         /// it is evaluated.
@@ -327,6 +349,16 @@ namespace PlotLingoLibTest.Expressions
                 _evalCount++;
                 return "Length";
             }
+        }
+
+        private class t1
+        {
+            public int i;
+        }
+
+        private class t2 : t1
+        {
+            public int i2;
         }
 
         /// <summary>
@@ -342,6 +374,17 @@ namespace PlotLingoLibTest.Expressions
             public int CallOneStringArg(string hi)
             {
                 return hi.Length;
+            }
+
+            // Test out two guys, who are sub-classes to make sure the most specific is called.
+            public int MultiSignatureHierarchy(t1 c)
+            {
+                return c.i;
+            }
+
+            public int MultiSignatureHierarchy(t2 c)
+            {
+                return c.i2;
             }
 
             // Will be overridden by below

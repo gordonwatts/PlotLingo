@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace PlotLingoLib.MethodEvaluators
@@ -25,10 +26,12 @@ namespace PlotLingoLib.MethodEvaluators
                          where m.Name == methodName
                          let newm = m.ArgumentListMatches(argListTypes, t)
                          where newm != null
-                         select newm).ToArray();
+                         select newm).Distinct().ToArray();
 
             if (funcs.Length == 0)
                 return new Tuple<bool, object>(false, null);
+
+            var method = funcs[0];
             if (funcs.Length > 1)
             {
                 StringBuilder bld = new StringBuilder();
@@ -41,7 +44,6 @@ namespace PlotLingoLib.MethodEvaluators
 
             // And invoke the method and see what we can get back.
             // Optional arguments means we have to fill things in.
-            var method = funcs[0];
             object[] allArgs = args;
             if (method.GetParameters().Length != args.Length)
             {
@@ -51,6 +53,26 @@ namespace PlotLingoLib.MethodEvaluators
             }
             var r = funcs[0].Invoke(obj, allArgs);
             return new Tuple<bool, object>(true, r);
+        }
+
+        /// <summary>
+        /// See if method 1 can be used where method 2 cannot be.
+        /// </summary>
+        /// <param name="fcombo"></param>
+        /// <returns></returns>
+        private int ScoreTwoMethods(Tuple<MethodInfo, MethodInfo> fcombo)
+        {
+            var arg1Types = fcombo.Item1.GetParameters().Select(p => p.ParameterType);
+            var arg2Types = fcombo.Item2.GetParameters().Select(p => p.ParameterType);
+
+            var argPairs = arg1Types.Zip(arg2Types, (a1, a2) => Tuple.Create(a1, a2));
+
+            var func1Better = from apair in argPairs
+                              where apair.Item1 != apair.Item2
+                              where apair.Item2.IsAssignableFrom(apair.Item1)
+                              select 1;
+
+            return func1Better.Sum();
         }
     }
 }

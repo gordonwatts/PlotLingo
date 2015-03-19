@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -37,6 +38,28 @@ namespace PlotLingoLib.MethodEvaluators
 
             // Return the method. This could be from a generic class that has now been made non-generic.
             return method;
+        }
+
+        /// <summary>
+        /// Return all possible combinations, anti-symmetric, except the diagonal.
+        /// </summary>
+        /// <typeparam name="T1"></typeparam>
+        /// <typeparam name="T2"></typeparam>
+        /// <param name="source1"></param>
+        /// <param name="source2"></param>
+        /// <returns></returns>
+        public static IEnumerable<Tuple<T1, T1>> AllCombinations<T1>(this T1[] source)
+        {
+            for (int i = 0; i < source.Length; i++)
+            {
+                for (int j = 0; j < source.Length; j++)
+                {
+                    if (i != j)
+                    {
+                        yield return Tuple.Create(source[i], source[j]);
+                    }
+                }
+            }
         }
     }
 }
