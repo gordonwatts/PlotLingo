@@ -45,9 +45,17 @@ namespace PlotLingoLib.MethodEvaluators
             }
 
             // Now call the method.
+            var method = funcs[0];
+            object[] allArgs = args;
+            if (method.GetParameters().Length != args.Length)
+            {
+                var defaultArgs = method.GetParameters().Skip(args.Length)
+                    .Select(a => a.HasDefaultValue ? a.DefaultValue : null);
+                allArgs = args.Concat(defaultArgs).ToArray();
+            }
             try
             {
-                var r = funcs[0].Invoke(null, args);
+                var r = method.Invoke(null, allArgs);
                 return new Tuple<bool, object>(true, r);
             }
             catch (TargetInvocationException e)
@@ -64,12 +72,18 @@ namespace PlotLingoLib.MethodEvaluators
         /// <param name="methodName"></param>
         /// <param name="args"></param>
         /// <returns></returns>
+        /// <remarks>Default arguments make this a little more difficult to deal with</remarks>
         private static MethodInfo[] FindMethodForArgs(string methodName, object[] args)
         {
+            // Look for all functions that match the name we want.
+            var argListTypes = args.Select(a => a.GetType()).ToArray();
+            string methodNameFixed = methodName.FixUpReserved();
+
             var funcs = (from fo in ExtensibilityControl.Get().FunctionObjects
-                         let m = fo.GetType().GetMethod(methodName.FixUpReserved(), args.Select(v => v.GetType()).ToArray())
-                         where m != null
+                         from m in fo.GetType().GetMethods()
+                         where m.Name == methodNameFixed
                          where m.IsStatic
+                         where m.ArgumentListMatches(argListTypes)
                          select m).ToArray();
 
             return funcs;

@@ -211,7 +211,7 @@ namespace PlotLingoLibTest.Expressions
             var ctx = new RootContext();
             ctx.SetVariableValue("p", new testClass());
             var s = new StringValue("hithere");
-            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("OneWithDefault", s));
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("OneWithDefaultStatic", s));
             var r = mc.Evaluate(ctx);
             Assert.AreEqual("hithere", r as string);
         }
@@ -222,7 +222,7 @@ namespace PlotLingoLibTest.Expressions
             var ctx = new RootContext();
             ctx.SetVariableValue("p", new testClass());
             var s = new StringValue("hithere");
-            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("OneWithDefault"));
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("OneWithDefaultStatic"));
             var r = mc.Evaluate(ctx);
             Assert.AreEqual("hi", r as string);
         }
@@ -233,13 +233,68 @@ namespace PlotLingoLibTest.Expressions
             var ctx = new RootContext();
             ctx.SetVariableValue("p", new testClass());
             var s = new IntegerValue(10);
-            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CommonNameWithDefault", s));
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CommonNameWithDefaultStatic", s));
             var r = mc.Evaluate(ctx);
             Assert.AreEqual("10", r as string);
         }
 
         [TestMethod]
         public void TestExtensionMethodWithMultiDefinitionDefaultArg()
+        {
+            var ctx = new RootContext();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new StringValue("noway");
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CommonNameWithDefaultStatic", s));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual("noway10", r as string);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void TestExtensionMethodMissingRequiredParam()
+        {
+            var ctx = new RootContext();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new StringValue("noway");
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("TwoArgumentMethodStatic", s));
+            var r = mc.Evaluate(ctx);
+        }
+
+        [TestMethod]
+        public void TestMethodWithDefaultParamFilled()
+        {
+            var ctx = new RootContext();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new StringValue("hithere");
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("OneWithDefault", s));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual("hithere", r as string);
+        }
+
+        [TestMethod]
+        public void TestMethodWithDefaultParam()
+        {
+            var ctx = new RootContext();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new StringValue("hithere");
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("OneWithDefault"));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual("hi", r as string);
+        }
+
+        [TestMethod]
+        public void TestMethodWithMultiDefinition()
+        {
+            var ctx = new RootContext();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new IntegerValue(10);
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CommonNameWithDefault", s));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual("10", r as string);
+        }
+
+        [TestMethod]
+        public void TestMethodWithMultiDefinitionDefaultArg()
         {
             var ctx = new RootContext();
             ctx.SetVariableValue("p", new testClass());
@@ -251,7 +306,7 @@ namespace PlotLingoLibTest.Expressions
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void TestExtensionMethodMissingRequiredParam()
+        public void TestMethodMissingRequiredParam()
         {
             var ctx = new RootContext();
             ctx.SetVariableValue("p", new testClass());
@@ -334,6 +389,25 @@ namespace PlotLingoLibTest.Expressions
             public static int CallOneStringWithCTX(RootContext ctx, testClass a, string hi)
             {
                 return 3 * hi.Length;
+            }
+
+            public static string OneWithDefaultStatic(testClass a, string value = "hi")
+            {
+                return value;
+            }
+
+            public static string CommonNameWithDefaultStatic(testClass a, int i)
+            {
+                return i.ToString();
+            }
+            public static string CommonNameWithDefaultStatic(testClass a, string arg, int value = 10)
+            {
+                return arg + value.ToString();
+            }
+
+            public static string TwoArgumentMethodStatic(testClass a, string arg, int j)
+            {
+                return arg + j.ToString();
             }
         }
     }
