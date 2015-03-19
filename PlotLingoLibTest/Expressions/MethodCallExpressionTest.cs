@@ -3,6 +3,7 @@ using PlotLingoLib;
 using PlotLingoLib.Expressions;
 using PlotLingoLib.Expressions.Values;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
 namespace PlotLingoLibTest.Expressions
@@ -337,6 +338,28 @@ namespace PlotLingoLibTest.Expressions
             Assert.AreEqual(20, (int)r);
         }
 
+        [TestMethod]
+        public void TestMethodWithMultiSignatureObjectInheritanceLowerClass()
+        {
+            var ctx = new RootContext();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new ObjectValue(new object[10] as IEnumerable<object>);
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("MultiSignatureHierarchyWithSig", s));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual(10, (int)r);
+        }
+
+        [TestMethod]
+        public void TestMethodWithMultiSignatureObjectInheritanceHigherClass()
+        {
+            var ctx = new RootContext();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new ObjectValue(new Dictionary<object, object>() as IDictionary<object, object>);
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("MultiSignatureHierarchyWithSig", s));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual(20, (int)r);
+        }
+
         /// <summary>
         /// Small expression class that will hold onto a string and count the number of times
         /// it is evaluated.
@@ -385,6 +408,16 @@ namespace PlotLingoLibTest.Expressions
             public int MultiSignatureHierarchy(t2 c)
             {
                 return c.i2;
+            }
+
+            public int MultiSignatureHierarchyWithSig(IEnumerable<object> obj)
+            {
+                return 10;
+            }
+
+            public int MultiSignatureHierarchyWithSig(IDictionary<object, object> obj)
+            {
+                return 20;
             }
 
             // Will be overridden by below
