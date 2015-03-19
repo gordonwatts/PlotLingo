@@ -85,7 +85,7 @@ namespace PlotLingoLib.MethodEvaluators
                          where m.IsStatic
                          let newm = m.ArgumentListMatches(argListTypes, fo.GetType())
                          where newm != null
-                         select newm).ToArray();
+                         select newm).Distinct().ToArray();
 
             return funcs;
         }
