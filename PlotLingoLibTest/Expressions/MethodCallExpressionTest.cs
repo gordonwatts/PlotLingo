@@ -205,6 +205,61 @@ namespace PlotLingoLibTest.Expressions
             Assert.AreEqual(1, count2, "# of times the second hook got called");
         }
 
+        [TestMethod]
+        public void TestExtensionMethodWithDefaultParamFilled()
+        {
+            var ctx = new RootContext();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new StringValue("hithere");
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("OneWithDefault", s));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual("hithere", r as string);
+        }
+
+        [TestMethod]
+        public void TestExtensionMethodWithDefaultParam()
+        {
+            var ctx = new RootContext();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new StringValue("hithere");
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("OneWithDefault"));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual("hi", r as string);
+        }
+
+        [TestMethod]
+        public void TestExtensionMethodWithMultiDefinition()
+        {
+            var ctx = new RootContext();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new IntegerValue(10);
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CommonNameWithDefault", s));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual("10", r as string);
+        }
+
+        [TestMethod]
+        public void TestExtensionMethodWithMultiDefinitionDefaultArg()
+        {
+            var ctx = new RootContext();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new StringValue("noway");
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CommonNameWithDefault", s));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual("noway10", r as string);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void TestExtensionMethodMissingRequiredParam()
+        {
+            var ctx = new RootContext();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new StringValue("noway");
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("TwoArgumentMethod", s));
+            var r = mc.Evaluate(ctx);
+        }
+
         /// <summary>
         /// Small expression class that will hold onto a string and count the number of times
         /// it is evaluated.
@@ -242,6 +297,25 @@ namespace PlotLingoLibTest.Expressions
 
             // Simple property
             public int MyProp { get; set; }
+
+            public string OneWithDefault(string value = "hi")
+            {
+                return value;
+            }
+
+            public string CommonNameWithDefault(int i)
+            {
+                return i.ToString();
+            }
+            public string CommonNameWithDefault(string arg, int value = 10)
+            {
+                return arg + value.ToString();
+            }
+
+            public string TwoArgumentMethod(string arg, int j)
+            {
+                return arg + j.ToString();
+            }
         }
 
         [Export(typeof(IFunctionObject))]

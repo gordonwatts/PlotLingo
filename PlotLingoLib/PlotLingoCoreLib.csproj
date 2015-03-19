@@ -110,6 +110,7 @@
     <Compile Include="Functions\Map.cs" />
     <Compile Include="Functions\StringOperations.cs" />
     <Compile Include="FunctionUtils.cs" />
+    <Compile Include="MethodEvaluators\MethodEvaluatorUtils.cs" />
     <Compile Include="MethodEvaluators\PropertyMethodCall.cs" />
     <Compile Include="RootContext.cs" />
     <Compile Include="ExecutionContext.cs" />
