@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using Sprache;
+using System.Text.RegularExpressions;
 
 namespace PlotLingoLib.Expressions.Values
 {
@@ -24,7 +25,7 @@ namespace PlotLingoLib.Expressions.Values
         /// <summary>
         /// Pattern to find anything that needs replacement
         /// </summary>
-        static Regex _findVarSub = new Regex(@"{(\w+)}");
+        static Regex _findVarSub = new Regex(@"{([^{}]+)}");
 
         /// <summary>
         /// Evaluate a string value.
@@ -39,11 +40,19 @@ namespace PlotLingoLib.Expressions.Values
             while (m != null && m.Success)
             {
                 var vname = m.Groups[1].Value;
-                var value = c.GetVariableValueOrNull(vname);
-                int position = m.Groups[1].Index;
-                if (value.Item1)
+
+                object result = null;
+                try
                 {
-                    var s = value.Item2.ToString();
+                    var exprTree = Grammar.ExpressionParser.End().Parse(vname);
+                    result = exprTree.Evaluate(c);
+                }
+                catch { }
+
+                int position = m.Groups[1].Index;
+                if (result != null)
+                {
+                    var s = result.ToString();
                     myl = myl.Replace("{" + vname + "}", s);
                     position += s.Length;
                 }

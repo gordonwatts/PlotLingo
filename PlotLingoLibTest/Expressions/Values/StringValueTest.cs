@@ -89,5 +89,23 @@ namespace PlotLingoLibTest.Expressions.Values
             var mys = s.Evaluate(c);
             Assert.AreEqual("hi dude medude", mys, "string value");
         }
+
+        [TestMethod]
+        public void StringWithSimpleExpr()
+        {
+            var s = new StringValue("hi {1+1}");
+            var c = new RootContext();
+            var mys = s.Evaluate(c);
+            Assert.AreEqual("hi 2", mys);
+        }
+
+        [TestMethod]
+        public void StringWithBadExpr()
+        {
+            var s = new StringValue("hi {1+}");
+            var c = new RootContext();
+            var mys = s.Evaluate(c);
+            Assert.AreEqual("hi {1+}", mys);
+        }
     }
 }

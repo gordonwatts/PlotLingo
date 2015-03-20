@@ -245,7 +245,7 @@ namespace PlotLingoLib
         /// We have to alter how we do the parsing depending on which one it is.
         /// Must be kept in sync with ExpressionParserND
         /// </remarks>
-        private static readonly Parser<IExpression> ExpressionParser =
+        public static readonly Parser<IExpression> ExpressionParser =
             from t in TermParser
             from alist in (ParseBinaryOperator.Or(ParseMethodInvoke)).Many().Optional()
             select BuildExpressionTree(t, alist);
