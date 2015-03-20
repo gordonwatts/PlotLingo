@@ -1,6 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PlotLingoLib;
+using PlotLingoLib.Expressions;
 using PlotLingoLib.Expressions.Values;
+using System;
+using System.Collections.Generic;
 
 namespace PlotLingoLibTest.Expressions.Values
 {
@@ -106,6 +109,25 @@ namespace PlotLingoLibTest.Expressions.Values
             var c = new RootContext();
             var mys = s.Evaluate(c);
             Assert.AreEqual("hi {1+}", mys);
+        }
+
+        [TestMethod]
+        public void StringWithDictReference()
+        {
+            var allvals = new Tuple<IExpression, IExpression>[] {
+                new Tuple<IExpression, IExpression>(new StringValue("hi"), new StringValue("there")),
+                new Tuple<IExpression, IExpression>(new StringValue("no"), new StringValue("way")),
+            };
+            var d = new Dictionary<object, object>();
+            d["hi"] = "there";
+            d["no"] = "way";
+            var c = new RootContext();
+            //c.SetVariableValue("dict", new DictionaryValue(allvals));
+            c.SetVariableValue("dict", d);
+            var s = new StringValue("hi {dict[\"hi\"]} on my {dict[\"no\"]}.");
+            var mys = s.Evaluate(c);
+            Assert.AreEqual("hi there on my way.", mys);
+
         }
     }
 }
