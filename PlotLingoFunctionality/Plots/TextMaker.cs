@@ -3,9 +3,6 @@ using ROOTNET.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PlotLingoFunctionality.Plots
 {
@@ -42,12 +39,12 @@ namespace PlotLingoFunctionality.Plots
                         switch (opt.Key as string)
                         {
                             case "x":
-                                _absX = (double) opt.Value;
+                                _absX = (double)opt.Value;
                                 _absoluteLocation = true;
                                 break;
 
                             case "y":
-                                _absY = (double) opt.Value;
+                                _absY = (double)opt.Value;
                                 _absoluteLocation = true;
                                 break;
 
@@ -66,7 +63,7 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="ctx"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static PlotContext Text(IScopeContext c, PlotContext ctx, string text, Dictionary<object,object> options = null)
+        public static PlotContext Text(IScopeContext c, PlotContext ctx, string text, Dictionary<object, object> options = null)
         {
             // Get the text we are going to be placing on the plot.
             var plotTextInfo = ctx.GetProperty("TextList") as List<textInfo>;
@@ -92,9 +89,10 @@ namespace PlotLingoFunctionality.Plots
         {
             public double _x = 0.2, _y = 0.2;
 
-            public void matchToUserRequest (textInfo info)
+            public void matchToUserRequest(textInfo info)
             {
-                if (info._absoluteLocation) {
+                if (info._absoluteLocation)
+                {
                     _x = info._absX;
                     _y = info._absY;
                 }
@@ -116,6 +114,7 @@ namespace PlotLingoFunctionality.Plots
                 var tbox = new ROOTNET.NTText(loc._x, loc._y, t._text);
                 tbox.NDC = true;
                 tbox.Draw();
+                loc._y -= tbox.TextSize;
             }
         }
     }
