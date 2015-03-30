@@ -1,1 +1,0 @@
-# PlotLingo Language ManualThis manual aims to provide:- Reference for the language- Example code snippets- Extensibility Documentation

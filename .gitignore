@@ -169,3 +169,6 @@ pip-log.txt
 .DS_Store
 start_PlotLingo.bat
 *.nupkg
+
+# And things having to do with docs
+docs/site/**
