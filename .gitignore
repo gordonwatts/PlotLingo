@@ -171,4 +171,4 @@ start_PlotLingo.bat
 *.nupkg
 
 # And things having to do with docs
-docs/site/**
+site/**
