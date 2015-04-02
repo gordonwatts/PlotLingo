@@ -17,3 +17,12 @@ To deploy:
 		Make sure you publish to an offline spot somewhere you know.
 	4. In the publish directory, select the three files there, and send to zip file from the Explorer context menu.
 	5. Upload.
+    
+Building the Documentation
+
+1. Install Python
+2. Using pip (located in the scripts directory of your python install) install mkdocs
+3. From the main repo directory do "C:\tools\python2\Scripts\mkdocs.exe build --clean"
+4. Use a web browser to open the site/index.html file.
+
+After check-in you can put it up on readmydocs.org.
