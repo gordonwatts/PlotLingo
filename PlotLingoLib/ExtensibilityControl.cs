@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
+using System.Linq;
 
 namespace PlotLingoLib
 {
@@ -27,7 +29,6 @@ namespace PlotLingoLib
         /// </summary>
         private ExtensibilityControl()
         {
-
         }
 
         /// <summary>
@@ -52,6 +53,21 @@ namespace PlotLingoLib
 
             _container = new CompositionContainer(catalog);
             AttributedModelServices.ComposeParts(_container, this);
+        }
+
+        /// <summary>
+        /// Initialize everything with a context that has an initalization call.
+        /// </summary>
+        /// <param name="rootContext"></param>
+        public void InitializeFunctionObjects(IScopeContext rootContext)
+        {
+            var tocall = FunctionObjects
+                .Where(f => f is IFunctionObjectInitalization)
+                .Cast<IFunctionObjectInitalization>();
+            foreach (var doit in tocall)
+            {
+                doit.Initalize(rootContext);
+            }
         }
 
 #pragma warning disable 0649

@@ -2,14 +2,24 @@
 using PlotLingoLib;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System;
+
 namespace PlotLingoFunctionality.Plots
 {
     /// <summary>
     /// Help deal with tags that can be associated with objects
     /// </summary>
     [Export(typeof(IFunctionObject))]
-    class Tags : IFunctionObject
+    class Tags : IFunctionObject, IFunctionObjectInitalization
     {
+        /// <summary>
+        /// We establish the _tagInfo object in the right place initally.
+        /// </summary>
+        public void Initalize(IScopeContext rootContext)
+        {
+            rootContext.AddInternalVariable("_tagInfo", new Dictionary<object, List<string>>());
+        }
+
         /// <summary>
         /// Get the tag info dictionary.
         /// </summary>

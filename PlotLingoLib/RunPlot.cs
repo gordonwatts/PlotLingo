@@ -42,6 +42,8 @@ namespace PlotLingoLib
 
                 // For exvaluation, get the context setup correctly.
                 var c = new RootContext();
+                ExtensibilityControl.Get().InitializeFunctionObjects(c);
+
                 if (scriptFile != null)
                     c.ExecutionContext.ScriptFileContextPush(scriptFile);
                 if (expressionEvaluationReporters != null)

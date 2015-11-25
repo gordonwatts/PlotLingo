@@ -66,6 +66,7 @@ namespace PlotLingoFunctionality.Plots
         public static ROOTNET.Interface.NTH1 normalize(IScopeContext ctx, ROOTNET.Interface.NTH1 plot)
         {
             var np = plot.Clone() as ROOTNET.Interface.NTH1;
+            Tags.CopyTags(ctx, plot, np);
             var area = np.Integral();
             np.Scale(1.0 / area);
             return np;
