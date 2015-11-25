@@ -97,6 +97,7 @@
     <Compile Include="Plots\GraphContext.cs" />
     <Compile Include="Plots\GraphMaker.cs" />
     <Compile Include="Plots\LegendMaker.cs" />
+    <Compile Include="Plots\PlotAttributes.cs" />
     <Compile Include="Plots\PlotContext.cs" />
     <Compile Include="Plots\PlotMaker.cs" />
     <Compile Include="Plots\PlotOperations.cs" />
