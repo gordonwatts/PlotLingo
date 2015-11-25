@@ -102,7 +102,7 @@ namespace PlotLingoConsole
             }
 
             // Via click-once?
-            var activationData = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
+            var activationData = AppDomain.CurrentDomain.SetupInformation?.ActivationArguments?.ActivationData;
             if (activationData != null && activationData.Length > 0)
             {
                 Uri uri = new Uri(activationData[0]);
