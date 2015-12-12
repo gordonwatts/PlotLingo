@@ -43,9 +43,9 @@ namespace PlotLingoFunctionality.Plots
         }
 
         /// <summary>
-        /// Add a context to turn off stat boxes
+        /// Turn off stat boxes if there is more than a single plot being shown.
         /// </summary>
-        public static void TurnOffStatBoxes(IScopeContext c)
+        public static void TurnOffStatBoxesForMultiPlots(IScopeContext c)
         {
             c.ExecutionContext.AddPostCallHook("plot", "statsboxes", (obj, result) =>
             {
@@ -61,6 +61,30 @@ namespace PlotLingoFunctionality.Plots
                         {
                             p.Stats = false;
                         }
+                    }
+                });
+
+                return result;
+            });
+        }
+
+        /// <summary>
+        /// Turn off stat boxes on plots.
+        /// </summary>
+        /// <param name="c"></param>
+        public static void TurnOffStatBoxes(IScopeContext c)
+        {
+            c.ExecutionContext.AddPostCallHook("plot", "statsboxes", (obj, result) =>
+            {
+                var pc = result as PlotContext;
+                if (pc == null)
+                    return result;
+
+                pc.AddPreplotHook(plotContex =>
+                {
+                    foreach (var p in plotContex.Plots)
+                    {
+                        p.Stats = false;
                     }
                 });
 

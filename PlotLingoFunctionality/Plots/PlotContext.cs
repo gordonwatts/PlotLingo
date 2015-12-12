@@ -86,6 +86,11 @@ namespace PlotLingoFunctionality.Plots
         private string _filename;
 
         /// <summary>
+        /// Drawing options
+        /// </summary>
+        private string _drawOptions = "";
+
+        /// <summary>
         /// Init the title if it hasn't been already.
         /// </summary>
         private void InitTitleAndFileName()
@@ -153,6 +158,17 @@ namespace PlotLingoFunctionality.Plots
         }
 
         /// <summary>
+        /// Add a draw option
+        /// </summary>
+        /// <param name="opt"></param>
+        /// <returns></returns>
+        public PlotContext addDrawOption(string opt)
+        {
+            _drawOptions += " " + opt;
+            return this;
+        }
+
+        /// <summary>
         /// Return the name of this script.
         /// </summary>
         public string Name
@@ -191,11 +207,11 @@ namespace PlotLingoFunctionality.Plots
             }
 
             // Plot everything.
-            var optS = "";
+            var optS = _drawOptions;
             foreach (var p in _plots)
             {
                 p.Draw(optS);
-                optS = "SAME";
+                optS = _drawOptions + " SAME";
             }
 
             // And post-process

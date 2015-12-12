@@ -1,6 +1,8 @@
 ﻿using PlotLingoLib;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 
 namespace PlotLingoFunctionality.Plots
 {
@@ -125,6 +127,81 @@ namespace PlotLingoFunctionality.Plots
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Given a 2D plot, turn it into an efficiency plot. You can control the cut on each axis ( greater than or less than ).
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="plot">The 2D plot to convert to an efficiency map</param>
+        /// <param name="xCutGreaterThan">True if the cut is greater than along the x axis</param>
+        /// <param name="yCutGreaterThan">True if the cut is greater than along the y axis</param>
+        /// <returns>The efficiency map</returns>
+        /// <remarks>
+        /// The overflow and underflow bins are taken into account.
+        /// 
+        /// This works on a histogram, and thus a bin. So we have to define what the cut means. Since the cut is only has a real
+        /// value at the bin edges, we must define it as such.
+        /// 
+        /// The algorithm sums over the columns, and adds the last column to each place as it goes.
+        /// 
+        /// </remarks>
+        public static ROOTNET.Interface.NTH2 asEfficiency(IScopeContext ctx, ROOTNET.Interface.NTH2 plot, bool xCutGreaterThan = true, bool yCutGreaterThan = true)
+        {
+            var result = plot.Clone() as ROOTNET.Interface.NTH2; ;
+
+            var xBins = plot.Xaxis.Nbins;
+            var yBins = plot.Yaxis.Nbins;
+
+            var xBinRange = BinOrdering(xCutGreaterThan, xBins);
+            var yBinRange = BinOrdering(yCutGreaterThan, yBins);
+
+            // Build a 2D with the actual size
+            int lastxBin = -1;
+            double runningSum = 0.0;
+            foreach (var ixBin in xBinRange)
+            {
+                double columnTotal = 0.0;
+                foreach (var iyBin in yBinRange)
+                {
+                    var binValue = plot.GetBinContent(ixBin, iyBin);
+
+                    columnTotal += binValue;
+                    runningSum += binValue;
+                    var lastColTotal = lastxBin < 0 ? 0.0 : result.GetBinContent(lastxBin, iyBin);
+
+                    result.SetBinContent(ixBin, iyBin, columnTotal + lastColTotal);
+                }
+                lastxBin = ixBin;
+            }
+
+            // Turn it into an efficiency
+            foreach (var ixBin in xBinRange)
+            {
+                foreach (var iyBin in yBinRange)
+                {
+                    result.SetBinContent(ixBin, iyBin, 1.0 - result.GetBinContent(ixBin, iyBin) / runningSum);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Helper function to set the order we move through a set of columns or rows.
+        /// </summary>
+        /// <param name="moveForward">Go forward if true, otherwise reverse</param>
+        /// <param name="totalBins">Total number of bins we should be looking at.</param>
+        /// <returns></returns>
+        private static IEnumerable<int> BinOrdering(bool moveForward, int totalBins)
+        {
+            var xBinRange = Enumerable.Range(0, totalBins + 2);
+            if (!moveForward)
+            {
+                xBinRange = xBinRange.Reverse();
+            }
+
+            return xBinRange;
         }
     }
 }

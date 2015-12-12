@@ -5,7 +5,7 @@
 // Some default plotting config
 
 //NormalizePlots();
-TurnOffStatBoxes();
+TurnOffStatBoxesForMultiPlots();
 ConfigureLineWidth();
 
 // Write out a png by default
