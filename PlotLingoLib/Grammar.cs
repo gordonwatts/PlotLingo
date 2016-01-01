@@ -56,6 +56,8 @@ namespace PlotLingoLib
         private static readonly Parser<string> CloseBrace = StringToken("}");
         private static readonly Parser<string> OpenBracket = StringToken("[");
         private static readonly Parser<string> CloseBracket = StringToken("]");
+        private static readonly Parser<string> TrueValue = StringToken("true");
+        private static readonly Parser<string> FalseValue = StringToken("false");
 
         /// <summary>
         /// Binary operators supported by this simple language.
@@ -87,6 +89,13 @@ namespace PlotLingoLib
             .Or(from n1 in Parse.Number from d in Dot from n2 in Parse.Number select new DoubleValue(double.Parse(n1 + "." + n2)))
             .Or(from n in Parse.Number from d in Dot select new DoubleValue(double.Parse(n)))
             ;
+
+        /// <summary>
+        /// Look for a true or false value.
+        /// </summary>
+        private static readonly Parser<IExpression> BoolValueParser =
+            from v in TrueValue.Or(FalseValue)
+            select new BoolValue(v == "true");
 
         /// <summary>
         /// Parse an identifier that is a variable name.
@@ -121,6 +130,7 @@ namespace PlotLingoLib
         /// </summary>
         private static readonly Parser<IExpression> ValueExpressionParser
             = DictionaryValueParser
+            .Or(BoolValueParser)
             .Or(StringValueParser)
             .Or(DoubleValueParser)
             .Or(IntegerValueParser);

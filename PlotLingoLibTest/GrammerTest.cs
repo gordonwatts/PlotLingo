@@ -439,6 +439,30 @@ namespace PlotLingoLibTest
         }
 
         [TestMethod]
+        public void ValueBoolTrue()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("true;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length);
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var expr = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(expr.Expression, typeof(BoolValue));
+            Assert.AreEqual("True;", r[0].ToString());
+        }
+
+        [TestMethod]
+        public void ValueBoolFalse()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("false;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length);
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var expr = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(expr.Expression, typeof(BoolValue));
+            Assert.AreEqual("False;", r[0].ToString());
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(Sprache.ParseException))]
         public void TestValueDoubleDotBad()
         {
