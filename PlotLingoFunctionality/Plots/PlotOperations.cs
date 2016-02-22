@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using ROOTNET.Interface;
 
 namespace PlotLingoFunctionality.Plots
 {
@@ -10,7 +11,7 @@ namespace PlotLingoFunctionality.Plots
     /// Define some operations for the language that work on plots. Note we clone everything!
     /// </summary>
     [Export(typeof(IFunctionObject))]
-    class PlotOperations : IFunctionObject
+    public class PlotOperations : IFunctionObject
     {
         /// <summary>
         /// Add two histograms
@@ -157,34 +158,50 @@ namespace PlotLingoFunctionality.Plots
             var yBinRange = BinOrdering(yCutGreaterThan, yBins);
 
             // We must now build a cumulative 2D matrix with the sizes for each.
-            int lastxBin = -1;
-            double runningSum = 0.0;
             foreach (var ixBin in xBinRange)
             {
-                double columnTotal = 0.0;
                 foreach (var iyBin in yBinRange)
                 {
-                    var binValue = plot.GetBinContent(ixBin, iyBin);
+                    var binSum = SumBinArea(plot,
+                        BinOrdering(xCutGreaterThan, xBins, ixBin),
+                        BinOrdering(yCutGreaterThan, yBins, iyBin));
 
-                    columnTotal += binValue;
-                    runningSum += binValue;
-                    var lastColTotal = lastxBin < 0 ? 0.0 : result.GetBinContent(lastxBin, iyBin);
-
-                    result.SetBinContent(ixBin, iyBin, columnTotal + lastColTotal);
+                    result.SetBinContent(ixBin, iyBin, binSum);
                 }
-                lastxBin = ixBin;
             }
 
             // Turn it into an efficiency
+            var totalSum = SumBinArea(plot, BinOrdering(true, xBins), BinOrdering(true, yBins));
             foreach (var ixBin in xBinRange)
             {
                 foreach (var iyBin in yBinRange)
                 {
-                    result.SetBinContent(ixBin, iyBin, 1.0 - result.GetBinContent(ixBin, iyBin) / runningSum);
+                    result.SetBinContent(ixBin, iyBin, result.GetBinContent(ixBin, iyBin) / totalSum);
                 }
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Sum the bins in an area given.
+        /// </summary>
+        /// <param name="plot"></param>
+        /// <param name="enumerable1"></param>
+        /// <param name="enumerable2"></param>
+        /// <returns></returns>
+        private static double SumBinArea(NTH2 plot, IEnumerable<int> xBins, IEnumerable<int> yBins)
+        {
+            double total = 0.0;
+            foreach (var ix in xBins)
+            {
+                foreach (var iy in yBins)
+                {
+                    total += plot.GetBinContent(ix, iy);
+                }
+
+            }
+            return total;
         }
 
         /// <summary>
@@ -193,15 +210,25 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="moveForward">Go forward if true, otherwise reverse</param>
         /// <param name="totalBins">Total number of bins we should be looking at.</param>
         /// <returns></returns>
-        private static IEnumerable<int> BinOrdering(bool moveForward, int totalBins)
+        private static IEnumerable<int> BinOrdering(bool moveForward, int totalBins, int? initialBin = null)
         {
-            var xBinRange = Enumerable.Range(0, totalBins + 2);
-            if (!moveForward)
+            if (moveForward)
             {
-                xBinRange = xBinRange.Reverse();
+                int first = 0;
+                if (initialBin.HasValue)
+                {
+                    first = initialBin.Value;
+                }
+                return Enumerable.Range(first, totalBins + 2);
+            } else
+            {
+                int first = totalBins + 2;
+                if (initialBin.HasValue)
+                {
+                    first = initialBin.Value;
+                }
+                return Enumerable.Range(0, first).Reverse();
             }
-
-            return xBinRange;
         }
     }
 }
