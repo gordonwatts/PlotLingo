@@ -156,7 +156,7 @@ namespace PlotLingoFunctionality.Plots
             var xBinRange = BinOrdering(xCutGreaterThan, xBins);
             var yBinRange = BinOrdering(yCutGreaterThan, yBins);
 
-            // Build a 2D with the actual size
+            // We must now build a cumulative 2D matrix with the sizes for each.
             int lastxBin = -1;
             double runningSum = 0.0;
             foreach (var ixBin in xBinRange)
