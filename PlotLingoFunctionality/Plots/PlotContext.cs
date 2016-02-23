@@ -91,6 +91,16 @@ namespace PlotLingoFunctionality.Plots
         private string _drawOptions = "";
 
         /// <summary>
+        /// The width to use. Zero means default size.
+        /// </summary>
+        private int _width = 0;
+
+        /// <summary>
+        /// The height to use, zero means default size.
+        /// </summary>
+        private int _height = 0;
+
+        /// <summary>
         /// Init the title if it hasn't been already.
         /// </summary>
         private void InitTitleAndFileName()
@@ -169,12 +179,27 @@ namespace PlotLingoFunctionality.Plots
         }
 
         /// <summary>
+        /// Set the size of the canvas.
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        public PlotContext size(int width, int height)
+        {
+            _width = width;
+            _height = height;
+            return this;
+        }
+
+        /// <summary>
         /// Return the name of this script.
         /// </summary>
         public string Name
         {
             get { InitTitleAndFileName(); return _filename; }
         }
+
+        private static int _canvasIndex = 0;
 
         /// <summary>
         /// Save the plot to output. This is where we do the heavy lifting of generating a plot.
@@ -192,10 +217,19 @@ namespace PlotLingoFunctionality.Plots
             }
 
             // Initialize the canvas
-            var c = new ROOTNET.NTCanvas();
-            c.Title = _title;
+            ROOTNET.NTCanvas c = null;
+            _canvasIndex++;
+            if (_width > 0 && _height > 0)
+            {
+                c = new ROOTNET.NTCanvas($"c{_canvasIndex}", _title, _width, _height);
+            } else
+            {
+                c = new ROOTNET.NTCanvas($"c{_canvasIndex}", _title);
+            }
+
             if (_plots.Length > 0)
                 _plots[0].Title = _title;
+
 
             // x and y axis titles
             if (_plots.Length > 0)
