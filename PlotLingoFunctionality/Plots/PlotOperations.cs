@@ -180,6 +180,8 @@ namespace PlotLingoFunctionality.Plots
                 }
             }
 
+            // Set up for good display
+            result.Maximum = 1.0;
             return result;
         }
 
@@ -222,12 +224,12 @@ namespace PlotLingoFunctionality.Plots
                 return Enumerable.Range(first, totalBins + 2);
             } else
             {
-                int first = totalBins + 2;
+                int first = totalBins + 1;
                 if (initialBin.HasValue)
                 {
                     first = initialBin.Value;
                 }
-                return Enumerable.Range(0, first).Reverse();
+                return Enumerable.Range(0, first+1).Reverse();
             }
         }
     }

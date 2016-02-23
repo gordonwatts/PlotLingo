@@ -19,6 +19,17 @@ namespace PlotLingoFunctionalityTest
         }
 
         [TestMethod]
+        public void AsEffOneBinPlotReverse()
+        {
+            var h = new ROOTNET.NTH2F("hi", "there", 1, 0.0, 10.0, 1, 0.0, 10.0);
+            h.SetBinContent(1, 1, 10.0);
+
+            var r = PlotOperations.asEfficiency(null, h, false, false);
+
+            Assert.AreEqual(1.0, r.GetBinContent(1, 1));
+        }
+
+        [TestMethod]
         public void TwoBinsOneRowOneFilled()
         {
             var h = new ROOTNET.NTH2F("hi", "there", 2, 0.0, 10.0, 1, 0.0, 10.0);
