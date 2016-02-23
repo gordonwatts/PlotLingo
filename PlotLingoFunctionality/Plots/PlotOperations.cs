@@ -132,6 +132,7 @@ namespace PlotLingoFunctionality.Plots
 
         /// <summary>
         /// Given a 2D plot, turn it into an efficiency plot. You can control the cut on each axis ( greater than or less than ).
+        /// Each bin in the plot is the cut efficiency if you made the cut at those value.
         /// </summary>
         /// <param name="ctx"></param>
         /// <param name="plot">The 2D plot to convert to an efficiency map</param>
@@ -139,12 +140,13 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="yCutGreaterThan">True if the cut is greater than along the y axis</param>
         /// <returns>The efficiency map</returns>
         /// <remarks>
-        /// The overflow and underflow bins are taken into account.
+        /// The overflow and underflow bins are taken into account for the total calcualtions, so they will contain
+        /// sensible results.
         /// 
         /// This works on a histogram, and thus a bin. So we have to define what the cut means. Since the cut is only has a real
         /// value at the bin edges, we must define it as such.
-        /// 
-        /// The algorithm sums over the columns, and adds the last column to each place as it goes.
+        ///   - For a ">" cut, the low edge of the bin is the cut value.
+        ///   - for a "<" cut, the high edge of the bin is the cut value.
         /// 
         /// </remarks>
         public static ROOTNET.Interface.NTH2 asEfficiency(IScopeContext ctx, ROOTNET.Interface.NTH2 plot, bool xCutGreaterThan = true, bool yCutGreaterThan = true)
