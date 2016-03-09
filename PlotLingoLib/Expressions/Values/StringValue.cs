@@ -54,7 +54,7 @@ namespace PlotLingoLib.Expressions.Values
                 {
                     var s = result.ToString();
                     myl = myl.Replace("{" + vname + "}", s);
-                    position += s.Length;
+                    position += s.Length-1;
                 }
                 else
                 {

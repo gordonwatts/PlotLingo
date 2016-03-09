@@ -63,6 +63,47 @@ namespace PlotLingoLibTest.Expressions.Values
         }
 
         [TestMethod]
+        public void StringWith2Var()
+        {
+            var s = new StringValue("hi {there}{there}");
+            var c = new RootContext();
+            c.SetVariableValue("there", "dude");
+            var mys = s.Evaluate(c);
+            Assert.AreEqual("hi dudedude", mys, "string value");
+        }
+
+        [TestMethod]
+        public void StringWith1CharVar()
+        {
+            var s = new StringValue("hi {t}");
+            var c = new RootContext();
+            c.SetVariableValue("t", "dude");
+            var mys = s.Evaluate(c);
+            Assert.AreEqual("hi dude", mys, "string value");
+        }
+
+        [TestMethod]
+        public void StringWith1Char2Var()
+        {
+            var s = new StringValue("hi {there}{t}");
+            var c = new RootContext();
+            c.SetVariableValue("t", "dude");
+            c.SetVariableValue("there", "dude");
+            var mys = s.Evaluate(c);
+            Assert.AreEqual("hi dudedude", mys, "string value");
+        }
+
+        [TestMethod]
+        public void StringWith2VarNextToEachOtherOneNoTrans()
+        {
+            var s = new StringValue("hi {there}{t}");
+            var c = new RootContext();
+            c.SetVariableValue("t", "dude");
+            var mys = s.Evaluate(c);
+            Assert.AreEqual("hi {there}dude", mys, "string value");
+        }
+
+        [TestMethod]
         public void StringWithVarAndNumbers()
         {
             var s = new StringValue("hi {there53}");
