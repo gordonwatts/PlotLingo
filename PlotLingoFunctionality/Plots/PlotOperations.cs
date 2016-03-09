@@ -76,6 +76,21 @@ namespace PlotLingoFunctionality.Plots
         }
 
         /// <summary>
+        /// Set the minimum value for a plot
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="plot"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static ROOTNET.Interface.NTH1 minimum(IScopeContext ctx, ROOTNET.Interface.NTH1 plot, double value)
+        {
+            var np = plot.Clone() as ROOTNET.Interface.NTH1;
+            Tags.CopyTags(ctx, plot, np);
+            np.Minimum = value;
+            return np;
+        }
+
+        /// <summary>
         /// Rebin by a factor
         /// </summary>
         /// <param name="ctx"></param>
