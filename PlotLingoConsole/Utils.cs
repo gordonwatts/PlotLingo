@@ -18,6 +18,7 @@ namespace PlotLingoConsole
                 .Replace("?", "-")
                 .Replace("\"", "-")
                 .Replace("|", "-")
+                .Replace("\\", "")
                 ;
         }
     }
