@@ -1,5 +1,4 @@
-﻿using Jenkins.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,7 +25,7 @@ namespace PlotLingoFunctionality.Files.Jenkins
             var jenksInfo = new JInfo(url);
 
             // Next, determine the job information for this guy
-            var artifactInfo = jenksInfo.GetArtifactInfo();
+            var artifactInfo = await jenksInfo.GetArtifactInfo();
 
             // Build the file path where we will store it. If it is already there,
             // then we are done!
@@ -37,7 +36,7 @@ namespace PlotLingoFunctionality.Files.Jenkins
             }
 
             // If isn't there, then download it.
-            await jenksInfo.Download(artifactInfo);
+            await jenksInfo.Download(artifactInfo, location);
             location.Refresh();
             if (!location.Exists)
             {
@@ -63,43 +62,99 @@ namespace PlotLingoFunctionality.Files.Jenkins
             }
 
             /// <summary>
-            /// The URL that contains the server info
-            /// </summary>
-            Uri _serverURI;
-
-            /// <summary>
             /// Access to Jenkins info
             /// </summary>
-            IJenkinsRestClient _JenkinsEndPoint;
+            Lazy<JenkinsEndPoint> _JenkinsEndPoint = new Lazy<JenkinsEndPoint>(() => new JenkinsEndPoint());
 
-            public JInfo (string url)
+            Uri _artifactURI;
+
+            string _jobName;
+            string _buildName;
+            string _artifactName;
+
+            public JInfo(string url)
             {
-                _serverURI = new Uri(url);
-                Init();
+                _artifactURI = new Uri(url);
+                var segments = _artifactURI.Segments;
+
+                // Get the job and artifact.
+                var artifactInfo = segments.SkipWhile(s => s != "job/").Skip(1).Select(s => s.Trim('/')).ToArray();
+                if (artifactInfo.Length != 4 && artifactInfo[2] == "artifact")
+                {
+                    throw new ArgumentException($"The Jenkins artifact URI '{url}' is not in a format I recognize (.../jobname/build/artifact/artifact-name)");
+                }
+                _jobName = artifactInfo[0];
+                _buildName = artifactInfo[1];
+                _artifactName = artifactInfo[3];
             }
 
             /// <summary>
-            /// Get the server stuff configured.
+            /// Get everything setup. Some of this setup may require going up to the server.
             /// </summary>
-            public void Init()
+            /// <returns></returns>
+            private async Task Init()
             {
-                var fact = new JenkinsRestFactory();
-                _JenkinsEndPoint = fact.GetClient();
+                // The only key here is if the build number is not determined at this point.
+                if (_buildName == "lastSuccessfulBuild")
+                {
+                    _buildName = (await GetLastSuccessfulBuild()).ToString();
+                }
+            }
+
+            /// <summary>
+            /// Fetch the last successful build.
+            /// </summary>
+            /// <returns></returns>
+            private async Task<int> GetLastSuccessfulBuild()
+            {
+                // Build the job URI, which will then return the JSON.
+                var jobURIStem = GetJobURIStem();
+                var r = await _JenkinsEndPoint.Value.FetchJSON<JenkinsDomain.JenkinsJob>(jobURIStem);
+
+                if (r.lastSuccessfulBuild == null)
+                {
+                    throw new InvalidOperationException($"This Jenkins job does not yet have a successful build! {jobURIStem.OriginalString}");
+                }
+
+                return r.lastSuccessfulBuild.number;
+            }
+
+            /// <summary>
+            /// Return a Uri of the job stem.
+            /// </summary>
+            /// <returns></returns>
+            private Uri GetJobURIStem()
+            {
+                return new Uri(_artifactURI.OriginalString.Substring(0, _artifactURI.OriginalString.IndexOf(_jobName) + _jobName.Length));
             }
 
             /// <summary>
             /// Parse the URL to figure out everything we need
             /// </summary>
             /// <returns></returns>
-            public Info GetArtifactInfo()
+            public async Task<Info> GetArtifactInfo()
             {
-                var j = _JenkinsEndPoint.GetJobAsync(_serverURI.OriginalString);
-                return null;
+                await Init();
+                return new Info()
+                {
+                    JobName = _jobName,
+                    BuildNumber = int.Parse(_buildName),
+                    ArtifactName = _artifactName
+                };
             }
 
-            internal Task Download(Info artifactInfo)
+            /// <summary>
+            /// Download the artifact!
+            /// </summary>
+            /// <param name="artifactInfo"></param>
+            /// <returns></returns>
+            internal async Task Download(Info artifactInfo, FileInfo destination)
             {
-                throw new NotImplementedException();
+                // Build the url
+                var jobURI = GetJobURIStem();
+                var artifactUri = new Uri($"{jobURI.OriginalString}/{artifactInfo.BuildNumber}/artifact/{artifactInfo.ArtifactName}");
+
+                await _JenkinsEndPoint.Value.DownloadFile(artifactUri, destination);
             }
         }
     }

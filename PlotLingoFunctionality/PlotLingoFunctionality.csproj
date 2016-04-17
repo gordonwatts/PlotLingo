@@ -35,6 +35,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CredentialManagement, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CredentialManagement.1.0.2\lib\net35\CredentialManagement.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="libCoreWrapper, Version=11.11.5938.40843, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\packages\ROOT.NET.Dynamic.5.34.34.11\lib\net40\libCoreWrapper.dll</HintPath>
       <Private>True</Private>
@@ -92,6 +96,8 @@
     <Compile Include="Files\File.cs" />
     <Compile Include="Files\Jenkins\JenkAccess.cs" />
     <Compile Include="Files\Jenkins\jenkinsAccess.cs" />
+    <Compile Include="Files\Jenkins\JenkinsDomain.cs" />
+    <Compile Include="Files\Jenkins\JenkinsEndPoint.cs" />
     <Compile Include="Files\TC\CredInfo.cs" />
     <Compile Include="Files\TC\TCAccess.cs" />
     <Compile Include="Files\TC\teamcityAccess.cs" />
