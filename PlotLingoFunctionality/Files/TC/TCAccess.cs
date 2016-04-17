@@ -15,17 +15,17 @@ namespace PlotLingoFunctionality.Files.TC
     public static class TCAccess
     {
         /// <summary>
-        /// Hold onto the basic infomration about a TC full file url
+        /// Hold onto the basic information about a TC full file URL
         /// </summary>
         private struct TCInfo
         {
             /// <summary>
-            /// The base url http://blahb.blah.edu:5000
+            /// The base URL http://blahb.blah.edu:5000
             /// </summary>
             public string urlBase;
 
             /// <summary>
-            /// Return the machine name in the url
+            /// Return the machine name in the URL
             /// </summary>
             public string MachineName
             {
@@ -79,7 +79,7 @@ namespace PlotLingoFunctionality.Files.TC
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// The user can enter a specific URL for the artifiact that they get by cut/pasting the url from their web browser:
+        /// The user can enter a specific URL for the artifact that they get by cut/pasting the URL from their web browser:
         /// 
         ///     http://tc-higgs.phys.washington.edu:8080/repository/download/bt13/2250:id/dataJZ2W-CutFlowPlots.root
         /// or
@@ -92,12 +92,12 @@ namespace PlotLingoFunctionality.Files.TC
             // First, we need to parse the URL into its component parts
             var info = ParseTCURL(tcFileURL);
 
-            // If we are to get the latest ID, updat it.
+            // If we are to get the latest ID, update it.
             if (fetchLatest)
                 info.buildID = await FetchLaestBuildID(info);
 
             // Last thing is to download this file locally. We can't use TFile::Open because of
-            // username and password issues.
+            // user name and password issues.
 
             return await DownloadFile(info);
         }
@@ -152,12 +152,12 @@ namespace PlotLingoFunctionality.Files.TC
         }
 
         /// <summary>
-        /// Parse the urls for a team city download
+        /// Parse the URLs for a team city download
         /// </summary>
         private static Regex _urlParser = new Regex("^(?<base>.*)/repository/download/(?<bName>[^/]+)/(?<bID>[0-9]+):id/(?<path>.*)$");
 
         /// <summary>
-        /// Parse a teamcity URL into its component parts.
+        /// Parse a TeamCity URL into its component parts.
         /// </summary>
         /// <param name="tcFileURL"></param>
         /// <returns></returns>
@@ -171,7 +171,7 @@ namespace PlotLingoFunctionality.Files.TC
         }
 
         /// <summary>
-        /// Create a URL request to send to teamcity.
+        /// Create a URL request to send to TeamCity.
         /// </summary>
         /// <param name="what"></param>
         /// <param name="method"></param>
@@ -192,7 +192,7 @@ namespace PlotLingoFunctionality.Files.TC
             var req = WebRequest.Create(urlbase);
             req.Method = method;
 
-            // Creds
+            // Credentials
 
             if (info.cred == null)
             {
@@ -200,7 +200,7 @@ namespace PlotLingoFunctionality.Files.TC
                 if (!NativeMethods.CredRead(info.MachineName, CRED_TYPE.GENERIC, 0, out cred))
                 {
                     Console.WriteLine("Error getting credentials");
-                    Console.WriteLine(string.Format("Use the credential control pannel, create a generic credential for windows domains for {0} with username and password", info.MachineName));
+                    Console.WriteLine(string.Format("Use the credential control panel, create a generic credential for windows domains for {0} with user name and password", info.MachineName));
                     throw new InvalidOperationException();
                 }
                 string password;

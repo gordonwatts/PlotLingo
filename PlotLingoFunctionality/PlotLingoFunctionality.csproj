@@ -90,6 +90,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Files\File.cs" />
+    <Compile Include="Files\Jenkins\JenkAccess.cs" />
+    <Compile Include="Files\Jenkins\jenkinsAccess.cs" />
     <Compile Include="Files\TC\CredInfo.cs" />
     <Compile Include="Files\TC\TCAccess.cs" />
     <Compile Include="Files\TC\teamcityAccess.cs" />
@@ -113,6 +115,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Files\Jenkins\Jenkins.vsspell" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

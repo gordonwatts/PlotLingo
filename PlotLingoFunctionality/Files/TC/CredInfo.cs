@@ -18,7 +18,7 @@ namespace PlotLingoFunctionality.Files.TC
         DOMAIN_VISIBLE_PASSWORD = 4,
         GENERIC_CERTIFICATE = 5,
         DOMAIN_EXTENDED = 6,
-        MAXIMUM = 7,      // Maximum supported cred type
+        MAXIMUM = 7,      // Maximum supported credential type
         MAXIMUM_EX = (MAXIMUM + 1000),  // Allow new applications to run on old OSes
     }
 
@@ -38,7 +38,7 @@ namespace PlotLingoFunctionality.Files.TC
         IntPtr Value;
     }
 
-    //This type is deliberately not designed to be marshalled.
+    //This type is deliberately not designed to be marshaled.
     public class Credential
     {
         public UInt32 Flags;
