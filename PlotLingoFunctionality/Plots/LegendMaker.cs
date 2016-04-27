@@ -36,11 +36,19 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="associations"></param>
         public static void Legend(IScopeContext c, IDictionary<object, object> associations)
         {
+            // Sign up for all the legends we are going to have to attach.
             c.ExecutionContext.AddPostCallHook("plot", "legend", (obj, result) =>
             {
-                (result as PlotContext).AddPreplotHook(SetLegendColors);
+                (result as DrawingContext).AddPreplotHook(SetLegendColors);
                 return result;
             });
+            c.ExecutionContext.AddPostCallHook("draw", "legend", (obj, result) =>
+            {
+                (result as DrawingContext).AddPreplotHook(SetLegendColors);
+                return result;
+            });
+
+            // Next, record the legend info.
             foreach (var item in associations)
             {
                 var s = item.Key as string;
@@ -98,7 +106,7 @@ namespace PlotLingoFunctionality.Plots
         /// </summary>
         /// <param name="c"></param>
         /// <param name="associations"></param>
-        public static PlotContext LegendOptions(IScopeContext c, PlotContext ctx, IDictionary<object, object> associations)
+        public static DrawingContext LegendOptions(IScopeContext c, DrawingContext ctx, IDictionary<object, object> associations)
         {
             // If there is no associated legend options with the ctx yet, then create a default one.
             Options opt = ctx.GetProperty("LegendOptions") as Options;
@@ -143,16 +151,16 @@ namespace PlotLingoFunctionality.Plots
         /// See if we can't set the legend colors.
         /// </summary>
         /// <param name="ctx"></param>
-        private static void SetLegendColors(IScopeContext codeContext, PlotContext ctx)
+        private static void SetLegendColors(IScopeContext codeContext, DrawingContext ctx)
         {
             // First pass: determine how many items there are, set the color, etc.
             int count = 0;
             int letterLength = 0;
-            foreach (var p in ctx.Plots)
+            foreach (var p in ctx.ObjectsToDraw)
             {
                 foreach (var legInfo in _legendInfo)
                 {
-                    if (p.Title.IndexOf(legInfo.Key) >= 0 || Tags.hasTag(codeContext, p, legInfo.Key))
+                    if (p.Title.IndexOf(legInfo.Key) >= 0 || p.hasTag(codeContext, legInfo.Key))
                     {
                         p.LineColor = (short)legInfo.Value.Color;
                         letterLength = Math.Max(letterLength, legInfo.Value.Title.Length);
@@ -196,13 +204,13 @@ namespace PlotLingoFunctionality.Plots
 
                 // Create the legend box
                 var l = new ROOTNET.NTLegend(xmin, ymin, xmax, ymax);
-                foreach (var p in ctx.Plots)
+                foreach (var p in ctx.ObjectsToDraw)
                 {
                     foreach (var legInfo in _legendInfo)
                     {
-                        if (p.Title.IndexOf(legInfo.Key) >= 0 || Tags.hasTag(codeContext, p, legInfo.Key))
+                        if (p.Title.IndexOf(legInfo.Key) >= 0 || p.hasTag(codeContext, legInfo.Key))
                         {
-                            l.AddEntry(p, legInfo.Value.Title);
+                            l.AddEntry(p.NTObject, legInfo.Value.Title);
                         }
                     }
                 }

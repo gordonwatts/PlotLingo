@@ -155,7 +155,7 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="yCutGreaterThan">True if the cut is greater than along the y axis</param>
         /// <returns>The efficiency map</returns>
         /// <remarks>
-        /// The overflow and underflow bins are taken into account for the total calcualtions, so they will contain
+        /// The overflow and underflow bins are taken into account for the total calculations, so they will contain
         /// sensible results.
         /// 
         /// This works on a histogram, and thus a bin. So we have to define what the cut means. Since the cut is only has a real
@@ -201,6 +201,91 @@ namespace PlotLingoFunctionality.Plots
             // Set up for good display
             result.Maximum = 1.0;
             return result;
+        }
+
+        /// <summary>
+        /// Compare two tuples.
+        /// </summary>
+        private class TupleCompare : IEqualityComparer<Tuple<double, double>>
+        {
+            public bool Equals(Tuple<double, double> x, Tuple<double, double> y)
+            {
+                return x.Item1 == y.Item1
+                    && x.Item2 == y.Item2;
+            }
+
+            public int GetHashCode(Tuple<double, double> obj)
+            {
+                return obj.Item1.GetHashCode() + obj.Item2.GetHashCode();
+            }
+        }
+
+        /// <summary>
+        /// Generate 2D turn on graphs from input signal and background plots.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="plot"></param>
+        /// <param name="xCutGreaterThan"></param>
+        /// <param name="yCutGreaterThan"></param>
+        /// <returns>A graph with the signal eff along the x axis, and the background eff along the y axis</returns>
+        public static ROOTNET.Interface.NTGraph asROC(IScopeContext ctx, NTH1 signal, NTH1 background, bool xCutGreaterThan = true, bool yCutGreaterThan = true)
+        {
+            // The two plots must be identical.
+            if (signal.NbinsX != background.NbinsX)
+            {
+                throw new ArgumentException($"AsROC requires the same binning on the input plots (signal has {signal.NbinsX} and background has {background.NbinsX}).");
+            }
+
+            // Now, develop pairs of values so we can track the background and signal efficiency.
+            var numberPairs = Enumerable.Range(0, signal.NbinsX + 1)
+                .Select(ibin => Tuple.Create(signal.GetBinContent(ibin), background.GetBinContent(ibin)));
+
+            // Now, turn them into efficiencies if we need to.
+            var signalTotal = numberPairs.Select(p => p.Item1).Sum();
+            var backgroundTotal = numberPairs.Select(p => p.Item2).Sum();
+
+            double runningTotalSignal = xCutGreaterThan ? 0 : signalTotal;
+            double runningTotalBackground = yCutGreaterThan ? 0 : backgroundTotal;
+
+            Func<double, double> calcRunningSignal, calcRunningBackground;
+            if (xCutGreaterThan)
+            {
+                calcRunningSignal = p => runningTotalSignal += p;
+            } else
+            {
+                calcRunningSignal = p => runningTotalSignal -= p;
+            }
+            if (yCutGreaterThan)
+            {
+                calcRunningBackground = p => runningTotalBackground += p;
+            }
+            else
+            {
+                calcRunningBackground = p => runningTotalBackground -= p;
+            }
+
+            numberPairs = numberPairs
+                .Select(p => Tuple.Create(calcRunningSignal(p.Item1), calcRunningBackground(p.Item2)))
+                .Select(p => Tuple.Create(p.Item1 / signalTotal, p.Item2 / backgroundTotal))
+                .ToArray(); // Side effects, make sure this gets run only once!
+
+            // Remove the non-unique pairs, since this is going to be a scatter plot.
+            numberPairs = numberPairs
+                .Distinct(new TupleCompare());
+
+            // Next, draw them in a graph.
+            var pts = numberPairs.ToArray();
+            var graf = new ROOTNET.NTGraph(pts.Length, pts.Select(p => p.Item1).ToArray(), pts.Select(p => p.Item2).ToArray());
+
+            // Track tags for the signal (assuming the background is "common"), and track everything else.
+            Tags.CopyTags(ctx, signal, graf);
+            graf.SetTitle($"{signal.Title} ROC");
+            graf.Xaxis.Title = $"Efficiency (signal)";
+            graf.Yaxis.Title = $"Efficiency (background)";
+            graf.Histogram.Maximum = 1.0;
+            graf.Histogram.Minimum = 0.0;
+
+            return graf;
         }
 
         /// <summary>

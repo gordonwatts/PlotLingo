@@ -14,9 +14,25 @@ namespace PlotLingoFunctionality.Plots
     [Export(typeof(IFunctionObject))]
     class PlotAttributes : IFunctionObject
     {
-        public static PlotContext logy(IScopeContext c, PlotContext ctx)
+        public static DrawingContext logx(IScopeContext c, DrawingContext ctx)
+        {
+            ctx.AddPostplotHook((myctx, canvas) => { canvas.Logx = 1; });
+            return ctx;
+        }
+        public static DrawingContext logy(IScopeContext c, DrawingContext ctx)
         {
             ctx.AddPostplotHook((myctx, canvas) => { canvas.Logy = 1; });
+            return ctx;
+        }
+        public static DrawingContext logz(IScopeContext c, DrawingContext ctx)
+        {
+            ctx.AddPostplotHook((myctx, canvas) => { canvas.Logz = 1; });
+            return ctx;
+        }
+
+        public static DrawingContext size(IScopeContext c, DrawingContext ctx, int width, int height)
+        {
+            ctx.AddPostplotHook((myctx, canvas) => { canvas.SetCanvasSize((uint) width, (uint) height); });
             return ctx;
         }
     }

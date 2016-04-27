@@ -13,7 +13,7 @@ namespace PlotLingoFunctionality.Plots
     /// <summary>
     /// Generate plots for various graphs
     /// </summary>
-    public class GraphContext : IPlotScriptResult
+    public class GraphContext : DrawingContext, IPlotScriptResult
     {
         NTGraph[] _g;
         string _xaxisTitle = "";
@@ -44,6 +44,54 @@ namespace PlotLingoFunctionality.Plots
             get { return string.IsNullOrWhiteSpace(_title) ? _g[0].Name : _title; }
         }
 
+        /// <summary>
+        /// Get at a graf object
+        /// </summary>
+        class DrawingObject : DrawingContext.IDrawingObjects
+        {
+            NTGraph _g;
+
+            public DrawingObject (ROOTNET.Interface.NTGraph g)
+            {
+                _g = g;
+            }
+
+            public short LineColor
+            {
+                get { return _g.LineColor; }
+                set { _g.LineColor = value; }
+            }
+
+            public short LineWidth
+            {
+                get { return _g.LineWidth; }
+                set { _g.LineWidth = value; }
+            }
+
+            public NTObject NTObject
+            {
+                get { return _g; }
+            }
+
+            public string Title
+            {
+                get { return _g.Title; }
+            }
+
+            public bool hasTag(IScopeContext ctx, string tagname)
+            {
+                return Tags.hasTag(ctx, _g, tagname);
+            }
+        }
+
+        /// <summary>
+        /// Return an abstract list of our plotting objects.
+        /// </summary>
+        public override IEnumerable<IDrawingObjects> ObjectsToDraw
+        {
+            get { return _g.Select(myg => new DrawingObject(myg)); }
+        }
+
         public GraphContext yaxis(string yaxisName)
         {
             _yaxisTitle = yaxisName;
@@ -60,55 +108,6 @@ namespace PlotLingoFunctionality.Plots
         {
             _title = t;
             return this;
-        }
-
-        public GraphContext logx(bool doit = true)
-        {
-            _logx = doit;
-            return this;
-        }
-        public GraphContext logy(bool doit = true)
-        {
-            _logy = doit;
-            return this;
-        }
-
-        /// <summary>
-        /// Contains the list of actions to be executed before an actual plot is made.
-        /// These are run just before things are dumped out.
-        /// </summary>
-        private List<Action<IScopeContext, GraphContext>> _prePlotHook = new List<Action<IScopeContext, GraphContext>>();
-
-        /// <summary>
-        /// Track all the things we should call once the plotting is, basically, done.
-        /// </summary>
-        private List<Action<GraphContext, ROOTNET.Interface.NTCanvas>> _postPlotHook = new List<Action<GraphContext, ROOTNET.Interface.NTCanvas>>();
-
-        /// <summary>
-        /// Add a pre-plot hook
-        /// </summary>
-        /// <param name="act"></param>
-        public void AddPreplotHook(Action<GraphContext> act)
-        {
-            _prePlotHook.Add((c, p) => act(p));
-        }
-
-        /// <summary>
-        /// Add a pre-plot hook that needs a context
-        /// </summary>
-        /// <param name="act"></param>
-        public void AddPreplotHook(Action<IScopeContext, GraphContext> act)
-        {
-            _prePlotHook.Add(act);
-        }
-
-        /// <summary>
-        /// Add a hook to be called after the basic plotting is done.
-        /// </summary>
-        /// <param name="act"></param>
-        public void AddPostplotHook(Action<GraphContext, ROOTNET.Interface.NTCanvas> act)
-        {
-            _postPlotHook.Add(act);
         }
 
         /// <summary>

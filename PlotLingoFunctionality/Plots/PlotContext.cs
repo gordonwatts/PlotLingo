@@ -3,18 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ROOTNET.Interface;
 
 namespace PlotLingoFunctionality.Plots
 {
-    public class PlotContext : IPlotScriptResult
+    public class PlotContext : DrawingContext, IPlotScriptResult
     {
         /// <summary>
-        /// The list of plots we are most insterested in. This, basically, preresents a gPad...
+        /// The list of plots we are most interested in. This, basically, represents a gPad...
         /// </summary>
         private ROOTNET.NTH1[] _plots;
 
         /// <summary>
-        /// Create the plot conext with a list of plots
+        /// Create the plot context with a list of plots
         /// </summary>
         /// <param name="nTH1"></param>
         public PlotContext(ROOTNET.NTH1[] nTH1)
@@ -26,44 +27,6 @@ namespace PlotLingoFunctionality.Plots
         /// Get the list of plots
         /// </summary>
         public ROOTNET.NTH1[] Plots { get { return _plots; } }
-
-        /// <summary>
-        /// Contains the list of actions to be executed before an actual plot is made.
-        /// These are run just before things are dumped out.
-        /// </summary>
-        private List<Action<IScopeContext, PlotContext>> _prePlotHook = new List<Action<IScopeContext, PlotContext>>();
-
-        /// <summary>
-        /// Track all the things we should call once the plotting is, basically, done.
-        /// </summary>
-        private List<Action<PlotContext, ROOTNET.Interface.NTCanvas>> _postPlotHook = new List<Action<PlotContext, ROOTNET.Interface.NTCanvas>>();
-
-        /// <summary>
-        /// Add a pre-plot hook
-        /// </summary>
-        /// <param name="act"></param>
-        public void AddPreplotHook(Action<PlotContext> act)
-        {
-            _prePlotHook.Add((c, p) => act(p));
-        }
-
-        /// <summary>
-        /// Add a pre-plot hook that needs a context
-        /// </summary>
-        /// <param name="act"></param>
-        public void AddPreplotHook(Action<IScopeContext, PlotContext> act)
-        {
-            _prePlotHook.Add(act);
-        }
-
-        /// <summary>
-        /// Add a hook to be called after the basic plotting is done.
-        /// </summary>
-        /// <param name="act"></param>
-        public void AddPostplotHook(Action<PlotContext, ROOTNET.Interface.NTCanvas> act)
-        {
-            _postPlotHook.Add(act);
-        }
 
         /// <summary>
         /// Keep track of our title.
@@ -89,16 +52,6 @@ namespace PlotLingoFunctionality.Plots
         /// Drawing options
         /// </summary>
         private string _drawOptions = "";
-
-        /// <summary>
-        /// The width to use. Zero means default size.
-        /// </summary>
-        private int _width = 0;
-
-        /// <summary>
-        /// The height to use, zero means default size.
-        /// </summary>
-        private int _height = 0;
 
         /// <summary>
         /// Init the title if it hasn't been already.
@@ -179,24 +132,58 @@ namespace PlotLingoFunctionality.Plots
         }
 
         /// <summary>
-        /// Set the size of the canvas.
-        /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <returns></returns>
-        public PlotContext size(int width, int height)
-        {
-            _width = width;
-            _height = height;
-            return this;
-        }
-
-        /// <summary>
         /// Return the name of this script.
         /// </summary>
         public string Name
         {
             get { InitTitleAndFileName(); return _filename; }
+        }
+
+        /// <summary>
+        /// Abstract away various common drawing objects.
+        /// </summary>
+        class DrawingObject : DrawingContext.IDrawingObjects
+        {
+            private NTH1 _p;
+
+            public DrawingObject (ROOTNET.Interface.NTH1 p)
+            {
+                _p = p;
+            }
+            public short LineColor
+            {
+                get { return _p.LineColor; }
+                set { _p.LineColor = value; }
+            }
+
+            public short LineWidth
+            {
+                get { return _p.LineWidth; }
+                set { _p.LineWidth = value; }
+            }
+
+            public NTObject NTObject
+            {
+                get { return _p; }
+            }
+
+            public string Title
+            {
+                get { return _p.Title; }
+            }
+
+            public bool hasTag(IScopeContext ctx, string tagname)
+            {
+                return Tags.hasTag(ctx, _p, tagname);
+            }
+        }
+
+        /// <summary>
+        /// Return a simple interface for objects
+        /// </summary>
+        public override IEnumerable<IDrawingObjects> ObjectsToDraw
+        {
+            get { return _plots.Select(p => new DrawingObject(p)); }
         }
 
         private static int _canvasIndex = 0;
@@ -219,13 +206,7 @@ namespace PlotLingoFunctionality.Plots
             // Initialize the canvas
             ROOTNET.NTCanvas c = null;
             _canvasIndex++;
-            if (_width > 0 && _height > 0)
-            {
-                c = new ROOTNET.NTCanvas($"c{_canvasIndex}", _title, _width, _height);
-            } else
-            {
-                c = new ROOTNET.NTCanvas($"c{_canvasIndex}", _title);
-            }
+            c = new ROOTNET.NTCanvas($"c{_canvasIndex}", _title);
 
             if (_plots.Length > 0)
                 _plots[0].Title = _title;
@@ -282,36 +263,6 @@ namespace PlotLingoFunctionality.Plots
                     return fout;
                 });
             return finfos.ToArray();
-        }
-
-        /// <summary>
-        /// Track a property bag for things that others want to associated with this plot context.
-        /// </summary>
-        private Dictionary<string, object> _prop = new Dictionary<string, object>();
-
-        /// <summary>
-        /// Grab a property from the plot context.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public object GetProperty (string name)
-        {
-            object r;
-            if (_prop.TryGetValue(name, out r))
-            {
-                return r;
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Save a property in the plot contex.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="o"></param>
-        public void SetProperty (string name, object o)
-        {
-            _prop[name] = o;
         }
     }
 }

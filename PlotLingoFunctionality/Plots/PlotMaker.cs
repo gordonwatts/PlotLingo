@@ -49,17 +49,20 @@ namespace PlotLingoFunctionality.Plots
         {
             c.ExecutionContext.AddPostCallHook("plot", "statsboxes", (obj, result) =>
             {
-                var pc = result as PlotContext;
+                var pc = result as DrawingContext;
                 if (pc == null)
                     return result;
 
                 pc.AddPreplotHook(plotContex =>
                 {
-                    if (plotContex.Plots.Length > 1)
+                    if (plotContex.ObjectsToDraw.Count() > 1)
                     {
-                        foreach (var p in plotContex.Plots)
+                        foreach (var p in plotContex.ObjectsToDraw)
                         {
-                            p.Stats = false;
+                            if (p.NTObject is ROOTNET.Interface.NTH1)
+                            {
+                                (p.NTObject as ROOTNET.Interface.NTH1).Stats = false;
+                            }
                         }
                     }
                 });
@@ -76,15 +79,18 @@ namespace PlotLingoFunctionality.Plots
         {
             c.ExecutionContext.AddPostCallHook("plot", "statsboxes", (obj, result) =>
             {
-                var pc = result as PlotContext;
+                var pc = result as DrawingContext;
                 if (pc == null)
                     return result;
 
                 pc.AddPreplotHook(plotContex =>
                 {
-                    foreach (var p in plotContex.Plots)
+                    foreach (var p in plotContex.ObjectsToDraw)
                     {
-                        p.Stats = false;
+                        if (p.NTObject is ROOTNET.Interface.NTH1)
+                        {
+                            (p.NTObject as ROOTNET.Interface.NTH1).Stats = false;
+                        }
                     }
                 });
 
@@ -100,18 +106,22 @@ namespace PlotLingoFunctionality.Plots
         {
             c.ExecutionContext.AddPostCallHook("plot", "normalize", (obj, result) =>
             {
-                var pc = result as PlotContext;
+                var pc = result as DrawingContext;
                 if (pc == null)
                     return result;
 
                 pc.AddPreplotHook(plotContex =>
                 {
-                    if (plotContex.Plots.Length > 1)
+                    var histToDraw = plotContex.ObjectsToDraw
+                        .Select(o => o.NTObject)
+                        .Where(o => o is ROOTNET.Interface.NTH1)
+                        .Cast<ROOTNET.Interface.NTH1>();
+                    if (histToDraw.Count() > 1)
                     {
-                        var max = plotContex.Plots.Select(p => FindPlotMaximum(p)).Max();
+                        var max = histToDraw.Select(p => FindPlotMaximum(p)).Max();
                         max = max * 1.10;
 
-                        foreach (var p in plotContex.Plots)
+                        foreach (var p in histToDraw)
                         {
                             p.Maximum = max;
                         }
@@ -128,7 +138,7 @@ namespace PlotLingoFunctionality.Plots
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        private static double FindPlotMaximum(ROOTNET.NTH1 p)
+        private static double FindPlotMaximum(ROOTNET.Interface.NTH1 p)
         {
             var b = p.GetMaximumBin();
             return p.GetBinContent(b) + p.GetBinError(b);
@@ -144,13 +154,13 @@ namespace PlotLingoFunctionality.Plots
             short sz = 2;
             c.ExecutionContext.AddPostCallHook("plot", "linewidth", (obj, result) =>
             {
-                var pc = result as PlotContext;
+                var pc = result as DrawingContext;
                 if (pc == null)
                     return result;
 
                 pc.AddPreplotHook(plotContex =>
                 {
-                    foreach (var p in plotContex.Plots)
+                    foreach (var p in plotContex.ObjectsToDraw)
                     {
                         p.LineWidth = sz;
                     }

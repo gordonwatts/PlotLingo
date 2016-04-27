@@ -102,6 +102,7 @@
     <Compile Include="Files\TC\TCAccess.cs" />
     <Compile Include="Files\TC\teamcityAccess.cs" />
     <Compile Include="IPlotScriptResult.cs" />
+    <Compile Include="Plots\DrawingContext.cs" />
     <Compile Include="Plots\GraphContext.cs" />
     <Compile Include="Plots\GraphMaker.cs" />
     <Compile Include="Plots\LegendMaker.cs" />

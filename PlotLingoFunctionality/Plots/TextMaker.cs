@@ -63,7 +63,7 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="ctx"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static PlotContext Text(IScopeContext c, PlotContext ctx, string text, Dictionary<object, object> options = null)
+        public static DrawingContext Text(IScopeContext c, DrawingContext ctx, string text, Dictionary<object, object> options = null)
         {
             // Get the text we are going to be placing on the plot.
             var plotTextInfo = ctx.GetProperty("TextList") as List<textInfo>;
