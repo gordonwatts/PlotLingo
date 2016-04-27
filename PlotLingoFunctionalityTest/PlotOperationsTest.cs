@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PlotLingoFunctionality.Plots;
+using PlotLingoLib;
 
 namespace PlotLingoFunctionalityTest
 {
@@ -13,7 +14,7 @@ namespace PlotLingoFunctionalityTest
             var h = new ROOTNET.NTH2F("hi", "there", 1, 0.0, 10.0, 1, 0.0, 10.0);
             h.SetBinContent(1, 1, 10.0);
 
-            var r = PlotOperations.asEfficiency(null, h, true, true);
+            var r = PlotOperations.asEfficiency(new RootContext(), h, true, true);
 
             Assert.AreEqual(1.0, r.GetBinContent(1, 1));
         }
@@ -24,7 +25,7 @@ namespace PlotLingoFunctionalityTest
             var h = new ROOTNET.NTH2F("hi", "there", 1, 0.0, 10.0, 1, 0.0, 10.0);
             h.SetBinContent(1, 1, 10.0);
 
-            var r = PlotOperations.asEfficiency(null, h, false, false);
+            var r = PlotOperations.asEfficiency(new RootContext(), h, false, false);
 
             Assert.AreEqual(1.0, r.GetBinContent(1, 1));
         }
@@ -36,7 +37,7 @@ namespace PlotLingoFunctionalityTest
             h.SetBinContent(1, 1, 10.0);
             h.SetBinContent(2, 1, 0.0);
 
-            var r = PlotOperations.asEfficiency(null, h, true, true);
+            var r = PlotOperations.asEfficiency(new RootContext(), h, true, true);
 
             Assert.AreEqual(1.0, r.GetBinContent(1, 1));
             Assert.AreEqual(0.0, r.GetBinContent(2, 1));
@@ -49,7 +50,7 @@ namespace PlotLingoFunctionalityTest
             h.SetBinContent(1, 1, 10.0);
             h.SetBinContent(2, 1, 10.0);
 
-            var r = PlotOperations.asEfficiency(null, h, true, true);
+            var r = PlotOperations.asEfficiency(new RootContext(), h, true, true);
 
             Assert.AreEqual(1.0, r.GetBinContent(1, 1));
             Assert.AreEqual(0.5, r.GetBinContent(2, 1));
@@ -64,7 +65,7 @@ namespace PlotLingoFunctionalityTest
             h.SetBinContent(3, 1, 10.0);
             h.SetBinContent(4, 1, 10.0);
 
-            var r = PlotOperations.asEfficiency(null, h, true, true);
+            var r = PlotOperations.asEfficiency(new RootContext(), h, true, true);
 
             Assert.AreEqual(1.0, r.GetBinContent(1, 1));
             Assert.AreEqual(0.75, r.GetBinContent(2, 1));
@@ -81,7 +82,7 @@ namespace PlotLingoFunctionalityTest
             h.SetBinContent(3, 1, 10.0);
             h.SetBinContent(4, 1, 10.0);
 
-            var r = PlotOperations.asEfficiency(null, h, false, true);
+            var r = PlotOperations.asEfficiency(new RootContext(), h, false, true);
 
             Assert.AreEqual(0.25, r.GetBinContent(1, 1));
             Assert.AreEqual(0.50, r.GetBinContent(2, 1));
