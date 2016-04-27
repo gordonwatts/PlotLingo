@@ -43,5 +43,16 @@ namespace PlotLingoLib.Functions
             });
             return r;
         }
+
+        /// <summary>
+        /// Concat two lists.
+        /// </summary>
+        /// <param name="i1"></param>
+        /// <param name="i2"></param>
+        /// <returns></returns>
+        public static IEnumerable<object> OperatorPlus(IEnumerable<object> i1, IEnumerable<object> i2)
+        {
+            return i1.Concat(i2);
+        }
     }
 }

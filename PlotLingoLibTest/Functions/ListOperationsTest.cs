@@ -62,5 +62,23 @@ namespace PlotLingoLibTest.Functions
             Assert.AreEqual(2.0, list[0]);
             Assert.AreEqual(3.0, list[1]);
         }
+
+        [TestMethod]
+        public void CombineLists()
+        {
+            var ar1 = new object[] { 4.0, 6.0 };
+            var ar2 = new object[] { 7.0, 8.0 };
+            var f = new FunctionExpression("+", new ObjectValue(ar1), new ObjectValue(ar2));
+            var c = new RootContext();
+            var r = f.Evaluate(c);
+
+            Assert.IsInstanceOfType(r, typeof(IEnumerable<object>));
+            var lst = r as IEnumerable<object>;
+            var list = lst.ToArray();
+
+            Assert.AreEqual(4, list.Length, "# of items");
+            Assert.AreEqual(4.0, list[0]);
+            Assert.AreEqual(8.0, list[3]);
+        }
     }
 }
