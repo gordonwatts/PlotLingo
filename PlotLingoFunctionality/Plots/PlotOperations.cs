@@ -99,7 +99,32 @@ namespace PlotLingoFunctionality.Plots
         public static ROOTNET.Interface.NTH1 rebin(IScopeContext ctx, ROOTNET.Interface.NTH1 plot, int rebinFactor)
         {
             var np = plot.Clone() as ROOTNET.Interface.NTH1;
+            Tags.CopyTags(ctx, plot, np);
             np.Rebin(rebinFactor);
+            return np;
+        }
+
+        /// <summary>
+        /// Rebin, trying to get as close to the number of bins as we can
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="plot"></param>
+        /// <param name="rebinFactor"></param>
+        /// <returns></returns>
+        public static ROOTNET.Interface.NTH1 rebinTo(IScopeContext ctx, ROOTNET.Interface.NTH1 plot, int targetBins)
+        {
+            var np = plot.Clone() as ROOTNET.Interface.NTH1;
+            Tags.CopyTags(ctx, plot, np);
+
+            // Calculate the rebin factor.
+            // THis is the floor of the factor
+            var factor = (int) (np.NbinsX / (double)targetBins);
+
+            if (factor > 1)
+            {
+                np.Rebin(factor);
+            }
+
             return np;
         }
 
