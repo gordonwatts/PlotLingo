@@ -289,6 +289,49 @@ namespace PlotLingoFunctionality.Plots
         }
 
         /// <summary>
+        /// Generate an integral plot out of the current plot.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="plot"></param>
+        /// <returns></returns>
+        public static ROOTNET.Interface.NTH1 asIntegral(IScopeContext ctx, NTH1 plot, bool sumForward = true)
+        {
+            // Clone it.
+            var result = plot.Clone() as ROOTNET.Interface.NTH1; ;
+            Tags.CopyTags(ctx, plot, result);
+
+            // get the numbers out
+            var numbers = Enumerable.Range(0, result.NbinsX + 1)
+                .Select(ibin => result.GetBinContent(ibin));
+
+            // Now, sum them up.
+            var total = numbers.Sum();
+
+            // And transform them.
+            double runningTotal = sumForward ? 0 : total;
+            Func<double, double> calRunningTotal;
+            if (sumForward)
+            {
+                calRunningTotal = p => runningTotal += p;
+            } else
+            {
+                calRunningTotal = p => runningTotal -= p;
+            }
+
+            numbers = numbers
+                .Select(n => calRunningTotal(n))
+                .ToArray(); // The runningTotal has side effects, so we better put a stop.
+
+            // Stuff them back in result.
+            foreach (var n in Enumerable.Range(0, result.NbinsX + 1).Zip(numbers, (ibin, v) => Tuple.Create(ibin, v)))
+            {
+                result.SetBinContent(n.Item1, n.Item2);
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Sum the bins in an area given.
         /// </summary>
         /// <param name="plot"></param>
