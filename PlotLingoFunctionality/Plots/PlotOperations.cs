@@ -104,6 +104,26 @@ namespace PlotLingoFunctionality.Plots
         }
 
         /// <summary>
+        /// Attempt to rebin to a target number of bins. This is a little delicate as we we are restricted
+        /// to rebinning to an integer.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="plot"></param>
+        /// <param name="desiredBins"></param>
+        /// <returns></returns>
+        public static ROOTNET.Interface.NTH1 rebinTo(IScopeContext ctx, ROOTNET.Interface.NTH1 plot, int desiredBins)
+        {
+            var factor = (double)plot.NbinsX / (double)desiredBins;
+
+            if (factor < 2.0)
+            {
+                return plot;
+            }
+
+            return rebin(ctx, plot, (int)factor);
+        }
+
+        /// <summary>
         /// Given a 2D plot, map to a 1D plot assuming radial distances.
         /// </summary>
         /// <param name="ctx"></param>
