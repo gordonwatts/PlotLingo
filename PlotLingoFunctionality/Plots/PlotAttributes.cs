@@ -24,6 +24,11 @@ namespace PlotLingoFunctionality.Plots
             ctx.AddPostplotHook((myctx, canvas) => { canvas.Logy = 1; });
             return ctx;
         }
+        public static DrawingContext grid(IScopeContext c, DrawingContext ctx)
+        {
+            ctx.AddPostplotHook((myctx, canvas) => { canvas.Grid = 1; });
+            return ctx;
+        }
         public static DrawingContext logz(IScopeContext c, DrawingContext ctx)
         {
             ctx.AddPostplotHook((myctx, canvas) => { canvas.Logz = 1; });
