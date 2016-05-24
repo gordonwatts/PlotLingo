@@ -99,6 +99,7 @@ namespace PlotLingoFunctionality.Plots
         public static ROOTNET.Interface.NTH1 rebin(IScopeContext ctx, ROOTNET.Interface.NTH1 plot, int rebinFactor)
         {
             var np = plot.Clone() as ROOTNET.Interface.NTH1;
+            Tags.CopyTags(ctx, plot, np);
             np.Rebin(rebinFactor);
             return np;
         }
