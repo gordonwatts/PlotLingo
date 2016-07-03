@@ -141,8 +141,8 @@ namespace PlotLingoLib
         private static readonly Parser<ArrayValue> ArrayValueParser =
             from values in Parse
                 .Ref(() => ExpressionParser)
-                .DelimitedBy(Parse.Char(',')).Optional()
-                .Contained(Parse.Char('['), Parse.Char(']'))
+                .DelimitedBy(Parse.String(",")).Optional()
+                .Contained(Parse.String("["), Parse.WhiteSpace.Many().Then(rest => Parse.String("]")))
             select new ArrayValue(values.IsEmpty ? new IExpression[] { } : values.Get().ToArray());
 
         /// <summary>

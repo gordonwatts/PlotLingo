@@ -170,9 +170,35 @@ namespace PlotLingoLibTest
         }
 
         [TestMethod]
+        public void TestValueArrayWithWhiteSpace()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("[\"hi\", \"there\" ];");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(ArrayValue), "array method");
+            var mc = exprS.Expression as ArrayValue;
+            Assert.AreEqual(2, mc.Length, "# of values in the array");
+        }
+
+        [TestMethod]
         public void TestValueArrayEmpty()
         {
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("[];");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            var exprS = r[0] as ExpressionStatement;
+            Assert.IsInstanceOfType(exprS.Expression, typeof(ArrayValue), "array method");
+            var mc = exprS.Expression as ArrayValue;
+            Assert.AreEqual(0, mc.Length, "# of values in the array");
+        }
+
+        [TestMethod]
+        public void TestValueArrayEmptyWithWhitespace()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("[ ];");
             Assert.IsNotNull(r);
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
