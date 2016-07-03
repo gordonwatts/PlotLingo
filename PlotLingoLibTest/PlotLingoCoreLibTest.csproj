@@ -65,6 +65,7 @@
     <Compile Include="Expressions\Values\StringValueTest.cs" />
     <Compile Include="ExtensibilityControlTest.cs" />
     <Compile Include="Functions\DictionaryOperationsTest.cs" />
+    <Compile Include="Functions\ifStatementTest.cs" />
     <Compile Include="Functions\NumberOperationsTest.cs" />
     <Compile Include="Functions\ScriptOperationsTest.cs" />
     <Compile Include="Functions\FileOperationsTest.cs" />
