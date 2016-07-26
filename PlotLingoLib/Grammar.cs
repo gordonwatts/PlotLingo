@@ -156,13 +156,19 @@ namespace PlotLingoLib
             from statements in StatementParser.Many().Contained(OpenBrace, CloseBrace).Optional()
             select new FunctionExpression(fname, statements.IsEmpty ? args : args.Concat(new IExpression[] { new ListOfStatementsExpression(statements.Get()) }).ToArray());
 
+        private static readonly Parser<char> CommaSeperator =
+            from w1 in Parse.WhiteSpace.Many()
+            from c in Parse.Char(',')
+            from w2 in Parse.WhiteSpace.Many()
+            select c;
+
         /// <summary>
         /// Parse an argument list that goes to a function or similar.
         /// </summary>
         private static readonly Parser<IExpression[]> ArgumentListParser =
             from values in Parse
                 .Ref(() => ExpressionParser)
-                .DelimitedBy(Parse.Char(',')).Optional()
+                .DelimitedBy(CommaSeperator).Optional()
                 .Contained(Parse.Char('('), Parse.Char(')'))
             select values.IsEmpty ? new IExpression[] { } : values.Get().ToArray();
 

@@ -92,6 +92,42 @@ namespace PlotLingoLibTest
         }
 
         [TestMethod]
+        public void TestNoArgumentFunction()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("func();");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length);
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement));
+        }
+
+        [TestMethod]
+        public void TestOneArgumentFunction()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("func(1.0);");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length);
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement));
+        }
+
+        [TestMethod]
+        public void TestTwoArgumentFunctionWithSpace()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("func(1.0, 2.0);");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length);
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement));
+        }
+
+        [TestMethod]
+        public void TestTwoArgumentFunction()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("func(1.0,2.0);");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length);
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement));
+        }
+
+        [TestMethod]
         public void TestMethodStatement()
         {
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("p.plot(\"hi\");");
