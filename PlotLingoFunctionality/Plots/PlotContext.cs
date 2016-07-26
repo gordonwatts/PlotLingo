@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ROOTNET.Interface;
+using PlotLingoLib.Functions;
 
 namespace PlotLingoFunctionality.Plots
 {
@@ -84,6 +85,23 @@ namespace PlotLingoFunctionality.Plots
         public PlotContext title(string title)
         {
             _title = title;
+            return this;
+        }
+
+        /// <summary>
+        /// List of statements that should be executed after we've built the context.
+        /// </summary>
+        private List<string> _evalLines = new List<string>();
+
+        /// <summary>
+        /// Evaluate a line after we've generated the plot. So you can run a macro
+        /// or similar.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public PlotContext eval(string line)
+        {
+            _evalLines.Add(line);
             return this;
         }
 
@@ -227,6 +245,12 @@ namespace PlotLingoFunctionality.Plots
             {
                 p.Draw(optS);
                 optS = _drawOptions + " SAME";
+            }
+
+            // Post-process any eval lines.
+            foreach (var l in _evalLines)
+            {
+                ScriptOperations.eval(ctx, l);
             }
 
             // And post-process

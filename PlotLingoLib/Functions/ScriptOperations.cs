@@ -11,7 +11,7 @@ namespace PlotLingoLib.Functions
     /// Things that manipulate the script. For example, the include function.
     /// </summary>
     [Export(typeof(IFunctionObject))]
-    class ScriptOperations : IFunctionObject
+    public class ScriptOperations : IFunctionObject
     {
         /// <summary>
         /// Include antoher source file. It is loaded and executed immediately, in the same global
