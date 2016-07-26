@@ -92,8 +92,10 @@
     <Compile Include="Expressions\Values\BoolValue.cs" />
     <Compile Include="Functions\ForLoop.cs" />
     <Compile Include="Functions\IfStatement.cs" />
+    <Compile Include="Functions\IFunctionFinder.cs" />
     <Compile Include="Functions\ListOperations.cs" />
     <Compile Include="Functions\Map.cs" />
+    <Compile Include="Functions\ObjectFunctionCaller.cs" />
     <Compile Include="Functions\StringOperations.cs" />
     <Compile Include="FunctionUtils.cs" />
     <Compile Include="IFunctionObjectInitalization.cs" />

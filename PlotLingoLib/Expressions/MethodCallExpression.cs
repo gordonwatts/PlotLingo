@@ -34,16 +34,6 @@ namespace PlotLingoLib.Expressions
         }
 
         /// <summary>
-        /// Default list of method evaluators
-        /// </summary>
-        private List<IMethodEvaluator> _evaluators = new List<IMethodEvaluator>()
-        {
-            new DotNetExtensionFunctionCaller(),
-            new DotNetMethodCall(),
-            new PropertyMethodCall()
-        };
-
-        /// <summary>
         /// Evaluate the method call. Use a list of evaluators to try to accomplish the call.
         /// </summary>
         /// <param name="c"></param>
@@ -56,7 +46,8 @@ namespace PlotLingoLib.Expressions
             var args = FunctionCall.Arguments.Select(a => a.Evaluate(c)).ToArray();
 
             // Find the first evaluator that can figure out what this is.
-            var goodEval = _evaluators.Select(e => e.Evaluate(c, obj, FunctionCall.FunctionName, args)).Where(r => r.Item1).FirstOrDefault();
+            var goodEval = ExtensibilityControl.Get().MethodEvaluators
+                .Select(e => e.Evaluate(c, obj, FunctionCall.FunctionName, args)).Where(r => r.Item1).FirstOrDefault();
             if (goodEval != null)
             {
                 return c.ExecutionContext.ExecutePostCallHook(FunctionCall.FunctionName, obj, goodEval.Item2);

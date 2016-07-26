@@ -1,4 +1,6 @@
 ﻿
+using ROOTNET;
+using ROOTNET.Globals;
 using Sprache;
 using System;
 using System.Collections.Generic;
@@ -84,6 +86,7 @@ namespace PlotLingoLib
         /// <param name="action"></param>
         public static IScopeContext Eval(this List<FileInfo> files, Action<object>[] actions = null, FileInfo mainScriptFile = null)
         {
+            Init();
             for (int i = 0; i < 10; i++)
                 try
                 {
@@ -116,6 +119,7 @@ namespace PlotLingoLib
         /// <param name="fi"></param>
         public static IScopeContext Eval(this FileInfo fi, IEnumerable<Action<object>> expressionEvaluationReporters = null)
         {
+            Init();
             for (int i = 0; i < 10; i++)
                 try
                 {
@@ -131,6 +135,20 @@ namespace PlotLingoLib
                     Thread.Sleep(10);
                 }
             return null;
+        }
+
+        /// <summary>
+        /// Initalized ROOT environment
+        /// </summary>
+        private static NTApplication s_appHolder = null;
+        private static void Init()
+        {
+            if (s_appHolder != null) return;
+
+            var dummyArgc = new int[] { 0 };
+            var dummyStringInfo = new string[] { "" };
+            s_appHolder = new NTApplication("PlotLingoParser", dummyArgc, dummyStringInfo);
+            gROOT.Value.Batch = true;
         }
 
         /// <summary>

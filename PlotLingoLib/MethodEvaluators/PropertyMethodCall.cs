@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 
 namespace PlotLingoLib.MethodEvaluators
 {
@@ -14,6 +15,7 @@ namespace PlotLingoLib.MethodEvaluators
     /// <remarks>
     /// This modifies an object in-place. It is *not* functional. No idea how to clone everything, after all!
     /// </remarks>
+    [Export(typeof(IMethodEvaluator))]
     class PropertyMethodCall : IMethodEvaluator
     {
         /// <summary>

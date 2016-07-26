@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -9,6 +10,7 @@ namespace PlotLingoLib.MethodEvaluators
     /// Look through the functions known to us and see if there are
     /// any that could be called like an object method.
     /// </summary>
+    [Export(typeof(IMethodEvaluator))]
     class DotNetExtensionFunctionCaller : IMethodEvaluator
     {
         /// <summary>

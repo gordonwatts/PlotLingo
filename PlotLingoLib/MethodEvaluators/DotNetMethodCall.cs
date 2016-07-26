@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -8,6 +9,7 @@ namespace PlotLingoLib.MethodEvaluators
     /// <summary>
     /// Try to evaluate the method on a .net object.
     /// </summary>
+    [Export(typeof(IMethodEvaluator))]
     class DotNetMethodCall : IMethodEvaluator
     {
         /// <summary>

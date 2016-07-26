@@ -114,6 +114,8 @@
     <Compile Include="Plots\Tags.cs" />
     <Compile Include="Plots\TextMaker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ROOT\ROOTFunction.cs" />
+    <Compile Include="ROOT\RootMacros.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PlotLingoLib\PlotLingoCoreLib.csproj">

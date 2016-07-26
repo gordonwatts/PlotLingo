@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PlotLingoLib.Functions;
+using PlotLingoLib.MethodEvaluators;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
@@ -79,8 +81,29 @@ namespace PlotLingoLib
 #pragma warning restore 0649
 
         /// <summary>
-        /// Get the list of function objects where functions can be searched for.
+        /// Get the list of function objects where functions can be searched for that are backed into
+        /// the plot lingo language.
         /// </summary>
         public IEnumerable<IFunctionObject> FunctionObjects { get { Init(); return _functionObjects; } }
+
+#pragma warning disable 0649
+        /// <summary>
+        /// Internal list of method evaluators that can be called.
+        /// </summary>
+        [ImportMany]
+        IEnumerable<IMethodEvaluator> _methodsEvaluators;
+#pragma warning restore 0649
+
+        public IEnumerable<IMethodEvaluator> MethodEvaluators { get { Init(); return _methodsEvaluators; } }
+
+#pragma warning disable 0649
+        /// <summary>
+        /// Internal list of method evaluators that can be called.
+        /// </summary>
+        [ImportMany]
+        IEnumerable<IFunctionFinder> _functionFinders;
+#pragma warning restore 0649
+
+        public IEnumerable<IFunctionFinder> FunctionFinders { get { Init(); return _functionFinders; } }
     }
 }

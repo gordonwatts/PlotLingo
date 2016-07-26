@@ -3,9 +3,10 @@
 namespace PlotLingoLib.MethodEvaluators
 {
     /// <summary>
-    /// Anything that can evaluate a method call should impelment this
+    /// Anything that can evaluate a method call should impelment this.
+    /// Make sure export this interface using the MEF Composition Export object property!
     /// </summary>
-    interface IMethodEvaluator
+    public interface IMethodEvaluator
     {
         /// <summary>
         /// Evaluate the expression. Return true if we successfully did
