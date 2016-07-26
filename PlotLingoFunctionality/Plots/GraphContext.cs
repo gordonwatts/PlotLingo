@@ -18,7 +18,6 @@ namespace PlotLingoFunctionality.Plots
         NTGraph[] _g;
         string _xaxisTitle = "";
         string _yaxisTitle = "";
-        string _title = "";
         bool _logx = false;
         bool _logy = false;
 
@@ -36,12 +35,9 @@ namespace PlotLingoFunctionality.Plots
             _g = new NTGraph[] { g };
         }
 
-        /// <summary>
-        /// Get the name of the plot for drawing
-        /// </summary>
-        public string Name
+        protected override string DefaultTitle()
         {
-            get { return string.IsNullOrWhiteSpace(_title) ? _g[0].Name : _title; }
+            return _g == null || _g.Length ==0 ? "Graph" : _g[0].Name;
         }
 
         /// <summary>
@@ -104,12 +100,6 @@ namespace PlotLingoFunctionality.Plots
             return this;
         }
 
-        public GraphContext title(string t)
-        {
-            _title = t;
-            return this;
-        }
-
         /// <summary>
         /// Save to a file.
         /// </summary>
@@ -126,11 +116,7 @@ namespace PlotLingoFunctionality.Plots
 
             // Initialize the canvas
             var c = new ROOTNET.NTCanvas();
-            if (!string.IsNullOrWhiteSpace(_title))
-            {
-                _g[0].Title = _title;
-            }
-            c.Title = _g[0].Title;
+            c.Title = GetTitle();
 
             c.Logx = _logx ? 1 : 0;
             c.Logy = _logy ? 1 : 0;

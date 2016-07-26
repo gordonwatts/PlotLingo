@@ -30,11 +30,6 @@ namespace PlotLingoFunctionality.Plots
         public ROOTNET.NTH1[] Plots { get { return _plots; } }
 
         /// <summary>
-        /// Keep track of our title.
-        /// </summary>
-        private string _title = null;
-
-        /// <summary>
         /// Cache the x axis title
         /// </summary>
         private string _yaxisTitle = null;
@@ -45,47 +40,24 @@ namespace PlotLingoFunctionality.Plots
         private string _xaxisTitle = null;
 
         /// <summary>
-        /// Get the filename.
-        /// </summary>
-        private string _filename;
-
-        /// <summary>
         /// Drawing options
         /// </summary>
         private string _drawOptions = "";
 
         /// <summary>
-        /// Init the title if it hasn't been already.
+        /// Get the default title for this plot.
         /// </summary>
-        private void InitTitleAndFileName()
-        {
-            if (_title == null)
-            {
-                if (this._plots == null || _plots.Length == 0)
-                {
-                    _title = "Plot";
-                }
-                else
-                {
-                    _title = _plots[0].Title;
-                }
-            }
-
-            if (_filename == null)
-            {
-                _filename = _title;
-            }
-        }
-
-        /// <summary>
-        /// Alter the title of the canvas.
-        /// </summary>
-        /// <param name="title"></param>
         /// <returns></returns>
-        public PlotContext title(string title)
+        protected override string DefaultTitle()
         {
-            _title = title;
-            return this;
+            if (this._plots == null || _plots.Length == 0)
+            {
+                return "Plot";
+            }
+            else
+            {
+                return _plots[0].Title;
+            }
         }
 
         /// <summary>
@@ -128,17 +100,6 @@ namespace PlotLingoFunctionality.Plots
         }
 
         /// <summary>
-        /// Alter the name of the file.
-        /// </summary>
-        /// <param name="fname"></param>
-        /// <returns></returns>
-        public PlotContext filename(string fname)
-        {
-            _filename = fname;
-            return this;
-        }
-
-        /// <summary>
         /// Add a draw option
         /// </summary>
         /// <param name="opt"></param>
@@ -147,14 +108,6 @@ namespace PlotLingoFunctionality.Plots
         {
             _drawOptions += " " + opt;
             return this;
-        }
-
-        /// <summary>
-        /// Return the name of this script.
-        /// </summary>
-        public string Name
-        {
-            get { InitTitleAndFileName(); return _filename; }
         }
 
         /// <summary>
@@ -171,7 +124,7 @@ namespace PlotLingoFunctionality.Plots
             public short LineColor
             {
                 get { return _p.LineColor; }
-                set { _p.LineColor = value; }
+                set { _p.LineColor = value; _p.MarkerColor = value; }
             }
 
             public short LineWidth
@@ -213,8 +166,6 @@ namespace PlotLingoFunctionality.Plots
         /// <returns></returns>
         public IEnumerable<FileInfo> Save(IScopeContext ctx, string filenameStub)
         {
-            InitTitleAndFileName();
-
             // Now, do the pre-plot hook
             foreach (var act in _prePlotHook)
             {
@@ -224,10 +175,10 @@ namespace PlotLingoFunctionality.Plots
             // Initialize the canvas
             ROOTNET.NTCanvas c = null;
             _canvasIndex++;
-            c = new ROOTNET.NTCanvas($"c{_canvasIndex}", _title);
+            c = new ROOTNET.NTCanvas($"c{_canvasIndex}", GetTitle());
 
             if (_plots.Length > 0)
-                _plots[0].Title = _title;
+                _plots[0].Title = GetTitle();
 
 
             // x and y axis titles

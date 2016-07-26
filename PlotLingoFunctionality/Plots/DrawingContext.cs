@@ -33,6 +33,34 @@ namespace PlotLingoFunctionality.Plots
         }
 
         /// <summary>
+        /// Alter the title of the canvas.
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns></returns>
+        public DrawingContext title(string title)
+        {
+            _title = title;
+            return this;
+        }
+
+        /// <summary>
+        /// Return the title.
+        /// </summary>
+        /// <returns></returns>
+        protected string GetTitle()
+        {
+            return _title;
+        }
+
+        /// <summary>
+        /// Return the name of this drawing.
+        /// </summary>
+        public string Name
+        {
+            get { InitTitleAndFileName(); return _filename; }
+        }
+
+        /// <summary>
         /// Save a property in the plot contex.
         /// </summary>
         /// <param name="name"></param>
@@ -40,6 +68,49 @@ namespace PlotLingoFunctionality.Plots
         public void SetProperty(string name, object o)
         {
             _prop[name] = o;
+        }
+
+        /// <summary>
+        /// Get the filename.
+        /// </summary>
+        private string _filename;
+
+        /// <summary>
+        /// Get the title
+        /// </summary>
+        private string _title;
+
+        /// <summary>
+        /// Init the title if it hasn't been already.
+        /// </summary>
+        private void InitTitleAndFileName()
+        {
+            if (_title == null)
+            {
+                _title = DefaultTitle();
+            }
+
+            if (_filename == null)
+            {
+                _filename = _title;
+            }
+        }
+
+        /// <summary>
+        /// Return the default title for this plot
+        /// </summary>
+        /// <returns></returns>
+        protected abstract string DefaultTitle();
+
+        /// <summary>
+        /// Alter the name of the file.
+        /// </summary>
+        /// <param name="fname"></param>
+        /// <returns></returns>
+        public DrawingContext filename(string fname)
+        {
+            _filename = fname;
+            return this;
         }
 
         /// <summary>

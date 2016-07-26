@@ -223,7 +223,7 @@ namespace PlotLingoFunctionality.Plots
                     l.SetFillColor(c.FillColor);
                     if (!opt.drawBox)
                     {
-                        l.SetLineColor(c.FillColor);
+                        l.LineColor = c.FillColor;
                     }
                 });
             }
