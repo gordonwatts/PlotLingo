@@ -61,23 +61,6 @@ namespace PlotLingoFunctionality.Plots
         }
 
         /// <summary>
-        /// List of statements that should be executed after we've built the context.
-        /// </summary>
-        private List<string> _evalLines = new List<string>();
-
-        /// <summary>
-        /// Evaluate a line after we've generated the plot. So you can run a macro
-        /// or similar.
-        /// </summary>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        public PlotContext eval(string line)
-        {
-            _evalLines.Add(line);
-            return this;
-        }
-
-        /// <summary>
         /// Atlter the y axis of the canvas.
         /// </summary>
         /// <param name="yaxisName"></param>
@@ -198,16 +181,10 @@ namespace PlotLingoFunctionality.Plots
                 optS = _drawOptions + " SAME";
             }
 
-            // Post-process any eval lines.
-            foreach (var l in _evalLines)
-            {
-                ScriptOperations.eval(ctx, l);
-            }
-
             // And post-process
             foreach (var a in _postPlotHook)
             {
-                a(this, c);
+                a(ctx, this, c);
             }
 
             // Save it

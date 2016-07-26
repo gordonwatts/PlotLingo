@@ -1,4 +1,5 @@
 ﻿using PlotLingoLib;
+using PlotLingoLib.Functions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -164,7 +165,7 @@ namespace PlotLingoFunctionality.Plots
         /// <summary>
         /// Track all the things we should call once the plotting is, basically, done.
         /// </summary>
-        protected List<Action<DrawingContext, ROOTNET.Interface.NTCanvas>> _postPlotHook = new List<Action<DrawingContext, ROOTNET.Interface.NTCanvas>>();
+        protected List<Action<IScopeContext, DrawingContext, ROOTNET.Interface.NTCanvas>> _postPlotHook = new List<Action<IScopeContext, DrawingContext, ROOTNET.Interface.NTCanvas>>();
 
         /// <summary>
         /// Add a pre-plot hook
@@ -188,9 +189,21 @@ namespace PlotLingoFunctionality.Plots
         /// Add a hook to be called after the basic plotting is done.
         /// </summary>
         /// <param name="act"></param>
-        public void AddPostplotHook(Action<DrawingContext, ROOTNET.Interface.NTCanvas> act)
+        public void AddPostplotHook(Action<IScopeContext, DrawingContext, ROOTNET.Interface.NTCanvas> act)
         {
             _postPlotHook.Add(act);
+        }
+
+        /// <summary>
+        /// Evaluate a line after we've generated the plot. So you can run a macro
+        /// or similar.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public DrawingContext eval(string line)
+        {
+            AddPostplotHook((ctx, drawctx, canvas) => ScriptOperations.eval(ctx, line));
+            return this;
         }
     }
 }

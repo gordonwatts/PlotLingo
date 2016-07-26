@@ -73,7 +73,7 @@ namespace PlotLingoFunctionality.Plots
                 ctx.SetProperty("TextList", plotTextInfo);
 
                 // Make sure that the text will get drawn at the appropriate time.
-                ctx.AddPostplotHook((mctx, canv) => DrawText(canv, plotTextInfo));
+                ctx.AddPostplotHook((sctx, mctx, canv) => DrawText(canv, plotTextInfo));
             }
 
             // Now, save the new text.

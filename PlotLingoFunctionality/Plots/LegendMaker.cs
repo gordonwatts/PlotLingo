@@ -217,7 +217,7 @@ namespace PlotLingoFunctionality.Plots
                 }
 
                 // Plot it when we have a canvas to plot it against when the plot is actually drawn.
-                ctx.AddPostplotHook((mctx, c) =>
+                ctx.AddPostplotHook((thectx, mctx, c) =>
                 {
                     l.Draw();
                     l.SetFillColor(c.FillColor);

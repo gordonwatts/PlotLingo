@@ -140,7 +140,7 @@ namespace PlotLingoFunctionality.Plots
             // Post plot actions
             foreach (var ph in _postPlotHook)
             {
-                ph(this, c);
+                ph(ctx, this, c);
             }
 
             // Save it
