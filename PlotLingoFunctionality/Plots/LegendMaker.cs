@@ -204,6 +204,7 @@ namespace PlotLingoFunctionality.Plots
 
                 // Create the legend box
                 var l = new ROOTNET.NTLegend(xmin, ymin, xmax, ymax);
+                l.SetBorderSize(0);
                 foreach (var p in ctx.ObjectsToDraw)
                 {
                     foreach (var legInfo in _legendInfo)
