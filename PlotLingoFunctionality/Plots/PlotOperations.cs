@@ -187,7 +187,7 @@ namespace PlotLingoFunctionality.Plots
         /// </remarks>
         public static ROOTNET.Interface.NTH2 asEfficiency(IScopeContext ctx, ROOTNET.Interface.NTH2 plot, bool xCutGreaterThan = true, bool yCutGreaterThan = true)
         {
-            var result = plot.Clone() as ROOTNET.Interface.NTH2; ;
+            var result = plot.Clone() as ROOTNET.Interface.NTH2;
             Tags.CopyTags(ctx, plot, result);
 
             var xBins = plot.Xaxis.Nbins;
