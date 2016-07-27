@@ -78,16 +78,27 @@ namespace PlotLingoLib
         /// Parse an integer value
         /// </summary>
         private static readonly Parser<IExpression> IntegerValueParser =
+            from neg in Parse.Char('-').Optional()
             from dg in Parse.Digit.AtLeastOnce().Text().Token()
-            select new IntegerValue(Int32.Parse(dg));
+            let n = Int32.Parse(dg)
+            select new IntegerValue(neg.IsEmpty ? n : -n);
 
         /// <summary>
-        /// Parse a double value
+        /// Parse a double value (possibly negative).
         /// </summary>
         private static readonly Parser<IExpression> DoubleValueParser =
-            (from d in Dot from n in Parse.Number select new DoubleValue(double.Parse("." + n)))
-            .Or(from n1 in Parse.Number from d in Dot from n2 in Parse.Number select new DoubleValue(double.Parse(n1 + "." + n2)))
-            .Or(from n in Parse.Number from d in Dot select new DoubleValue(double.Parse(n)))
+            from neg in Parse.Char('-').Optional()
+            from ws in Parse.WhiteSpace.Many()
+            from number in DoubleValueParserCore
+            select new DoubleValue(neg.IsEmpty ? number : -number);
+
+        /// <summary>
+        /// Parse the numbers in a double value.
+        /// </summary>
+        private static readonly Parser<double> DoubleValueParserCore =
+            (from d in Dot from n in Parse.Number select double.Parse("." + n))
+            .Or(from n1 in Parse.Number from d in Dot from n2 in Parse.Number select double.Parse(n1 + "." + n2))
+            .Or(from n in Parse.Number from d in Dot select double.Parse(n))
             ;
 
         /// <summary>

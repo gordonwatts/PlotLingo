@@ -471,6 +471,26 @@ namespace PlotLingoLibTest
         }
 
         [TestMethod]
+        public void TestValueNegativeInteger()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("-5;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("-5;", r[0].ToString(), "Result of the expression");
+        }
+
+        [TestMethod]
+        public void TestValueNegativeIntegerWhiteSpace()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("- 5;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("-5;", r[0].ToString(), "Result of the expression");
+        }
+
+        [TestMethod]
         public void TestValueDouble()
         {
             var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("5.5;");
@@ -478,6 +498,26 @@ namespace PlotLingoLibTest
             Assert.AreEqual(1, r.Length, "# of statements");
             Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
             Assert.AreEqual("5.5;", r[0].ToString(), "Result of the expression");
+        }
+
+        [TestMethod]
+        public void TestNegativeValueDouble()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("-5.5;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("-5.5;", r[0].ToString(), "Result of the expression");
+        }
+
+        [TestMethod]
+        public void TestNegativeValueDoubleWithWhitespace()
+        {
+            var r = PlotLingoLib.Grammar.ModuleParser.End().Parse("- 5.5;");
+            Assert.IsNotNull(r);
+            Assert.AreEqual(1, r.Length, "# of statements");
+            Assert.IsInstanceOfType(r[0], typeof(ExpressionStatement), "expr statement");
+            Assert.AreEqual("-5.5;", r[0].ToString(), "Result of the expression");
         }
 
         [TestMethod]
