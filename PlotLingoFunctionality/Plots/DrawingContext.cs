@@ -205,5 +205,22 @@ namespace PlotLingoFunctionality.Plots
             AddPostplotHook((ctx, drawctx, canvas) => ScriptOperations.eval(ctx, line));
             return this;
         }
+
+        /// <summary>
+        /// Drawing options
+        /// </summary>
+        protected string _drawOptions = "";
+
+        /// <summary>
+        /// Add a draw option
+        /// </summary>
+        /// <param name="opt"></param>
+        /// <returns></returns>
+        public DrawingContext addDrawOption(string opt)
+        {
+            _drawOptions += " " + opt;
+            return this;
+        }
+
     }
 }

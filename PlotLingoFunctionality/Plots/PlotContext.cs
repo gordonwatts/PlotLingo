@@ -40,11 +40,6 @@ namespace PlotLingoFunctionality.Plots
         private string _xaxisTitle = null;
 
         /// <summary>
-        /// Drawing options
-        /// </summary>
-        private string _drawOptions = "";
-
-        /// <summary>
         /// Get the default title for this plot.
         /// </summary>
         /// <returns></returns>
@@ -79,17 +74,6 @@ namespace PlotLingoFunctionality.Plots
         public PlotContext xaxis(string xaxisName)
         {
             _xaxisTitle = xaxisName;
-            return this;
-        }
-
-        /// <summary>
-        /// Add a draw option
-        /// </summary>
-        /// <param name="opt"></param>
-        /// <returns></returns>
-        public PlotContext addDrawOption(string opt)
-        {
-            _drawOptions += " " + opt;
             return this;
         }
 

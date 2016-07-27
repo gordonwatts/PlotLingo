@@ -122,7 +122,7 @@ namespace PlotLingoFunctionality.Plots
             c.Logy = _logy ? 1 : 0;
 
             // Plot everything.
-            var optS = "";
+            var optS = _drawOptions;
             foreach (var p in _g)
             {
                 if (!string.IsNullOrWhiteSpace(_xaxisTitle))
@@ -134,7 +134,7 @@ namespace PlotLingoFunctionality.Plots
                     p.Yaxis.Title = _yaxisTitle;
                 }
                 p.Draw(optS);
-                optS = "SAME";
+                optS = _drawOptions + "SAME";
             }
 
             // Post plot actions
