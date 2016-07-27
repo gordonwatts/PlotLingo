@@ -297,6 +297,7 @@ namespace PlotLingoFunctionality.Plots
             // Next, draw them in a graph.
             var pts = numberPairs.ToArray();
             var graf = new ROOTNET.NTGraph(pts.Length, pts.Select(p => p.Item1).ToArray(), pts.Select(p => p.Item2).ToArray());
+            graf.FillColor = 0; // Make sure the background is white
 
             // Track tags for the signal (assuming the background is "common"), and track everything else.
             Tags.CopyTags(ctx, signal, graf);
