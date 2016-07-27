@@ -55,7 +55,7 @@ namespace PlotLingoFunctionality.Plots
             public short LineColor
             {
                 get { return _g.LineColor; }
-                set { _g.LineColor = value; }
+                set { _g.LineColor = value; _g.MarkerColor = value; }
             }
 
             public short LineWidth
@@ -122,7 +122,7 @@ namespace PlotLingoFunctionality.Plots
             c.Logy = _logy ? 1 : 0;
 
             // Plot everything.
-            var optS = _drawOptions;
+            var optS = _drawOptions + "A";
             foreach (var p in _g)
             {
                 if (!string.IsNullOrWhiteSpace(_xaxisTitle))
@@ -134,7 +134,7 @@ namespace PlotLingoFunctionality.Plots
                     p.Yaxis.Title = _yaxisTitle;
                 }
                 p.Draw(optS);
-                optS = _drawOptions + "SAME";
+                optS = _drawOptions;
             }
 
             // Post plot actions
