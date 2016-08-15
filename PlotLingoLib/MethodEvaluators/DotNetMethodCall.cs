@@ -53,8 +53,39 @@ namespace PlotLingoLib.MethodEvaluators
                     .Select(a => a.HasDefaultValue ? a.DefaultValue : null);
                 allArgs = args.Concat(defaultArgs).ToArray();
             }
-            var r = funcs[0].Invoke(obj, allArgs);
+
+            // Finally, any required argument conversions
+            var convertedArgs = allArgs.Zip(method.GetParameters(), (givenArg, requiredParam) => Tuple.Create(givenArg, requiredParam.ParameterType))
+                .Select(tpair => ConvertArgument(tpair.Item1, tpair.Item2))
+                .ToArray();
+
+            // And do the actual call.
+            var r = funcs[0].Invoke(obj, convertedArgs);
             return new Tuple<bool, object>(true, r);
+        }
+
+        /// <summary>
+        /// If required, convert the argument.
+        /// </summary>
+        /// <param name="argValue"></param>
+        /// <param name="requiredType"></param>
+        /// <returns></returns>
+        private object ConvertArgument(object argValue, Type requiredType)
+        {
+            if (requiredType == argValue.GetType())
+            {
+                return argValue;
+            }
+
+            // The few conversions we know how to do.
+            if (requiredType == typeof(short) && argValue.GetType() == typeof(int))
+            {
+                return (short) ((int) argValue);
+            }
+
+            // Oh no!
+            //throw new NotImplementedException($"Do not know how to convert an argument of type {argValue.GetType().Name} to {requiredType.Name}!");
+            return argValue;
         }
 
         /// <summary>

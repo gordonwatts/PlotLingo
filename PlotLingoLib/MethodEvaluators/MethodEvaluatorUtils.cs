@@ -32,12 +32,32 @@ namespace PlotLingoLib.MethodEvaluators
                     .Concat(pInfo.Skip(args.Length).Select(a => a.ParameterType)).ToArray();
             }
 
-            var method = callingType.GetMethod(m.Name, allTypes);
-            if (method == null)
-                return null;
+            // Next, lets look at the various types and see if we can make this match
+            var matchedAllTypes = allTypes.Zip(pInfo, (given, required) => Tuple.Create(given, required))
+                .Select(tpair => tpair.Item1 == tpair.Item2.ParameterType
+                                ? tpair.Item1
+                                : ConversionType(tpair.Item1, tpair.Item2.ParameterType))
+                .ToArray();       
+
+            var method = callingType.GetMethod(m.Name, matchedAllTypes);
 
             // Return the method. This could be from a generic class that has now been made non-generic.
             return method;
+        }
+
+        /// <summary>
+        /// Type isn't quit right - but perhaps we can do a conversion?
+        /// </summary>
+        /// <param name="original"></param>
+        /// <param name="desired"></param>
+        /// <returns></returns>
+        private static Type ConversionType(Type original, Type desired)
+        {
+            if (original == typeof(int) && desired == typeof(short))
+            {
+                return typeof(short);
+            }
+            return original;
         }
 
         /// <summary>

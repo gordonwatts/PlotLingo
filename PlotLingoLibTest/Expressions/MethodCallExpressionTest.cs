@@ -37,6 +37,17 @@ namespace PlotLingoLibTest.Expressions
         }
 
         [TestMethod]
+        public void CallWithConversion()
+        {
+            var ctx = new RootContext();
+            ctx.SetVariableValue("p", new testClass());
+            var s = new IntegerValue(5);
+            var mc = new MethodCallExpression(new VariableValue("p"), new FunctionExpression("CallWithShort", s));
+            var r = mc.Evaluate(ctx);
+            Assert.AreEqual("5", r);
+        }
+
+        [TestMethod]
         public void TestCallOneArg()
         {
             var ctx = new RootContext();
@@ -468,6 +479,11 @@ namespace PlotLingoLibTest.Expressions
             public string TwoArgumentMethod(string arg, int j)
             {
                 return arg + j.ToString();
+            }
+
+            public string CallWithShort(short i)
+            {
+                return i.ToString();
             }
         }
 
