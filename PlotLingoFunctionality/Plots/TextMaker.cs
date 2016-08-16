@@ -26,6 +26,11 @@ namespace PlotLingoFunctionality.Plots
             public double _absX = 0.0, _absY = 0.0;
 
             /// <summary>
+            /// How much to scale the text by?
+            /// </summary>
+            public double _scale = 1.0;
+
+            /// <summary>
             /// Configure ourselves from options
             /// </summary>
             /// <param name="options"></param>
@@ -46,6 +51,10 @@ namespace PlotLingoFunctionality.Plots
                             case "y":
                                 _absY = (double)opt.Value;
                                 _absoluteLocation = true;
+                                break;
+
+                            case "scale":
+                                _scale = (double)opt.Value;
                                 break;
 
                             default:
@@ -88,6 +97,7 @@ namespace PlotLingoFunctionality.Plots
         private class nextPlotLocation
         {
             public double _x = 0.2, _y = 0.2;
+            public double _scale = 1.0;
 
             public void matchToUserRequest(textInfo info)
             {
@@ -96,6 +106,7 @@ namespace PlotLingoFunctionality.Plots
                     _x = info._absX;
                     _y = info._absY;
                 }
+                _scale = info._scale;
             }
         }
 
@@ -111,7 +122,8 @@ namespace PlotLingoFunctionality.Plots
             foreach (var t in plotTextInfo)
             {
                 loc.matchToUserRequest(t);
-                var tbox = new ROOTNET.NTText(loc._x, loc._y, t._text);
+                var tbox = new ROOTNET.NTLatex(loc._x, loc._y, t._text);
+                tbox.TextSize *= (float) loc._scale;
                 tbox.NDC = true;
                 tbox.Draw();
                 loc._y -= tbox.TextSize;
