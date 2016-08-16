@@ -121,6 +121,15 @@ namespace PlotLingoFunctionality.Plots
             c.Logx = _logx ? 1 : 0;
             c.Logy = _logy ? 1 : 0;
 
+            // Get the plot maximum
+            bool setMaximum = false;
+            double graphMax = 0.0;
+            if (_maxIsSet)
+            {
+                setMaximum = true;
+                graphMax = _plotMaximum;
+            }
+
             // Plot everything.
             var optS = _drawOptions + "A";
             foreach (var p in _g)
@@ -133,6 +142,11 @@ namespace PlotLingoFunctionality.Plots
                 {
                     p.Yaxis.Title = _yaxisTitle;
                 }
+                if (setMaximum)
+                {
+                    p.Maximum = graphMax;
+                }
+
                 p.Draw(optS);
                 optS = _drawOptions;
                 p.Title = GetTitle();

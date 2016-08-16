@@ -98,6 +98,28 @@ namespace PlotLingoFunctionality.Plots
         }
 
         /// <summary>
+        /// True if the user has requested a plot maximum to override everything else.
+        /// </summary>
+        protected bool _maxIsSet = false;
+
+        /// <summary>
+        /// The requested plot maximum.
+        /// </summary>
+        protected double _plotMaximum = 0.0;
+
+        /// <summary>
+        /// Set the y axis maximum
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public DrawingContext maximum(double value)
+        {
+            _maxIsSet = true;
+            _plotMaximum = value;
+            return this;
+        }
+
+        /// <summary>
         /// Return the default title for this plot
         /// </summary>
         /// <returns></returns>
