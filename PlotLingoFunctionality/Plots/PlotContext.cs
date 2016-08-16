@@ -162,7 +162,7 @@ namespace PlotLingoFunctionality.Plots
             foreach (var p in _plots)
             {
                 p.Draw(optS);
-                optS = _drawOptions + " SAME";
+                optS = _drawOptions + "SAME";
             }
 
             // And post-process
