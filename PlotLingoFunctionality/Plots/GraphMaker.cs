@@ -29,7 +29,7 @@ namespace PlotLingoFunctionality.Plots
         /// <param name="upper">The upper line</param>
         /// <param name="lower">The lower line</param>
         /// <returns></returns>
-        public static ROOTNET.NTGraph pave(IScopeContext ctx, ROOTNET.NTH1 central, ROOTNET.NTH1 upper, ROOTNET.NTH1 lower)
+        public static ROOTNET.NTGraph pave(IScopeContext ctx, ROOTNET.NTH1 central, ROOTNET.NTH1 upper, ROOTNET.NTH1 lower, IDictionary<object, object> options = null)
         {
             // Make sure we are ready to go!
             if (central.NbinsX != upper.NbinsX
@@ -38,21 +38,48 @@ namespace PlotLingoFunctionality.Plots
                 throw new ArgumentException($"Can't make pave with (central: {central.Name}, upper: {upper.Name}, lower: {lower.Name}) as they don't all have the same binning!");
             }
 
+            // Parse the options, if there are any!
+            var minXValue = central.GetBinLowEdge(1);
+            foreach (var opt in options.Keys.Cast<string>())
+            {
+                if (opt == "xmin")
+                {
+                    minXValue = (double)options[opt];
+                } else
+                {
+                    throw new ArgumentException($"pave: Illegial option '{opt}' - only know xmin for creating a pave.");
+                }
+            }
+
+            // loop through each point and set it.
+            var points = new List<Tuple<double, double, double, double>>();
+            for (int idx = 0; idx < central.NbinsX; idx++)
+            {
+                if (central.GetBinCenter(idx+1) >= minXValue)
+                {
+                    points.Add(Tuple.Create(central.GetBinCenter(idx + 1),
+                        central.GetBinContent(idx + 1),
+                        upper.GetBinContent(idx + 1) - central.GetBinContent(idx + 1),
+                        central.GetBinContent(idx + 1) - lower.GetBinContent(idx + 1)));
+                }
+            }
+
             // Create the graph, use the central object to setup meta data.
-            // Don't copy tags as they may get used for other things.
-            var g = new ROOTNET.NTGraphAsymmErrors(central.NbinsX);
+            // Don't copy tags as what this pave is may be different from what the original
+            // histograms were.
+            var g = new ROOTNET.NTGraphAsymmErrors(points.Count);
             g.Name = $"{central.Name}_g";
             g.Title = central.Title;
 
-            // loop through each point and set it.
-            for (int idx = 0; idx < central.NbinsX; idx++)
+            for (int i_bin = 0; i_bin < points.Count; i_bin++)
             {
-                g.SetPoint(idx, central.GetBinCenter(idx + 1), central.GetBinContent(idx + 1));
-                g.SetPointEYhigh(idx, upper.GetBinContent(idx + 1) - central.GetBinContent(idx + 1));
-                g.SetPointEYlow(idx, central.GetBinContent(idx + 1) - lower.GetBinContent(idx + 1));
+                var val = points[i_bin];
+                g.SetPoint(i_bin, val.Item1, val.Item2);
+                g.SetPointEYhigh(i_bin, val.Item3);
+                g.SetPointEYlow(i_bin, val.Item4);
             }
-            
-            // Wrap it in a context and go!
+
+            // Done!
             return g;
         }
 
