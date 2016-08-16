@@ -39,10 +39,10 @@ namespace PlotLingoFunctionality.Plots
             }
 
             // Create the graph, use the central object to setup meta data.
+            // Don't copy tags as they may get used for other things.
             var g = new ROOTNET.NTGraphAsymmErrors(central.NbinsX);
             g.Name = $"{central.Name}_g";
             g.Title = central.Title;
-            Tags.CopyTags(ctx, central, g);
 
             // loop through each point and set it.
             for (int idx = 0; idx < central.NbinsX; idx++)
