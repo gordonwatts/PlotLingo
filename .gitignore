@@ -172,3 +172,5 @@ start_PlotLingo.bat
 
 # And things having to do with docs
 site/**
+PlotLingo.VC.db
+*.opendb
