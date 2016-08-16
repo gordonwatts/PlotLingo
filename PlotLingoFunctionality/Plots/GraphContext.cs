@@ -135,6 +135,7 @@ namespace PlotLingoFunctionality.Plots
                 }
                 p.Draw(optS);
                 optS = _drawOptions;
+                p.Title = GetTitle();
             }
 
             // Post plot actions
