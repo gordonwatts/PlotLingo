@@ -136,6 +136,7 @@ namespace PlotLingoFunctionality.Plots
         public static ROOTNET.NTGraph ConvertHistoToGraph(this ROOTNET.NTH1 histo, IScopeContext ctx)
         {
             var g = new ROOTNET.NTGraph(histo.NbinsX);
+            g.FillColor = 0; // Make sure the background is white
 
             // Copy meta-data.
             Tags.CopyTags(ctx, histo, g);
