@@ -112,6 +112,7 @@ namespace PlotLingoFunctionality.Plots
             public WhereToPlaceLegend placement = WhereToPlaceLegend.UpperRight;
             public bool drawBox = true;
             public double scale = 1.0;
+            public int fillStyle = 0;
         }
 
         /// <summary>
@@ -235,6 +236,7 @@ namespace PlotLingoFunctionality.Plots
                 {
                     l.Draw();
                     l.SetFillColor(c.FillColor);
+                    l.FillStyle = (short) opt.fillStyle;
                     if (!opt.drawBox)
                     {
                         l.LineColor = c.FillColor;
