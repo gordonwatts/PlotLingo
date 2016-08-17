@@ -100,6 +100,12 @@ namespace PlotLingoFunctionality.Plots
                 set { _p.LineWidth = value; }
             }
 
+            public short LineStyle
+            {
+                get { return _p.LineStyle; }
+                set { _p.LineStyle = value; }
+            }
+
             public NTObject NTObject
             {
                 get { return _p; }

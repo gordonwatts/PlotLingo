@@ -22,6 +22,11 @@ namespace PlotLingoFunctionality.Plots
             /// The color for this legend
             /// </summary>
             public int Color;
+
+            /// <summary>
+            /// The line style for this legend
+            /// </summary>
+            public int LineStyle;
         }
 
         /// <summary>
@@ -73,11 +78,19 @@ namespace PlotLingoFunctionality.Plots
                         else
                         {
                             linfo.Color = (int)dict["Color"];
-                            if (dict.ContainsKey("Title"))
-                            {
-                                linfo.Title = (string)dict["Title"];
-                            }
                         }
+
+                        if (dict.ContainsKey("Title"))
+                        {
+                            linfo.Title = (string)dict["Title"];
+                        }
+
+                        linfo.LineStyle = 1;
+                        if (dict.ContainsKey("LineStyle"))
+                        {
+                            linfo.LineStyle = (int)dict["LineStyle"];
+                        }
+
                         _legendInfo[s] = linfo;
                     }
                     else
@@ -163,6 +176,7 @@ namespace PlotLingoFunctionality.Plots
                     if (p.Title.IndexOf(legInfo.Key) >= 0 || p.hasTag(codeContext, legInfo.Key))
                     {
                         p.LineColor = (short)legInfo.Value.Color;
+                        p.LineStyle = (short)legInfo.Value.LineStyle;
                         letterLength = Math.Max(letterLength, legInfo.Value.Title.Length);
                         count++;
                     }

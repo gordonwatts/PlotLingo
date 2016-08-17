@@ -157,6 +157,11 @@ namespace PlotLingoFunctionality.Plots
             short LineWidth { get; set; }
 
             /// <summary>
+            /// Get/Set the line drawing style
+            /// </summary>
+            short LineStyle { get; set; }
+
+            /// <summary>
             /// Return true if the object we are holding has this tag.
             /// </summary>
             /// <param name="ctx"></param>
