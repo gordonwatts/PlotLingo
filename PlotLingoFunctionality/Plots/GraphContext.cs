@@ -84,6 +84,15 @@ namespace PlotLingoFunctionality.Plots
             {
                 return Tags.hasTag(ctx, _g, tagname);
             }
+
+            /// <summary>
+            /// Get and set default drawing options
+            /// </summary>
+            public string DrawingOptions
+            {
+                get { return _g.DrawOption; }
+                set { _g.SetDrawOption(value); }
+            }
         }
 
         /// <summary>

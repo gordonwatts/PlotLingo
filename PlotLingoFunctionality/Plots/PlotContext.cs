@@ -120,6 +120,16 @@ namespace PlotLingoFunctionality.Plots
             {
                 return Tags.hasTag(ctx, _p, tagname);
             }
+
+            /// <summary>
+            /// Get and set default drawing options
+            /// </summary>
+            public string DrawingOptions
+            {
+                get { return _p.Option; }
+                set { _p.Option = value; }
+            }
+
         }
 
         /// <summary>
@@ -167,7 +177,8 @@ namespace PlotLingoFunctionality.Plots
             var optS = _drawOptions;
             foreach (var p in _plots)
             {
-                p.Draw(optS);
+                var perHistoOps = p.Option;
+                p.Draw(optS + " " + perHistoOps);
                 optS = _drawOptions + "SAME";
             }
 

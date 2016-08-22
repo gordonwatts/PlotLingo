@@ -40,5 +40,23 @@ namespace PlotLingoFunctionality.Plots
             ctx.AddPostplotHook((ssct, myctx, canvas) => { canvas.SetCanvasSize((uint) width, (uint) height); });
             return ctx;
         }
+
+        public static DrawingContext drawingOptionAfter(IScopeContext c, DrawingContext ctx, int nskip, string options)
+        {
+            ctx.AddPreplotHook(dc =>
+            {
+                int count = 0;
+                foreach (var p in dc.ObjectsToDraw)
+                {
+                    count++;
+                    if (count > nskip)
+                    {
+                        p.DrawingOptions += " " + options;
+                    }
+                }
+            });
+
+            return ctx;
+        }
     }
 }

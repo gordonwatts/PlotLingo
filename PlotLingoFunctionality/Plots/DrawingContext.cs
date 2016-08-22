@@ -173,6 +173,11 @@ namespace PlotLingoFunctionality.Plots
             /// Get the nt object if needed.
             /// </summary>
             ROOTNET.Interface.NTObject NTObject { get; }
+
+            /// <summary>
+            /// Get/Set the drawing options for the object
+            /// </summary>
+            string DrawingOptions { get; set; }
         }
 
         /// <summary>
