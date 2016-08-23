@@ -28,6 +28,23 @@ namespace PlotLingoFunctionality.Plots
             return clone;
         }
 
+
+        /// <summary>
+        /// Divide one histogram by another
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="hNumerator"></param>
+        /// <param name="hDenomenator"></param>
+        /// <returns></returns>
+        public static ROOTNET.Interface.NTH1 OperatorMinus(IScopeContext ctx, ROOTNET.Interface.NTH1 left, ROOTNET.Interface.NTH1 right)
+        {
+            var clone = left.Clone() as ROOTNET.Interface.NTH1;
+            clone.Add(right, -1.0);
+            Tags.CopyTags(ctx, left, clone);
+            Tags.CopyTags(ctx, right, clone);
+            return clone;
+        }
+
         /// <summary>
         /// Scale the contents of a histogram up or down.
         /// </summary>
