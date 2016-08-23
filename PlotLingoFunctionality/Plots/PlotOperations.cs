@@ -400,5 +400,32 @@ namespace PlotLingoFunctionality.Plots
                 return Enumerable.Range(0, first+1).Reverse();
             }
         }
+
+        /// <summary>
+        /// Create a plot out of a single ratio point.
+        /// </summary>
+        /// <param name="template"></param>
+        /// <param name="xpos"></param>
+        /// <param name="numerator"></param>
+        /// <param name="denominator"></param>
+        /// <returns></returns>
+        public static NTH1 ratioPointAsPlot (NTH1 template, double xpos, double numerator, double denominator)
+        {
+            // Make a clone, and zero it out.
+            var hNum = template.Clone() as NTH1;
+            hNum.Reset();
+            var hDen = hNum.Clone() as NTH1;
+
+            // Now, do the division
+            var index = hNum.FindBin(xpos);
+            hNum.SetBinContent(index, numerator);
+            hNum.SetBinError(index, Math.Sqrt(numerator));
+            hDen.SetBinContent(index, denominator);
+            hDen.SetBinError(index, Math.Sqrt(denominator));
+
+            hNum.Divide(hDen);
+
+            return hNum;
+        }
     }
 }
