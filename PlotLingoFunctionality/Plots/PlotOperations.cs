@@ -444,5 +444,38 @@ namespace PlotLingoFunctionality.Plots
 
             return hNum;
         }
+
+        /// <summary>
+        /// Returna plot that has as its content its value divided by its error, and zero errors.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static NTH1 asSigma(IScopeContext ctx, NTH1 plot)
+        {
+            var result = plot.Clone() as NTH1;
+            Tags.CopyTags(ctx, plot, result);
+
+            result.Reset();
+
+            // Besure to do the overflow bins as well.
+            for (int i_bin_x = 0; i_bin_x < result.NbinsX+2; i_bin_x++)
+            {
+                for (int i_bin_y = 0; i_bin_y < result.NbinsY+2; i_bin_y++)
+                {
+                    for (int i_bin_z = 0; i_bin_z < result.NbinsZ+2; i_bin_z++)
+                    {
+                        var v = plot.GetBinContent(i_bin_x, i_bin_y, i_bin_z);
+                        var e = plot.GetBinError(i_bin_x, i_bin_y, i_bin_z);
+
+                        var sig = e == 0 ? 0.0 : v / e;
+                        result.SetBinContent(i_bin_x, i_bin_y, i_bin_z, sig);
+                    }
+                }
+            }
+
+            return result;
+
+        }
     }
 }
