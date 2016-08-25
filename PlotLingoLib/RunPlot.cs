@@ -106,9 +106,11 @@ namespace PlotLingoLib
                 }
                 catch (IOException e)
                 {
-                    Console.WriteLine("Failed: {0}", e.Message);
-                    i--;
-                    Thread.Sleep(10);
+                    if (i == 9)
+                    {
+                        Console.WriteLine("Failed (9 times): {0}", e.Message);
+                    }
+                    Thread.Sleep(50);
                 }
             return null;
         }
