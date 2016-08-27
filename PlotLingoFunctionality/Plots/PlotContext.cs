@@ -177,6 +177,15 @@ namespace PlotLingoFunctionality.Plots
             var optS = _drawOptions;
             foreach (var p in _plots)
             {
+                if (_maxIsSet)
+                {
+                    p.Maximum = _plotMaximum;
+                }
+                if (_minIsSet)
+                {
+                    p.Minimum = _plotMinimum;
+                }
+
                 var perHistoOps = p.Option;
                 p.Draw(optS + " " + perHistoOps);
                 optS = _drawOptions + "SAME";

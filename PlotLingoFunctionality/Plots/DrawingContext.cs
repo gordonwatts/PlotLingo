@@ -107,6 +107,10 @@ namespace PlotLingoFunctionality.Plots
         /// </summary>
         protected double _plotMaximum = 0.0;
 
+        protected bool _minIsSet = false;
+
+        protected double _plotMinimum = 0.0;
+
         /// <summary>
         /// Set the y axis maximum
         /// </summary>
@@ -116,6 +120,19 @@ namespace PlotLingoFunctionality.Plots
         {
             _maxIsSet = true;
             _plotMaximum = value;
+            return this;
+        }
+
+        /// <summary>
+        /// Set a plot minimum.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public DrawingContext minimum(double value)
+        {
+            _minIsSet = true;
+            _plotMinimum = value;
+
             return this;
         }
 
