@@ -106,6 +106,12 @@ namespace PlotLingoFunctionality.Plots
                 set { _p.LineStyle = value; }
             }
 
+            public short MarkerStyle
+            {
+                get { return _p.MarkerStyle; }
+                set { _p.MarkerStyle = value; }
+            }
+
             public NTObject NTObject
             {
                 get { return _p; }

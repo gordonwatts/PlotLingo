@@ -64,6 +64,12 @@ namespace PlotLingoFunctionality.Plots
                 set { _g.LineStyle = value; }
             }
 
+            public short MarkerStyle
+            {
+                get { return _g.MarkerStyle; }
+                set { _g.MarkerStyle = value; }
+            }
+
             public short LineWidth
             {
                 get { return _g.LineWidth; }

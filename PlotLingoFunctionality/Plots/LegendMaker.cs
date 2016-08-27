@@ -27,6 +27,11 @@ namespace PlotLingoFunctionality.Plots
             /// The line style for this legend
             /// </summary>
             public int LineStyle;
+
+            /// <summary>
+            /// What marker should be used? 1 for a dot, which is marker at all.
+            /// </summary>
+            public int MarkerStyle;
         }
 
         /// <summary>
@@ -89,6 +94,12 @@ namespace PlotLingoFunctionality.Plots
                         if (dict.ContainsKey("LineStyle"))
                         {
                             linfo.LineStyle = (int)dict["LineStyle"];
+                        }
+
+                        linfo.MarkerStyle = 1;
+                        if (dict.ContainsKey("MarkerStyle"))
+                        {
+                            linfo.MarkerStyle = (int)dict["MarkerStyle"];
                         }
 
                         _legendInfo[s] = linfo;
@@ -178,6 +189,7 @@ namespace PlotLingoFunctionality.Plots
                     {
                         p.LineColor = (short)legInfo.Value.Color;
                         p.LineStyle = (short)legInfo.Value.LineStyle;
+                        p.MarkerStyle = (short)legInfo.Value.MarkerStyle;
                         letterLength = Math.Max(letterLength, legInfo.Value.Title.Length);
                         count++;
                     }

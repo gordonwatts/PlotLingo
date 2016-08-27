@@ -179,6 +179,11 @@ namespace PlotLingoFunctionality.Plots
             short LineStyle { get; set; }
 
             /// <summary>
+            /// Marker style to use in a plot.
+            /// </summary>
+            short MarkerStyle { get; set; }
+
+            /// <summary>
             /// Return true if the object we are holding has this tag.
             /// </summary>
             /// <param name="ctx"></param>
