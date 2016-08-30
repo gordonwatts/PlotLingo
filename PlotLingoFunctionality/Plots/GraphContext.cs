@@ -151,6 +151,10 @@ namespace PlotLingoFunctionality.Plots
                 graphMax = _plotMaximum;
             }
 
+            // Do the plot minimum
+            bool setMinimum = _minIsSet;
+            var graphMin = setMaximum ? _plotMinimum : 0.0;
+
             // Plot everything.
             var optS = _drawOptions + "A";
             foreach (var p in _g)
@@ -166,6 +170,10 @@ namespace PlotLingoFunctionality.Plots
                 if (setMaximum)
                 {
                     p.Maximum = graphMax;
+                }
+                if (setMinimum)
+                {
+                    p.Minimum = graphMin;
                 }
 
                 p.Draw(optS);
