@@ -7,7 +7,7 @@ using System.Linq;
 namespace PlotLingoLib.Functions
 {
     [Export(typeof(IFunctionObject))]
-    class ListOperations : IFunctionObject
+    public class ListOperations : IFunctionObject
     {
         /// <summary>
         /// Add the values up!
@@ -25,6 +25,28 @@ namespace PlotLingoLib.Functions
                 return fo.Evaluate(tmp);
             });
             return r;
+        }
+
+        /// <summary>
+        /// If any objects are arrays, lift them. Do this only one level down.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static IEnumerable<object> flatten(IEnumerable<object> input)
+        {
+            foreach (var o in input)
+            {
+                var asEnumerable = o as IEnumerable<object>;
+                if (asEnumerable == null)
+                {
+                    yield return o;
+                }
+
+                foreach (var o1 in asEnumerable)
+                {
+                    yield return o1;
+                }
+            }
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using PlotLingoLib;
+using PlotLingoLib.Functions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -95,7 +96,7 @@ namespace PlotLingoFunctionality.Plots
         /// <returns></returns>
         public static GraphContext draw(IScopeContext ctx, IEnumerable<object> plotList)
         {
-            return new GraphContext(plotList.ConvertToTGraph(ctx).ToArray());
+            return new GraphContext(ListOperations.flatten(plotList).ConvertToTGraph(ctx).ToArray());
         }
     }
 
