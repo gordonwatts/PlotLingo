@@ -32,6 +32,11 @@ namespace PlotLingoFunctionality.Plots
             /// What marker should be used? 1 for a dot, which is marker at all.
             /// </summary>
             public int MarkerStyle;
+
+            /// <summary>
+            /// Set to true if this entry should be removed in the legend.
+            /// </summary>
+            public bool LeaveOut { get; set; }
         }
 
         /// <summary>
@@ -88,6 +93,12 @@ namespace PlotLingoFunctionality.Plots
                         if (dict.ContainsKey("Title"))
                         {
                             linfo.Title = (string)dict["Title"];
+                        }
+
+                        linfo.LeaveOut = false;
+                        if (dict.ContainsKey("LeaveOut"))
+                        {
+                            linfo.LeaveOut = (bool)dict["LeaveOut"];
                         }
 
                         linfo.LineStyle = 1;
@@ -191,7 +202,10 @@ namespace PlotLingoFunctionality.Plots
                         p.LineStyle = (short)legInfo.Value.LineStyle;
                         p.MarkerStyle = (short)legInfo.Value.MarkerStyle;
                         letterLength = Math.Max(letterLength, legInfo.Value.Title.Length);
-                        count++;
+                        if (!legInfo.Value.LeaveOut)
+                        {
+                            count++;
+                        }
                     }
                 }
             }
@@ -236,7 +250,7 @@ namespace PlotLingoFunctionality.Plots
                 {
                     foreach (var legInfo in _legendInfo)
                     {
-                        if (p.Title.IndexOf(legInfo.Key) >= 0 || p.hasTag(codeContext, legInfo.Key))
+                        if (p.Title.IndexOf(legInfo.Key) >= 0 || p.hasTag(codeContext, legInfo.Key) && !legInfo.Value.LeaveOut)
                         {
                             l.AddEntry(p.NTObject, legInfo.Value.Title);
                         }
