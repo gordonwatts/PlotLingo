@@ -7,6 +7,31 @@ using System.Threading.Tasks;
 
 namespace PlotLingoFunctionality.Files.Jenkins
 {
+    static class JenkAccessUtils
+    {
+        /// <summary>
+        /// Skip all items in a sequence until the last one that satisfies test. Then return that item along with
+        /// everything else after it till the end of the sequence. WARNING: this must cache the sequence!
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="test"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> SkipUntilLast<T>(this IEnumerable<T> source, Func<T, bool> test)
+        {
+            var list = new List<T>();
+            foreach (var item in source)
+            {
+                if (test(item))
+                {
+                    list.Clear();
+                }
+                list.Add(item);
+            }
+            return list;
+        }
+    }
+
     /// <summary>
     /// Does the work of accessing the Jenkins server.
     /// </summary>
@@ -78,7 +103,7 @@ namespace PlotLingoFunctionality.Files.Jenkins
                 var segments = _artifactURI.Segments;
 
                 // Get the job and artifact.
-                var artifactInfo = segments.SkipWhile(s => s != "job/").Skip(1).Select(s => s.Trim('/')).ToArray();
+                var artifactInfo = segments.SkipUntilLast(s => s == "job/").Skip(1).Select(s => s.Trim('/')).ToArray();
                 if (artifactInfo.Length != 4 && artifactInfo[2] == "artifact")
                 {
                     throw new ArgumentException($"The Jenkins artifact URI '{url}' is not in a format I recognize (.../jobname/build/artifact/artifact-name)");
