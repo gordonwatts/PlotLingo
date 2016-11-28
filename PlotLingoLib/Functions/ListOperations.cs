@@ -41,10 +41,12 @@ namespace PlotLingoLib.Functions
                 {
                     yield return o;
                 }
-
-                foreach (var o1 in asEnumerable)
+                else
                 {
-                    yield return o1;
+                    foreach (var o1 in asEnumerable)
+                    {
+                        yield return o1;
+                    }
                 }
             }
         }
