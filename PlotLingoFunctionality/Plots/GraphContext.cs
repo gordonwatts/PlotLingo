@@ -155,6 +155,8 @@ namespace PlotLingoFunctionality.Plots
             bool setMinimum = _minIsSet;
             var graphMin = setMaximum ? _plotMinimum : 0.0;
 
+
+            var mp = new ROOTNET.NTMultiGraph("graph", GetTitle());
             // Plot everything.
             var optS = _drawOptions + "A";
             foreach (var p in _g)
@@ -176,10 +178,12 @@ namespace PlotLingoFunctionality.Plots
                     p.Minimum = graphMin;
                 }
 
-                p.Draw(optS);
+                mp.Add(p, _drawOptions);
+                //p.Draw(optS);
                 optS = _drawOptions;
                 p.Title = GetTitle();
             }
+            mp.Draw("a");
 
             // Post plot actions
             foreach (var ph in _postPlotHook)
