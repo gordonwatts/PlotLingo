@@ -4,7 +4,7 @@
 
 // Some default plotting config
 
-//NormalizePlots();
+NormalizePlots();
 TurnOffStatBoxesForMultiPlots();
 ConfigureLineWidth();
 
