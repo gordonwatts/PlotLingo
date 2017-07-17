@@ -276,5 +276,15 @@ namespace PlotLingoFunctionality.Plots
             return this;
         }
 
+        /// <summary>
+        /// Get/Set the default canvas size
+        /// </summary>
+        public static uint DefaultCanvasWidth { get; set; } = 600;
+
+        /// <summary>
+        /// Get/Set the default canvas size
+        /// </summary>
+        public static uint DefaultCanvasHeight { get; set; } = 400;
+
     }
 }

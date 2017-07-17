@@ -41,6 +41,17 @@ namespace PlotLingoFunctionality.Plots
             return ctx;
         }
 
+        /// <summary>
+        /// Set the default canvas size when we create a new canvas.
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        public static void set_default_canvas_size(int width, int height)
+        {
+            DrawingContext.DefaultCanvasHeight = (uint) height;
+            DrawingContext.DefaultCanvasWidth = (uint) width;
+        }
+
         public static DrawingContext drawingOptionAfter(IScopeContext c, DrawingContext ctx, int nskip, string options)
         {
             ctx.AddPreplotHook(dc =>

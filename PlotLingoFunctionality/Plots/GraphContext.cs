@@ -137,6 +137,7 @@ namespace PlotLingoFunctionality.Plots
 
             // Initialize the canvas
             var c = new ROOTNET.NTCanvas();
+            c.SetCanvasSize(DefaultCanvasWidth, DefaultCanvasHeight);
             c.Title = GetTitle();
 
             c.Logx = _logx ? 1 : 0;

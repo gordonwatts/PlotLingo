@@ -165,6 +165,7 @@ namespace PlotLingoFunctionality.Plots
             ROOTNET.NTCanvas c = null;
             _canvasIndex++;
             c = new ROOTNET.NTCanvas($"c{_canvasIndex}", GetTitle());
+            c.SetCanvasSize(DefaultCanvasWidth, DefaultCanvasHeight);
 
             if (_plots.Length > 0)
                 _plots[0].Title = GetTitle();
